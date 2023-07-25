@@ -2,13 +2,13 @@ package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class UsersEntity {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,29 +26,29 @@ public class UsersEntity {
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
-    private AdminsEntity admin;
+    private AdminEntity admin;
 
     @ManyToMany
     @JoinTable(name = "user_quest",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "quest_id"))
-    private Set<QuestsEntity> quests = new HashSet<>();
+    private List<QuestEntity> quests = new ArrayList<>();
 
-    public UsersEntity() {}
+    public UserEntity() {}
 
-    public Set<QuestsEntity> getQuests() {
+    public List<QuestEntity> getQuests() {
         return quests;
     }
 
-    public void setQuests(Set<QuestsEntity> quests) {
+    public void setQuests(List<QuestEntity> quests) {
         this.quests = quests;
     }
 
-    public AdminsEntity getAdmin() {
+    public AdminEntity getAdmin() {
         return admin;
     }
 
-    public void setAdmin(AdminsEntity admin) {
+    public void setAdmin(AdminEntity admin) {
         this.admin = admin;
     }
 
@@ -89,7 +89,7 @@ public class UsersEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UsersEntity that = (UsersEntity) o;
+        UserEntity that = (UserEntity) o;
         return id == that.id
                 && Objects.equals(username, that.username)
                 && Objects.equals(passwordCrypt, that.passwordCrypt)

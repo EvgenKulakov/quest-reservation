@@ -2,13 +2,11 @@ package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "clients")
-public class ClientsEntity {
+public class ClientEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,15 +31,15 @@ public class ClientsEntity {
     private BlackListEntity blackList;
 
     @OneToMany(mappedBy = "client")
-    private Set<ReservationsEntity> reservations = new HashSet<>();
+    private List<ReservationEntity> reservations = new ArrayList<>();
 
-    public ClientsEntity() {}
+    public ClientEntity() {}
 
-    public Set<ReservationsEntity> getReservations() {
+    public List<ReservationEntity> getReservations() {
         return reservations;
     }
 
-    public void setReservations(Set<ReservationsEntity> reservations) {
+    public void setReservations(List<ReservationEntity> reservations) {
         this.reservations = reservations;
     }
 
@@ -97,7 +95,7 @@ public class ClientsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ClientsEntity that = (ClientsEntity) o;
+        ClientEntity that = (ClientEntity) o;
         return id == that.id
                 && Objects.equals(firstName, that.firstName)
                 && Objects.equals(lastName, that.lastName)

@@ -3,13 +3,13 @@ package ru.questsfera.quest_reservation.entity;
 import jakarta.persistence.*;
 
 import java.sql.Time;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "quests")
-public class QuestsEntity {
+public class QuestEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,43 +37,43 @@ public class QuestsEntity {
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
-    private AdminsEntity admin;
+    private AdminEntity admin;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "status_quest",
             joinColumns = @JoinColumn(name = "quest_id"),
             inverseJoinColumns = @JoinColumn(name = "status_id"))
-    private Set<StatusesEntity> statuses = new HashSet<>();
+    private List<StatusEntity> statuses = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(name = "synchronized_quests",
             joinColumns = @JoinColumn(name = "id_first_quest"),
             inverseJoinColumns = @JoinColumn(name = "id_second_quest"))
-    private Set<QuestsEntity> synchronizedQuests = new HashSet<>();
+    private List<QuestEntity> synchronizedQuests = new ArrayList<>();
 
-    public QuestsEntity() {}
+    public QuestEntity() {}
 
-    public Set<QuestsEntity> getSynchronizedQuests() {
+    public List<QuestEntity> getSynchronizedQuests() {
         return synchronizedQuests;
     }
 
-    public void setSynchronizedQuests(Set<QuestsEntity> synchronizedQuests) {
+    public void setSynchronizedQuests(List<QuestEntity> synchronizedQuests) {
         this.synchronizedQuests = synchronizedQuests;
     }
 
-    public Set<StatusesEntity> getStatuses() {
+    public List<StatusEntity> getStatuses() {
         return statuses;
     }
 
-    public void setStatuses(Set<StatusesEntity> statuses) {
+    public void setStatuses(List<StatusEntity> statuses) {
         this.statuses = statuses;
     }
 
-    public AdminsEntity getAdmin() {
+    public AdminEntity getAdmin() {
         return admin;
     }
 
-    public void setAdmin(AdminsEntity admin) {
+    public void setAdmin(AdminEntity admin) {
         this.admin = admin;
     }
 
@@ -137,7 +137,7 @@ public class QuestsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        QuestsEntity that = (QuestsEntity) o;
+        QuestEntity that = (QuestEntity) o;
         return id == that.id
                 && minPersons == that.minPersons
                 && maxPersons == that.maxPersons

@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "reservations")
-public class ReservationsEntity {
+public class ReservationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +42,7 @@ public class ReservationsEntity {
 
     @OneToOne
     @JoinColumn(name = "status_id")
-    private StatusesEntity status;
+    private StatusEntity status;
 
     @Column(name = "sourse_reserve")
     private String sourseReserve;
@@ -51,9 +51,9 @@ public class ReservationsEntity {
     @Column(name = "changed_price")
     private Integer changedPrice;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "client_id")
-    private ClientsEntity client;
+    private ClientEntity client;
 
     @Basic(optional = false)
     @Column(name = "count_persons")
@@ -70,21 +70,21 @@ public class ReservationsEntity {
     @Column(name = "history_messages")
     private String historyMessages;
 
-    public ReservationsEntity() {}
+    public ReservationEntity() {}
 
-    public StatusesEntity getStatus() {
+    public StatusEntity getStatus() {
         return status;
     }
 
-    public void setStatus(StatusesEntity status) {
+    public void setStatus(StatusEntity status) {
         this.status = status;
     }
 
-    public ClientsEntity getClient() {
+    public ClientEntity getClient() {
         return client;
     }
 
-    public void setClient(ClientsEntity client) {
+    public void setClient(ClientEntity client) {
         this.client = client;
     }
 
@@ -204,7 +204,7 @@ public class ReservationsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ReservationsEntity that = (ReservationsEntity) o;
+        ReservationEntity that = (ReservationEntity) o;
         return id == that.id
                 && Objects.equals(dateReserve, that.dateReserve)
                 && Objects.equals(timeReserve, that.timeReserve)

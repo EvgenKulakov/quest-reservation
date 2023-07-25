@@ -2,13 +2,11 @@ package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "admins")
-public class AdminsEntity {
+public class AdminEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,49 +31,49 @@ public class AdminsEntity {
 
     @OneToMany
     @JoinColumn(name = "admin_id")
-    private Set<ClientsEntity> clients = new HashSet<>();
+    private List<ClientEntity> clients = new ArrayList<>();
 
     @OneToMany
     @JoinColumn(name = "admin_id")
-    private Set<BlackListEntity> blackLists = new HashSet<>();
+    private List<BlackListEntity> blackLists = new ArrayList<>();
 
     @OneToMany(mappedBy = "admin")
-    private Set<QuestsEntity> quests = new HashSet<>();
+    private List<QuestEntity> quests = new ArrayList<>();
 
     @OneToMany(mappedBy = "admin")
-    private Set<UsersEntity> users = new HashSet<>();
+    private List<UserEntity> users = new ArrayList<>();
 
-    public AdminsEntity() {}
+    public AdminEntity() {}
 
-    public Set<UsersEntity> getUsers() {
+    public List<UserEntity> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<UsersEntity> users) {
+    public void setUsers(List<UserEntity> users) {
         this.users = users;
     }
 
-    public Set<QuestsEntity> getQuests() {
+    public List<QuestEntity> getQuests() {
         return quests;
     }
 
-    public void setQuests(Set<QuestsEntity> quests) {
+    public void setQuests(List<QuestEntity> quests) {
         this.quests = quests;
     }
 
-    public Set<BlackListEntity> getBlackLists() {
+    public List<BlackListEntity> getBlackLists() {
         return blackLists;
     }
 
-    public void setBlackLists(Set<BlackListEntity> blackLists) {
+    public void setBlackLists(List<BlackListEntity> blackLists) {
         this.blackLists = blackLists;
     }
 
-    public Set<ClientsEntity> getClients() {
+    public List<ClientEntity> getClients() {
         return clients;
     }
 
-    public void setClients(Set<ClientsEntity> clients) {
+    public void setClients(List<ClientEntity> clients) {
         this.clients = clients;
     }
 
@@ -131,7 +129,7 @@ public class AdminsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AdminsEntity that = (AdminsEntity) o;
+        AdminEntity that = (AdminEntity) o;
         return id == that.id
                 && money == that.money
                 && Objects.equals(username, that.username)
