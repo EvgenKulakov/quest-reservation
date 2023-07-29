@@ -6,11 +6,11 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "black_list")
-public class BlackListEntity {
+public class BlackList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "phone")
     private String phone;
@@ -18,13 +18,22 @@ public class BlackListEntity {
     @Column(name = "messages")
     private String messages;
 
-    public BlackListEntity() {}
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private Admin admin;
 
-    public int getId() {
+    public BlackList() {}
+
+    public BlackList(String phone, String messages) {
+        this.phone = phone;
+        this.messages = messages;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -44,16 +53,23 @@ public class BlackListEntity {
         this.messages = messages;
     }
 
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BlackListEntity that = (BlackListEntity) o;
-        return id == that.id && Objects.equals(phone, that.phone) && Objects.equals(messages, that.messages);
+        if (!(o instanceof BlackList blackList)) return false;
+        return id != null && Objects.equals(getId(), blackList.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, phone, messages);
+        return getClass().hashCode();
     }
 }

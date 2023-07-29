@@ -3,6 +3,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+/src/test/java/ru/questsfera/quest_reservation/TestHibernate.java
+/src/main/resources/hibernate.cfg.xml
 
 ### STS ###
 .apt_generated

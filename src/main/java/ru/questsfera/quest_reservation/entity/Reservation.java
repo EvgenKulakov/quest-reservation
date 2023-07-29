@@ -9,11 +9,11 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "reservations")
-public class ReservationEntity {
+public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "date_reserve")
     private Date dateReserve;
@@ -21,19 +21,15 @@ public class ReservationEntity {
     @Column(name = "time_reserve")
     private Time timeReserve;
 
-    @Basic(optional = false)
     @Column(name = "time_created")
     private Timestamp timeCreated;
 
-    @Basic(optional = false)
     @Column(name = "time_last_change")
     private Timestamp timeLastChange;
 
-    @Basic(optional = false)
     @Column(name = "changed_slot_time")
     private Time changedSlotTime;
 
-    @Basic(optional = false)
     @Column(name = "auto_block")
     private Time autoBlock;
 
@@ -42,57 +38,53 @@ public class ReservationEntity {
 
     @OneToOne
     @JoinColumn(name = "status_id")
-    private StatusEntity status;
+    private Status status;
 
     @Column(name = "sourse_reserve")
     private String sourseReserve;
 
-    @Basic(optional = false)
     @Column(name = "changed_price")
     private Integer changedPrice;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "client_id")
-    private ClientEntity client;
+    private Client client;
 
-    @Basic(optional = false)
     @Column(name = "count_persons")
     private Byte countPersons;
 
-    @Basic(optional = false)
     @Column(name = "admin_comment")
     private String adminComment;
 
-    @Basic(optional = false)
     @Column(name = "client_comment")
     private String clientComment;
 
     @Column(name = "history_messages")
     private String historyMessages;
 
-    public ReservationEntity() {}
+    public Reservation() {}
 
-    public StatusEntity getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(StatusEntity status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
-    public ClientEntity getClient() {
+    public Client getClient() {
         return client;
     }
 
-    public void setClient(ClientEntity client) {
+    public void setClient(Client client) {
         this.client = client;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -203,30 +195,12 @@ public class ReservationEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ReservationEntity that = (ReservationEntity) o;
-        return id == that.id
-                && Objects.equals(dateReserve, that.dateReserve)
-                && Objects.equals(timeReserve, that.timeReserve)
-                && Objects.equals(timeCreated, that.timeCreated)
-                && Objects.equals(timeLastChange, that.timeLastChange)
-                && Objects.equals(changedSlotTime, that.changedSlotTime)
-                && Objects.equals(autoBlock, that.autoBlock)
-                && Objects.equals(questName, that.questName)
-                && Objects.equals(status, that.status)
-                && Objects.equals(sourseReserve, that.sourseReserve)
-                && Objects.equals(changedPrice, that.changedPrice)
-                && Objects.equals(client, that.client)
-                && Objects.equals(countPersons, that.countPersons)
-                && Objects.equals(adminComment, that.adminComment)
-                && Objects.equals(clientComment, that.clientComment)
-                && Objects.equals(historyMessages, that.historyMessages);
+        if (!(o instanceof Reservation that)) return false;
+        return id != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, dateReserve, timeReserve, timeCreated, timeLastChange,
-                changedSlotTime, autoBlock, questName, status, sourseReserve, changedPrice,
-                client, countPersons, adminComment, clientComment, historyMessages);
+        return getClass().hashCode();
     }
 }

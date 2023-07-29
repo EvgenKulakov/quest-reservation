@@ -6,56 +6,68 @@ import java.util.*;
 
 @Entity
 @Table(name = "clients")
-public class ClientEntity {
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private Admin admin;
 
     @Column(name = "first_name")
     private String firstName;
 
-    @Basic(optional = false)
     @Column(name = "last_name")
     private String lastName;
 
     @Column(name = "phone")
     private String phone;
 
-    @Basic(optional = false)
     @Column(name = "mail")
     private String mail;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "black_list_id")
-    private BlackListEntity blackList;
+    private BlackList blackList;
 
     @OneToMany(mappedBy = "client")
-    private List<ReservationEntity> reservations = new ArrayList<>();
+    private List<Reservation> reservations = new ArrayList<>();
 
-    public ClientEntity() {}
+    public Client() {}
 
-    public List<ReservationEntity> getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(List<ReservationEntity> reservations) {
+    public Client(String firstName, String phone, List<Reservation> reservations) {
+        this.firstName = firstName;
+        this.phone = phone;
         this.reservations = reservations;
     }
 
-    public BlackListEntity getBlackList() {
+    public void deleteBlackListForClient() {
+        this.blackList = null;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    public BlackList getBlackList() {
         return blackList;
     }
 
-    public void setBlackList(BlackListEntity blackList) {
+    public void setBlackList(BlackList blackList) {
         this.blackList = blackList;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -91,22 +103,23 @@ public class ClientEntity {
         this.mail = mail;
     }
 
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ClientEntity that = (ClientEntity) o;
-        return id == that.id
-                && Objects.equals(firstName, that.firstName)
-                && Objects.equals(lastName, that.lastName)
-                && Objects.equals(phone, that.phone)
-                && Objects.equals(mail, that.mail)
-                && Objects.equals(blackList, that.blackList)
-                && Objects.equals(reservations, that.reservations);
+        if (!(o instanceof Client client)) return false;
+        return id != null && Objects.equals(getId(), client.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, phone, mail, blackList, reservations);
+        return getClass().hashCode();
     }
 }

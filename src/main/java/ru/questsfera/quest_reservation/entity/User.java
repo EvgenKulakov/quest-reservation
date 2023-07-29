@@ -2,17 +2,15 @@ package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "username")
     private String username;
@@ -20,44 +18,55 @@ public class UserEntity {
     @Column(name = "password_crypt")
     private String passwordCrypt;
 
-    @Basic(optional = false)
     @Column(name = "mail")
     private String mail;
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
-    private AdminEntity admin;
+    private Admin admin;
 
     @ManyToMany
     @JoinTable(name = "user_quest",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "quest_id"))
-    private List<QuestEntity> quests = new ArrayList<>();
+    private Set<Quest> quests = new HashSet<>();
 
-    public UserEntity() {}
+    public User() {}
 
-    public List<QuestEntity> getQuests() {
-        return quests;
+    public User(String username, String passwordCrypt) {
+        this.username = username;
+        this.passwordCrypt = passwordCrypt;
     }
 
-    public void setQuests(List<QuestEntity> quests) {
-        this.quests = quests;
+    public void addQuestForUser(Quest quest) {
+        if (this.admin.getQuests().contains(quest)) {
+            quests.add(quest);
+            quest.getUsers().add(this);
+        } else {
+            throw new RuntimeException(
+                    "Quest id: " + quest.getId() + " нет доступа для добавления");
+        }
     }
 
-    public AdminEntity getAdmin() {
+    public void deleteQuestForUser(Quest quest) {
+        quests.remove(quest);
+        quest.getUsers().remove(this);
+    }
+
+    public Admin getAdmin() {
         return admin;
     }
 
-    public void setAdmin(AdminEntity admin) {
+    public void setAdmin(Admin admin) {
         this.admin = admin;
     }
 
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -85,21 +94,23 @@ public class UserEntity {
         this.mail = mail;
     }
 
+    public Set<Quest> getQuests() {
+        return quests;
+    }
+
+    public void setQuests(Set<Quest> quests) {
+        this.quests = quests;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserEntity that = (UserEntity) o;
-        return id == that.id
-                && Objects.equals(username, that.username)
-                && Objects.equals(passwordCrypt, that.passwordCrypt)
-                && Objects.equals(mail, that.mail)
-                && Objects.equals(admin, that.admin)
-                && Objects.equals(quests, that.quests);
+        if (!(o instanceof User user)) return false;
+        return id != null && Objects.equals(getId(), user.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, passwordCrypt, mail, admin, quests);
+        return getClass().hashCode();
     }
 }
