@@ -19,10 +19,10 @@ public class Quest {
     @Column(name = "slot_list")
     private String slotList;
 
-    @Column(name = "min_persons", nullable = false)
+    @Column(name = "min_persons")
     private int minPersons;
 
-    @Column(name = "max_persons", nullable = false)
+    @Column(name = "max_persons")
     private int maxPersons;
 
     @Column(name = "auto_block")

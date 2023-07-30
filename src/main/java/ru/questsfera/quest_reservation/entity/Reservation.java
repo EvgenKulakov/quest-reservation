@@ -22,7 +22,7 @@ public class Reservation {
     private Time timeReserve;
 
     @Column(name = "time_created")
-    private Timestamp timeCreated;
+    private Timestamp dateAndTimeCreated;
 
     @Column(name = "time_last_change")
     private Timestamp timeLastChange;
@@ -33,15 +33,16 @@ public class Reservation {
     @Column(name = "auto_block")
     private Time autoBlock;
 
-    @Column(name = "quest_name")
-    private String questName;
+    @ManyToOne
+    @JoinColumn(name = "quest_id")
+    private Quest quest;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status;
 
     @Column(name = "sourse_reserve")
-    private String sourseReserve;
+    private String sourceReserve;
 
     @Column(name = "changed_price")
     private Integer changedPrice;
@@ -51,7 +52,7 @@ public class Reservation {
     private Client client;
 
     @Column(name = "count_persons")
-    private Byte countPersons;
+    private int countPersons;
 
     @Column(name = "admin_comment")
     private String adminComment;
@@ -63,6 +64,20 @@ public class Reservation {
     private String historyMessages;
 
     public Reservation() {}
+
+    public Reservation(Date dateReserve, Time timeReserve,
+                       Timestamp dateAndTimeCreated, Quest quest,
+                       Status status, String sourceReserve,
+                       int countPersons) {
+        this.dateReserve = dateReserve;
+        this.timeReserve = timeReserve;
+        this.dateAndTimeCreated = dateAndTimeCreated;
+        this.quest = quest;
+        this.status = status;
+        this.sourceReserve = sourceReserve;
+        this.countPersons = countPersons;
+        this.historyMessages = "default";
+    }
 
     public Status getStatus() {
         return status;
@@ -104,12 +119,12 @@ public class Reservation {
         this.timeReserve = timeReserve;
     }
 
-    public Timestamp getTimeCreated() {
-        return timeCreated;
+    public Timestamp getDateAndTimeCreated() {
+        return dateAndTimeCreated;
     }
 
-    public void setTimeCreated(Timestamp timeCreated) {
-        this.timeCreated = timeCreated;
+    public void setDateAndTimeCreated(Timestamp dateAndTimeCreated) {
+        this.dateAndTimeCreated = dateAndTimeCreated;
     }
 
     public Timestamp getTimeLastChange() {
@@ -136,20 +151,20 @@ public class Reservation {
         this.autoBlock = autoBlock;
     }
 
-    public String getQuestName() {
-        return questName;
+    public Quest getQuest() {
+        return quest;
     }
 
-    public void setQuestName(String questName) {
-        this.questName = questName;
+    public void setQuest(Quest quest) {
+        this.quest = quest;
     }
 
-    public String getSourseReserve() {
-        return sourseReserve;
+    public String getSourceReserve() {
+        return sourceReserve;
     }
 
-    public void setSourseReserve(String sourseReserve) {
-        this.sourseReserve = sourseReserve;
+    public void setSourceReserve(String sourceReserve) {
+        this.sourceReserve = sourceReserve;
     }
 
     public Integer getChangedPrice() {
@@ -160,11 +175,11 @@ public class Reservation {
         this.changedPrice = changedPrice;
     }
 
-    public Byte getCountPersons() {
+    public int getCountPersons() {
         return countPersons;
     }
 
-    public void setCountPersons(Byte countPersons) {
+    public void setCountPersons(int countPersons) {
         this.countPersons = countPersons;
     }
 

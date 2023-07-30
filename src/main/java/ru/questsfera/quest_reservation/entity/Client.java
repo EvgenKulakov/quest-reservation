@@ -29,7 +29,7 @@ public class Client {
     private String mail;
 
     @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "black_list_id")
+    @JoinColumn(name = "blacklist_id")
     private BlackList blackList;
 
     @OneToMany(mappedBy = "client")
@@ -37,14 +37,18 @@ public class Client {
 
     public Client() {}
 
-    public Client(String firstName, String phone, List<Reservation> reservations) {
+    public Client(String firstName, String phone) {
         this.firstName = firstName;
         this.phone = phone;
-        this.reservations = reservations;
     }
 
     public void deleteBlackListForClient() {
         this.blackList = null;
+    }
+
+    public void addReserveForClient(Reservation reservation) {
+        reservation.setClient(this);
+        this.reservations.add(reservation);
     }
 
     public List<Reservation> getReservations() {

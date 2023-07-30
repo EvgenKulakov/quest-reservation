@@ -6,27 +6,32 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.quest_reservation.dao.*;
 import ru.questsfera.quest_reservation.entity.*;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class AdminService {
-    private final AdminRepository adminRepository;;
+    private final AdminRepository adminRepository;
     private final UserRepository userRepository;
     private final QuestRepository questRepository;
     private final StatusRepository statusRepository;
+    private final ReservationRepository reservationRepository;
     private final ClientRepository clientRepository;
     private final BlackListRepository blackListRepository;
 
     @Autowired
     public AdminService(AdminRepository adminRepository, UserRepository userRepository,
                         QuestRepository questRepository, StatusRepository statusRepository,
-                        ClientRepository clientRepository, BlackListRepository blackListRepository) {
+                        ReservationRepository reservationRepository,
+                        ClientRepository clientRepository,
+                        BlackListRepository blackListRepository) {
         this.adminRepository = adminRepository;
         this.userRepository = userRepository;
         this.questRepository = questRepository;
         this.statusRepository = statusRepository;
+        this.reservationRepository = reservationRepository;
         this.clientRepository = clientRepository;
         this.blackListRepository = blackListRepository;
     }
@@ -130,7 +135,6 @@ public class AdminService {
         return quest.getStatuses();
     }
 
-    //******* synchronized quests
     @Transactional
     public void synchronizeQuests(Quest... quests) {
         Quest.synchronizeQuests(quests);
@@ -190,5 +194,38 @@ public class AdminService {
     @Transactional
     public Set<Client> getClientsByAdmin(Admin admin) {
         return admin.getClients();
+    }
+
+    @Transactional
+    public List<Reservation> getReservationsByDate(Quest quest, Admin admin, Date date) {
+        if (!quest.getAdmin().equals(admin)) {
+            throw new RuntimeException("Попытка получить бронирования недоступные"
+                    + " для данного аккаунта");
+        }
+        return reservationRepository.findAllByQuestAndDateReserve(quest, date);
+    }
+
+    @Transactional
+    public void saveReservation(Admin admin, Client client, Reservation reservation) {
+        if (!admin.getQuests().contains(reservation.getQuest())) {
+            throw new RuntimeException("Попытка создать бронирование аккаунтом,"
+                    + " у которого нет доступа к квесту");
+        }
+        client.addReserveForClient(reservation);
+        reservationRepository.save(reservation);
+    }
+
+    @Transactional
+    public Reservation getReserveById(Admin admin, int id) {
+        Optional<Reservation> optionalReservation = reservationRepository.findById(id);
+        if (optionalReservation.isPresent()) {
+            Reservation reservation = optionalReservation.get();
+            if (!admin.getQuests().contains(reservation.getQuest())) {
+                throw new RuntimeException("Попытка открыть бронирование аккаунтом,"
+                        + " у которого нет доступа к квесту");
+            }
+            return reservation;
+        }
+        throw new RuntimeException("Попытка получить несуществующее бронирование");
     }
 }

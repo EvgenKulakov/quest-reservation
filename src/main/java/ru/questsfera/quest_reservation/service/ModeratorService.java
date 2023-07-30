@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.quest_reservation.dao.*;
 import ru.questsfera.quest_reservation.entity.Quest;
+import ru.questsfera.quest_reservation.entity.Reservation;
 import ru.questsfera.quest_reservation.entity.Status;
 import ru.questsfera.quest_reservation.entity.User;
 
@@ -18,17 +19,19 @@ public class ModeratorService {
     private final QuestRepository questRepository;
     private final StatusRepository statusRepository;
     private final ClientRepository clientRepository;
+    private final ReservationRepository reservationRepository;
     private final BlackListRepository blackListRepository;
 
     @Autowired
     public ModeratorService(AdminRepository adminRepository, UserRepository userRepository,
                             QuestRepository questRepository, StatusRepository statusRepository,
-                            ClientRepository clientRepository, BlackListRepository blackListRepository) {
+                            ClientRepository clientRepository, ReservationRepository reservationRepository, BlackListRepository blackListRepository) {
         this.adminRepository = adminRepository;
         this.userRepository = userRepository;
         this.questRepository = questRepository;
         this.statusRepository = statusRepository;
         this.clientRepository = clientRepository;
+        this.reservationRepository = reservationRepository;
         this.blackListRepository = blackListRepository;
     }
 
@@ -86,7 +89,19 @@ public class ModeratorService {
         }
     }
 
-//    public Quest getQuest(int id) {
-//        return questRepository.findById(id).orElse(null);
-//    }
+    public Reservation getReserveById(int id) {
+        Optional<Reservation> optionalReservation = reservationRepository.findById(id);
+        if (optionalReservation.isPresent()) {
+            return optionalReservation.get();
+        }
+        throw new RuntimeException("Попытка получить несуществующее бронирование");
+    }
+
+    public Quest getQuest(int id) {
+        Optional<Quest> optionalQuest = questRepository.findById(id);
+        if (optionalQuest.isPresent()) {
+            return optionalQuest.get();
+        }
+        throw new RuntimeException("Попытка получить несуществующий квест");
+    }
 }
