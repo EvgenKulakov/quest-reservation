@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.quest_reservation.dao.*;
-import ru.questsfera.quest_reservation.entity.Quest;
-import ru.questsfera.quest_reservation.entity.Reservation;
-import ru.questsfera.quest_reservation.entity.Status;
-import ru.questsfera.quest_reservation.entity.User;
+import ru.questsfera.quest_reservation.entity.*;
 
 import java.util.Optional;
 
@@ -40,10 +37,10 @@ public class ModeratorService {
     getAdmin
     deleteAdmin
     getAllQuests
+    deleteQuestWithReservations
     deleteEntryFromBlacklist
     addBlackListEntry
     getAllStatuses
-    getClientById
     deleteClient
     deleteReservation
      */
@@ -104,4 +101,21 @@ public class ModeratorService {
         }
         throw new RuntimeException("Попытка получить несуществующий квест");
     }
+
+    public Client getClientById(int id) {
+        Optional<Client> optionalClient = clientRepository.findById(id);
+        if (optionalClient.isPresent()) {
+            return optionalClient.get();
+        }
+        throw new RuntimeException("Попытка получить несуществующего клиента");
+    }
+
+    public BlackList BlackListById(int id) {
+        Optional<BlackList> optionalBlackList = blackListRepository.findById(id);
+        if (optionalBlackList.isPresent()) {
+            return optionalBlackList.get();
+        }
+        throw new RuntimeException("Попытка получить несуществующую запись в ЧС");
+    }
 }
+

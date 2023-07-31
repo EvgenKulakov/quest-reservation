@@ -27,7 +27,7 @@ public class Admin {
     @Column(name = "money")
     private int money;
 
-    @OneToMany(mappedBy = "admin")
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.REFRESH)
     private Set<Client> clients = new HashSet<>();
 
     @OneToMany(mappedBy = "admin")

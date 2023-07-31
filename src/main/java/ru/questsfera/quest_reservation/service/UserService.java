@@ -10,6 +10,7 @@ import ru.questsfera.quest_reservation.entity.Reservation;
 import ru.questsfera.quest_reservation.entity.User;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -49,7 +50,7 @@ public class UserService {
     }
 
     @Transactional
-    public List<Reservation> getReservationsByDate(Quest quest, User user, Date date) {
+    public List<Reservation> getReservationsByDate(Quest quest, User user, LocalDate date) {
         if (!quest.getAdmin().equals(user.getAdmin())) {
             throw new RuntimeException("Попытка получить бронирования недоступные"
                     + " для данного пользователя");
@@ -58,12 +59,11 @@ public class UserService {
     }
 
     @Transactional
-    public void saveReservation(User user, Client client, Reservation reservation) {
+    public void saveReservation(User user, Reservation reservation) {
         if (!reservation.getQuest().getUsers().contains(user)) {
             throw new RuntimeException("Попытка создать бронирование пользователем,"
                     + " у которого нет доступа к квесту");
         }
-        client.addReserveForClient(reservation);
         reservationRepository.save(reservation);
     }
 

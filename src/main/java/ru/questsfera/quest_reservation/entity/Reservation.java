@@ -2,9 +2,9 @@ package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 @Entity
@@ -16,22 +16,22 @@ public class Reservation {
     private Integer id;
 
     @Column(name = "date_reserve")
-    private Date dateReserve;
+    private LocalDate dateReserve;
 
     @Column(name = "time_reserve")
-    private Time timeReserve;
+    private LocalTime timeReserve;
 
     @Column(name = "time_created")
-    private Timestamp dateAndTimeCreated;
+    private LocalDateTime dateAndTimeCreated;
 
     @Column(name = "time_last_change")
-    private Timestamp timeLastChange;
+    private LocalDateTime timeLastChange;
 
     @Column(name = "changed_slot_time")
-    private Time changedSlotTime;
+    private LocalTime changedSlotTime;
 
     @Column(name = "auto_block")
-    private Time autoBlock;
+    private LocalTime autoBlock;
 
     @ManyToOne
     @JoinColumn(name = "quest_id")
@@ -41,7 +41,7 @@ public class Reservation {
     @JoinColumn(name = "status_id")
     private Status status;
 
-    @Column(name = "sourse_reserve")
+    @Column(name = "source_reserve")
     private String sourceReserve;
 
     @Column(name = "changed_price")
@@ -65,8 +65,8 @@ public class Reservation {
 
     public Reservation() {}
 
-    public Reservation(Date dateReserve, Time timeReserve,
-                       Timestamp dateAndTimeCreated, Quest quest,
+    public Reservation(LocalDate dateReserve, LocalTime timeReserve,
+                       LocalDateTime dateAndTimeCreated, Quest quest,
                        Status status, String sourceReserve,
                        int countPersons) {
         this.dateReserve = dateReserve;
@@ -77,6 +77,11 @@ public class Reservation {
         this.sourceReserve = sourceReserve;
         this.countPersons = countPersons;
         this.historyMessages = "default";
+    }
+
+    public void addClient(Client client) {
+        client.getReservations().add(this);
+        this.client = client;
     }
 
     public Status getStatus() {
@@ -103,51 +108,51 @@ public class Reservation {
         this.id = id;
     }
 
-    public Date getDateReserve() {
+    public LocalDate getDateReserve() {
         return dateReserve;
     }
 
-    public void setDateReserve(Date dateReserve) {
+    public void setDateReserve(LocalDate dateReserve) {
         this.dateReserve = dateReserve;
     }
 
-    public Time getTimeReserve() {
+    public LocalTime getTimeReserve() {
         return timeReserve;
     }
 
-    public void setTimeReserve(Time timeReserve) {
+    public void setTimeReserve(LocalTime timeReserve) {
         this.timeReserve = timeReserve;
     }
 
-    public Timestamp getDateAndTimeCreated() {
+    public LocalDateTime getDateAndTimeCreated() {
         return dateAndTimeCreated;
     }
 
-    public void setDateAndTimeCreated(Timestamp dateAndTimeCreated) {
+    public void setDateAndTimeCreated(LocalDateTime dateAndTimeCreated) {
         this.dateAndTimeCreated = dateAndTimeCreated;
     }
 
-    public Timestamp getTimeLastChange() {
+    public LocalDateTime getTimeLastChange() {
         return timeLastChange;
     }
 
-    public void setTimeLastChange(Timestamp timeLastChange) {
+    public void setTimeLastChange(LocalDateTime timeLastChange) {
         this.timeLastChange = timeLastChange;
     }
 
-    public Time getChangedSlotTime() {
+    public LocalTime getChangedSlotTime() {
         return changedSlotTime;
     }
 
-    public void setChangedSlotTime(Time changedSlotTime) {
+    public void setChangedSlotTime(LocalTime changedSlotTime) {
         this.changedSlotTime = changedSlotTime;
     }
 
-    public Time getAutoBlock() {
+    public LocalTime getAutoBlock() {
         return autoBlock;
     }
 
-    public void setAutoBlock(Time autoBlock) {
+    public void setAutoBlock(LocalTime autoBlock) {
         this.autoBlock = autoBlock;
     }
 

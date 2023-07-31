@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "black_list")
+@Table(name = "blacklist")
 public class BlackList {
 
     @Id

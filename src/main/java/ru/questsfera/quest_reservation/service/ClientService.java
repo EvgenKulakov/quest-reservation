@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.quest_reservation.dao.*;
-import ru.questsfera.quest_reservation.entity.Client;
 import ru.questsfera.quest_reservation.entity.Quest;
 import ru.questsfera.quest_reservation.entity.Reservation;
-import ru.questsfera.quest_reservation.entity.User;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -37,13 +35,12 @@ public class ClientService {
 
     //**************************************************
     @Transactional
-    public List<Reservation> getReservationsByDate(Quest quest, Date date) {
+    public List<Reservation> getReservationsByDate(Quest quest, LocalDate date) {
         return reservationRepository.findAllByQuestAndDateReserve(quest, date);
     }
 
     @Transactional
-    public void saveReservation(Client client, Reservation reservation) {
-        client.addReserveForClient(reservation);
+    public void saveReservation(Reservation reservation) {
         reservationRepository.save(reservation);
     }
 }

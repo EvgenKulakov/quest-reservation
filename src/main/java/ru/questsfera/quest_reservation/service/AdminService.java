@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.quest_reservation.dao.*;
 import ru.questsfera.quest_reservation.entity.*;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -36,7 +36,7 @@ public class AdminService {
         this.blackListRepository = blackListRepository;
     }
 
-
+    //***login
     @Transactional
     public Admin getAdminById(int id) {
         Optional<Admin> adminOptional = adminRepository.findById(id);
@@ -51,6 +51,7 @@ public class AdminService {
         adminRepository.save(admin);
     }
 
+    //***Users
     @Transactional
     public Set<User> getUsersByAdmin(Admin admin) {
         return admin.getUsers();
@@ -70,11 +71,11 @@ public class AdminService {
                     + " к которому юзер не относится. Или дублированный запрос");
             return;
         }
-
         admin.deleteUserForAdmin(user);
         userRepository.delete(user);
     }
 
+    //***Quests
     @Transactional
     public Set<Quest> getQuestsByAdmin(Admin admin) {
         return admin.getQuests();
@@ -88,19 +89,20 @@ public class AdminService {
 
     @Transactional
     public void deleteQuest(Admin admin, Quest quest) {
-        if (!admin.getQuests().contains(quest)) {
-            System.out.println("Попытка удалить квест id:" + quest.getId()
-                    + " у админа id:" + admin.getId()
-                    + " к которому квест не относится. Или дублированный запрос");
-            return;
+        if (!quest.getAdmin().equals(admin)) {
+            throw new RuntimeException("Попытка удалить квест админом, у которого нет доступа");
         }
 
-        admin.deleteQuestForAdmin(quest);
+        if (!reservationRepository.findAllByQuest(quest).isEmpty()) {
+            throw new RuntimeException("Попытка удалить квест, у которого есть бронирования");
+        }
+
         if (!quest.getSynchronizedQuests().isEmpty()) {
             dontSynchronizeQuests(quest);
             System.out.println("Синхронизация по квесту id:" + quest.getId()
                     + " и всем связаным квестам отменена");
         }
+        admin.deleteQuestForAdmin(quest);
         questRepository.delete(quest);
     }
 
@@ -119,6 +121,7 @@ public class AdminService {
         user.deleteQuestForUser(quest);
     }
 
+    //***Statuses
     @Transactional
     public void saveStatus(Quest quest, Status status) {
         quest.addStatusForQuest(status);
@@ -135,6 +138,7 @@ public class AdminService {
         return quest.getStatuses();
     }
 
+    //***SynchronizeQuests
     @Transactional
     public void synchronizeQuests(Quest... quests) {
         Quest.synchronizeQuests(quests);
@@ -150,8 +154,7 @@ public class AdminService {
         Quest.dontSynchronizeQuests(quest);
     }
 
-    //*********************************
-    // *****BlackList
+    //***BlackList
     @Transactional
     public List<BlackList> getAllBlackLists() {
         return blackListRepository.findAll();
@@ -168,26 +171,19 @@ public class AdminService {
             throw new RuntimeException("Попытка создать запись в ЧС для клиента "
                     + "привязанного к другому админу");
         }
-
         admin.addBlackListForAdmin(blackList);
-//        blackListRepository.save(blackList);
         client.setBlackList(blackList);
         clientRepository.save(client);
     }
 
     @Transactional
-    public void deleteBlackList(Admin admin, Client client, BlackList blackList) {
-        if (!admin.getBlackLists().contains(blackList)) {
-            System.out.println("Попытка удалить запись из ЧС id:" + blackList.getId()
-                    + " у админа id:" + admin.getId()
-                    + " к которому запсь ЧС не относится. Или дублированный запрос");
-            return;
+    public void deleteBlackList(Admin admin, Client client) {
+        if (!client.getAdmin().equals(admin)) {
+            throw new RuntimeException("Попытка удалить запись ЧС админом, "
+                    + "у которого нет доступа к клиенту");
         }
-
+        blackListRepository.delete(client.getBlackList());
         client.deleteBlackListForClient();
-        clientRepository.save(client);
-        admin.deleteBlackListForAdmin(blackList);
-        blackListRepository.delete(blackList);
     }
 
     // ******Clients
@@ -197,7 +193,12 @@ public class AdminService {
     }
 
     @Transactional
-    public List<Reservation> getReservationsByDate(Quest quest, Admin admin, Date date) {
+    public Client getClientByReserve(Reservation reservation) {
+        return reservation.getClient();
+    }
+
+    @Transactional
+    public List<Reservation> getReservationsByDate(Admin admin, Quest quest, LocalDate date) {
         if (!quest.getAdmin().equals(admin)) {
             throw new RuntimeException("Попытка получить бронирования недоступные"
                     + " для данного аккаунта");
@@ -206,12 +207,11 @@ public class AdminService {
     }
 
     @Transactional
-    public void saveReservation(Admin admin, Client client, Reservation reservation) {
+    public void saveReservation(Admin admin, Reservation reservation) {
         if (!admin.getQuests().contains(reservation.getQuest())) {
             throw new RuntimeException("Попытка создать бронирование аккаунтом,"
                     + " у которого нет доступа к квесту");
         }
-        client.addReserveForClient(reservation);
         reservationRepository.save(reservation);
     }
 

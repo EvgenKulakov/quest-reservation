@@ -28,7 +28,7 @@ public class Client {
     @Column(name = "mail")
     private String mail;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "blacklist_id")
     private BlackList blackList;
 
@@ -37,18 +37,14 @@ public class Client {
 
     public Client() {}
 
-    public Client(String firstName, String phone) {
+    public Client(Admin admin, String firstName, String phone) {
+        this.admin = admin;
         this.firstName = firstName;
         this.phone = phone;
     }
 
     public void deleteBlackListForClient() {
         this.blackList = null;
-    }
-
-    public void addReserveForClient(Reservation reservation) {
-        reservation.setClient(this);
-        this.reservations.add(reservation);
     }
 
     public List<Reservation> getReservations() {
