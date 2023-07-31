@@ -4,26 +4,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.questsfera.quest_reservation.entity.*;
 import ru.questsfera.quest_reservation.service.AdminService;
+import ru.questsfera.quest_reservation.service.ClientService;
 import ru.questsfera.quest_reservation.service.ModeratorService;
+import ru.questsfera.quest_reservation.service.UserService;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
-
 
 @org.springframework.stereotype.Controller
 public class Controller {
 
     private final AdminService adminService;
     private final ModeratorService moderatorService;
+    private final UserService userService;
+    private final ClientService clientService;
 
     @Autowired
-    public Controller(AdminService adminService, ModeratorService moderatorService) {
+    public Controller(AdminService adminService, ModeratorService moderatorService, UserService userService, ClientService clientService) {
         this.adminService = adminService;
         this.moderatorService = moderatorService;
+        this.userService = userService;
+        this.clientService = clientService;
     }
 
 //    @GetMapping("/")
@@ -43,25 +46,30 @@ public class Controller {
     @GetMapping("/tt")
     public String testJPA() {
 
-        Admin admin2 = adminService.getAdminById(2);
+//        Admin admin2 = adminService.getAdminById(2);
 //        Admin admin1 = adminService.getAdminById(1);
 
+//        User user20 = userService.getUserById(20);
+//        User user = new User("Anna", "678", admin1);
 
 //        Quest quest6 = moderatorService.getQuest(6);
 //        Status status4 = moderatorService.getStatusById(4);
-//        Client client = new Client(admin1, "Nikita", "+79996665544");
-//        Client client3 = moderatorService.getClientById(3);
+//        Client client = new Client(admin1, "Garik", "+79996105544");
+//        Client client6 = moderatorService.getClientById(3);
 //        BlackList blackList = new BlackList("+7984490099", "Не пришёл");
 //        BlackList blackList1 = moderatorService.BlackListById(1);
-//        Reservation reservation = new Reservation(new Date(1112229333L), new Time(1112922355L),
-//                new Timestamp(12372344234L), quest6, status4, "src", 4);
-        Reservation reservation1 = moderatorService.getReserveById(1);
+//        LocalDate localDate = LocalDate.of(2023, 7, 15);
+//        Reservation reservation = new Reservation(localDate, LocalTime.of(17, 30),
+//                LocalDateTime.of(2023, 11, 6, 14, 12),
+//                quest6, status4, "hey", 2, client6);
+        Reservation reservation7 = moderatorService.getReserveById(7);
 //        adminService.deleteBlackList(admin1, client3);
 //        adminService.saveBlackList(admin1, client3, blackList1);
-//        Date date = Date.valueOf("1970-01-13");
-//        LocalDate localDate = LocalDate.of(1970, 1, 13);
+//        Reservation reservation = userService.getReserveById(user20, 9);
+        reservation7.setCountPersons(8);
 
-        System.out.println(reservation1.getQuest().getQuestName());
+
+        clientService.saveReservation(reservation7);
 
         return "test1";
     }

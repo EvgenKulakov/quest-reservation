@@ -33,19 +33,19 @@ public class User {
 
     public User() {}
 
-    public User(String username, String passwordCrypt) {
+    public User(String username, String passwordCrypt, Admin admin) {
         this.username = username;
         this.passwordCrypt = passwordCrypt;
+        this.admin = admin;
     }
 
     public void addQuestForUser(Quest quest) {
-        if (this.admin.getQuests().contains(quest)) {
-            quests.add(quest);
-            quest.getUsers().add(this);
-        } else {
+        if (!quest.getAdmin().equals(this.admin)) {
             throw new RuntimeException(
                     "Quest id: " + quest.getId() + " нет доступа для добавления");
         }
+        quests.add(quest);
+        quest.getUsers().add(this);
     }
 
     public void deleteQuestForUser(Quest quest) {

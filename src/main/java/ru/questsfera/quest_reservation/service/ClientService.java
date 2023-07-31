@@ -12,28 +12,13 @@ import java.util.List;
 
 @Service
 public class ClientService {
-    private final AdminRepository adminRepository;
-    private final UserRepository userRepository;
-    private final QuestRepository questRepository;
-    private final StatusRepository statusRepository;
-    private final ClientRepository clientRepository;
     private final ReservationRepository reservationRepository;
-    private final BlackListRepository blackListRepository;
 
     @Autowired
-    public ClientService(AdminRepository adminRepository, UserRepository userRepository,
-                            QuestRepository questRepository, StatusRepository statusRepository,
-                            ClientRepository clientRepository, ReservationRepository reservationRepository, BlackListRepository blackListRepository) {
-        this.adminRepository = adminRepository;
-        this.userRepository = userRepository;
-        this.questRepository = questRepository;
-        this.statusRepository = statusRepository;
-        this.clientRepository = clientRepository;
+    public ClientService(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
-        this.blackListRepository = blackListRepository;
     }
 
-    //**************************************************
     @Transactional
     public List<Reservation> getReservationsByDate(Quest quest, LocalDate date) {
         return reservationRepository.findAllByQuestAndDateReserve(quest, date);

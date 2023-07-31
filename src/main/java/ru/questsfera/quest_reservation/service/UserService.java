@@ -4,44 +4,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.quest_reservation.dao.*;
-import ru.questsfera.quest_reservation.entity.Client;
 import ru.questsfera.quest_reservation.entity.Quest;
 import ru.questsfera.quest_reservation.entity.Reservation;
 import ru.questsfera.quest_reservation.entity.User;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {
-    private final AdminRepository adminRepository;
     private final UserRepository userRepository;
     private final ReservationRepository reservationRepository;
-    private final QuestRepository questRepository;
-    private final StatusRepository statusRepository;
-    private final ClientRepository clientRepository;
-    private final BlackListRepository blackListRepository;
 
     @Autowired
-    public UserService(AdminRepository adminRepository, UserRepository userRepository,
-                       ReservationRepository reservationRepository, QuestRepository questRepository,
-                       StatusRepository statusRepository, ClientRepository clientRepository,
-                       BlackListRepository blackListRepository) {
-        this.adminRepository = adminRepository;
+    public UserService(UserRepository userRepository, ReservationRepository reservationRepository) {
         this.userRepository = userRepository;
         this.reservationRepository = reservationRepository;
-        this.questRepository = questRepository;
-        this.statusRepository = statusRepository;
-        this.clientRepository = clientRepository;
-        this.blackListRepository = blackListRepository;
+
     }
 
-    // ********************************
     @Transactional
-    public User getUser(int id) {
+    public User getUserById(int id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             return optionalUser.get();
@@ -50,7 +34,7 @@ public class UserService {
     }
 
     @Transactional
-    public List<Reservation> getReservationsByDate(Quest quest, User user, LocalDate date) {
+    public List<Reservation> getReservationsByDate(User user, Quest quest, LocalDate date) {
         if (!quest.getAdmin().equals(user.getAdmin())) {
             throw new RuntimeException("Попытка получить бронирования недоступные"
                     + " для данного пользователя");
@@ -60,7 +44,8 @@ public class UserService {
 
     @Transactional
     public void saveReservation(User user, Reservation reservation) {
-        if (!reservation.getQuest().getUsers().contains(user)) {
+        System.out.println(user.getQuests().size());
+        if(!user.getQuests().contains(reservation.getQuest())) {
             throw new RuntimeException("Попытка создать бронирование пользователем,"
                     + " у которого нет доступа к квесту");
         }

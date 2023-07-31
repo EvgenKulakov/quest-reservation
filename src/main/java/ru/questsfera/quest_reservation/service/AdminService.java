@@ -65,11 +65,9 @@ public class AdminService {
 
     @Transactional
     public void deleteUser(Admin admin, User user) {
-        if (!admin.getQuests().contains(user)) {
-            System.out.println("Попытка удалить юзер id:" + user.getId()
-                    + " у админа id:" + admin.getId()
-                    + " к которому юзер не относится. Или дублированный запрос");
-            return;
+        if (!user.getAdmin().equals(admin)) {
+            throw new RuntimeException("Попытка удалить юзера админом, " +
+                    "у которого нет доступа");
         }
         admin.deleteUserForAdmin(user);
         userRepository.delete(user);
@@ -186,7 +184,7 @@ public class AdminService {
         client.deleteBlackListForClient();
     }
 
-    // ******Clients
+    //***Clients
     @Transactional
     public Set<Client> getClientsByAdmin(Admin admin) {
         return admin.getClients();
@@ -197,6 +195,8 @@ public class AdminService {
         return reservation.getClient();
     }
 
+
+    //***Reservations
     @Transactional
     public List<Reservation> getReservationsByDate(Admin admin, Quest quest, LocalDate date) {
         if (!quest.getAdmin().equals(admin)) {

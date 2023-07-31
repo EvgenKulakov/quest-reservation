@@ -73,10 +73,31 @@ public class Reservation {
         this.timeReserve = timeReserve;
         this.dateAndTimeCreated = dateAndTimeCreated;
         this.quest = quest;
+        if (!this.quest.getStatuses().contains(status)) {
+            throw new RuntimeException("Попытка создать Бронирование с недоступным стусом");
+        }
         this.status = status;
         this.sourceReserve = sourceReserve;
         this.countPersons = countPersons;
         this.historyMessages = "default";
+    }
+
+    public Reservation(LocalDate dateReserve, LocalTime timeReserve,
+                       LocalDateTime dateAndTimeCreated, Quest quest,
+                       Status status, String sourceReserve,
+                       int countPersons, Client client) {
+        this.dateReserve = dateReserve;
+        this.timeReserve = timeReserve;
+        this.dateAndTimeCreated = dateAndTimeCreated;
+        this.quest = quest;
+        if (!this.quest.getStatuses().contains(status)) {
+            throw new RuntimeException("Попытка создать Бронирование с недоступным стусом");
+        }
+        this.status = status;
+        this.sourceReserve = sourceReserve;
+        this.countPersons = countPersons;
+        this.historyMessages = "default";
+        this.client = client;
     }
 
     public void addClient(Client client) {
