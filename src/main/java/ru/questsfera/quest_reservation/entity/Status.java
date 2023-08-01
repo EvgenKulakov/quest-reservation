@@ -1,28 +1,37 @@
 package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
+import ru.questsfera.quest_reservation.processor.StatusType;
 
 import java.util.*;
 
-
 @Entity
-@Table(name = "statuses")
+@Table(name = "statuses", schema = "quest_reservations")
 public class Status {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name_mode")
-    private String nameAndMode;
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "status_type")
+    @Enumerated(value = EnumType.STRING)
+    private StatusType type;
 
     @ManyToMany(mappedBy = "statuses")
     private Set<Quest> quests = new HashSet<>();
 
     public Status() {}
 
-    public Status(String nameAndMode) {
-        this.nameAndMode = nameAndMode;
+    public Status(StatusType type) {
+        this.type = type;
+    }
+
+    public Status(String name, StatusType type) {
+        this.name = name;
+        this.type = type;
     }
 
     public Set<Quest> getQuests() {
@@ -41,12 +50,20 @@ public class Status {
         this.id = id;
     }
 
-    public String getNameAndMode() {
-        return nameAndMode;
+    public String getName() {
+        return name;
     }
 
-    public void setNameAndMode(String nameAndMode) {
-        this.nameAndMode = nameAndMode;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public StatusType getType() {
+        return type;
+    }
+
+    public void setType(StatusType type) {
+        this.type = type;
     }
 
     @Override

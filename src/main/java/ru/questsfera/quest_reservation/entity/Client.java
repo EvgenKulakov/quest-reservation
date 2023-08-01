@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "clients")
+@Table(name = "clients", schema = "quest_reservations")
 public class Client {
 
     @Id

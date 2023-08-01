@@ -6,7 +6,7 @@ import java.sql.Time;
 import java.util.*;
 
 @Entity
-@Table(name = "quests")
+@Table(name = "quests", schema = "quest_reservations")
 public class Quest {
 
     @Id
