@@ -1,4 +1,4 @@
-package ru.questsfera.quest_reservation.processor;
+package ru.questsfera.quest_reservation.model.dto;
 
 public enum StatusType {
     EMPTY,

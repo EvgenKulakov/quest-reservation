@@ -5,8 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.quest_reservation.dao.*;
 import ru.questsfera.quest_reservation.entity.*;
+import ru.questsfera.quest_reservation.entity.entity.*;
+import ru.questsfera.quest_reservation.model.entity.*;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -198,7 +201,7 @@ public class AdminService {
 
     //***Reservations
     @Transactional
-    public List<Reservation> getReservationsByDate(Admin admin, Quest quest, LocalDate date) {
+    public LinkedList<Reservation> getReservationsByDate(Admin admin, Quest quest, LocalDate date) {
         if (!quest.getAdmin().equals(admin)) {
             throw new RuntimeException("Попытка получить бронирования недоступные"
                     + " для данного аккаунта");

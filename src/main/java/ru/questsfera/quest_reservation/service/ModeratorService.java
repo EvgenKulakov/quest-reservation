@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.quest_reservation.dao.*;
 import ru.questsfera.quest_reservation.entity.*;
+import ru.questsfera.quest_reservation.entity.entity.*;
+import ru.questsfera.quest_reservation.model.entity.*;
 
 import java.util.Optional;
 

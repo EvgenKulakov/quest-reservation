@@ -1,7 +1,7 @@
-package ru.questsfera.quest_reservation.entity;
+package ru.questsfera.quest_reservation.model.entity;
 
 import jakarta.persistence.*;
-import ru.questsfera.quest_reservation.processor.StatusType;
+import ru.questsfera.quest_reservation.model.dto.StatusType;
 
 import java.util.*;
 

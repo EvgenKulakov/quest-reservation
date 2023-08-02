@@ -2,11 +2,11 @@ package ru.questsfera.quest_reservation.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.questsfera.quest_reservation.model.dto.SlotList;
 
 public class SlotListMapper {
-    private final ObjectMapper mapper = new ObjectMapper();
 
-    public SlotList createSlotList(String jsonSlotList) {
+    public static SlotList createSlotList(String jsonSlotList) {
         ObjectMapper mapper = new ObjectMapper();
 
         SlotList slotList = null;
@@ -19,7 +19,7 @@ public class SlotListMapper {
         return slotList;
     }
 
-    public String createJSONSlotList(SlotList slotList) {
+    public static String createJSONSlotList(SlotList slotList) {
         ObjectMapper mapper = new ObjectMapper();
 
         String JSONSlotList = null;

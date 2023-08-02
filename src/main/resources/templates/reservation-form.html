@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Бронирование квеста</title>
+</head>
+<body>
+
+<h1 th:text="${slot.quest.questName}"></h1>
+<p>Дата: <span th:text="${slot.date}"></span></p>
+<p>Время: <span th:text="${slot.time}"></span></p>
+<p>Стоимость: <span th:text="${slot.price}"></span></p>
+
+<form th:object="${reservation}" th:action="@{save-reservation}" method="post">
+  <label>Статус:
+    <select th:field="*{status}">
+      <option th:each="status : ${slot.quest.statuses}" th:value="${status.id}" th:text="${status.name}"></option>
+    </select>
+  </label>
+  <br>
+  <label>Имя:
+    <input type="text" th:field="*{client.firstName}">
+  </label>
+  <br>
+  <label>Фамилия:
+    <input type="text" th:field="*{client.lastName}">
+  </label>
+  <br>
+  <label>Телефон:
+    <input type="text" th:field="*{client.phone}">
+  </label>
+  <br>
+  <label>Email:
+    <input type="text" th:field="*{client.mail}">
+  </label>
+  <br>
+  <label>Количество человек:
+    <select th:field="*{countPersons}">
+      <option th:each="num : ${#numbers.sequence(slot.quest.minPersons, slot.quest.maxPersons)}"
+              th:value="${num}" th:text="${num}"></option>
+    </select>
+  </label>
+  <br>
+  <label>Комментарий:
+    <textarea th:field="*{adminComment}"></textarea>
+  </label>
+  <br>
+  <input type="submit" value="Сохранить">
+</form>
+
+</body>
+</html>

@@ -5,6 +5,9 @@ target/
 !**/src/test/**/target/
 /src/test/java/ru/questsfera/quest_reservation/TestHibernate.java
 /src/main/resources/hibernate.cfg.xml
+/src/test/java/ru/questsfera/quest_reservation/ControllerTest.java
+/src/main/resources/templates/testView/
+
 
 ### STS ###
 .apt_generated

@@ -1,10 +1,6 @@
-package ru.questsfera.quest_reservation.processor;
+package ru.questsfera.quest_reservation.model.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-import java.time.LocalTime;
 import java.util.LinkedHashMap;
-import java.util.Objects;
 
 public class SlotList {
 

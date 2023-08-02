@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Список слотов для бронирования</title>
+  <style>
+    /* Стили для кнопок-слотов */
+    .slot-button {
+      display: inline-block;
+      padding: 10px;
+      margin: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+      text-decoration: none;
+      color: #333;
+      background-color: #f7f7f7;
+      cursor: pointer;
+    }
+
+    /* Стиль для рамки вокруг кнопки при наведении */
+    .slot-button:hover {
+      border: 2px solid #007bff;
+    }
+
+    /* Стили для родительского контейнера */
+    .slot-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    /* Стили для разных статусов */
+    .slot-button[data-status="NEW_RESERVE"] {
+      background-color: palevioletred;
+    }
+
+    .slot-button[data-status="BOOKED"] {
+      background-color: yellow;
+    }
+  </style>
+</head>
+<body>
+<h1>Список слотов для бронирования</h1>
+
+<h2><td th:text="'Квест ' + ${quest.questName} + ' дата ' + ${date}"></td></h2>
+<div class="slot-container">
+  <div th:each="slot : ${slots}">
+    <a th:href="@{reservation/{slotId}(slotId=${slots.indexOf(slot)})}">
+      <button class="slot-button" th:attr="data-status=${slot.status.getType()}">
+        <span th:text="${slot.time}"></span><br/><span th:text="'₽' + ${slot.price}">Забронировать</span>
+      </button>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>

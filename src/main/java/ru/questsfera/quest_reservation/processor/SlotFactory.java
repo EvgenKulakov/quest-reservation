@@ -1,8 +1,11 @@
 package ru.questsfera.quest_reservation.processor;
 
-import ru.questsfera.quest_reservation.entity.Quest;
-import ru.questsfera.quest_reservation.entity.Reservation;
-import ru.questsfera.quest_reservation.entity.Status;
+import ru.questsfera.quest_reservation.model.dto.Slot;
+import ru.questsfera.quest_reservation.model.dto.SlotList;
+import ru.questsfera.quest_reservation.model.dto.StatusType;
+import ru.questsfera.quest_reservation.model.entity.Quest;
+import ru.questsfera.quest_reservation.model.entity.Reservation;
+import ru.questsfera.quest_reservation.model.entity.Status;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -31,7 +34,7 @@ public class SlotFactory {
             LocalTime time = LocalTime.parse(pair.getKey());
             Integer price = pair.getValue();
 
-            if (reservations.peek().getTimeReserve().equals(time)) {
+            if (!reservations.isEmpty() && reservations.peek().getTimeReserve().equals(time)) {
                 slots.add(createSlotWithReserve(time, price, reservations.pop()));
             } else {
                 slots.add(createEmptySlot(time, price));
