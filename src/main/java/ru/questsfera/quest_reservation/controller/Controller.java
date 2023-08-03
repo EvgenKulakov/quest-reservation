@@ -3,12 +3,13 @@ package ru.questsfera.quest_reservation.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.questsfera.quest_reservation.model.entity.Admin;
-import ru.questsfera.quest_reservation.model.entity.Quest;
-import ru.questsfera.quest_reservation.model.entity.Reservation;
-import ru.questsfera.quest_reservation.model.dto.Slot;
+import ru.questsfera.quest_reservation.entity.Admin;
+import ru.questsfera.quest_reservation.entity.Client;
+import ru.questsfera.quest_reservation.entity.Quest;
+import ru.questsfera.quest_reservation.entity.Reservation;
+import ru.questsfera.quest_reservation.dto.Slot;
 import ru.questsfera.quest_reservation.processor.SlotFactory;
-import ru.questsfera.quest_reservation.model.dto.SlotList;
+import ru.questsfera.quest_reservation.dto.SlotList;
 import ru.questsfera.quest_reservation.processor.SlotListMapper;
 import ru.questsfera.quest_reservation.service.AdminService;
 import ru.questsfera.quest_reservation.service.ClientService;
@@ -28,7 +29,9 @@ public class Controller {
     private final UserService userService;
     private final ClientService clientService;
     private List<Slot> slots;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private Admin admin;
+    private Quest quest;
+    private DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @Autowired
     public Controller(AdminService adminService, ModeratorService moderatorService,
@@ -42,9 +45,11 @@ public class Controller {
     @GetMapping("/slot-list")
     public String showSlotList(Model model) {
 
-        Admin admin = adminService.getAdminById(1);
-        Quest quest = moderatorService.getQuestById(15);
+        admin = adminService.getAdminById(1);
+        quest = moderatorService.getQuestById(15);
+
         LocalDate date = LocalDate.now();
+        String strDate = date.format(format);
 
         LinkedList<Reservation> reservations = adminService.getReservationsByDate(admin, quest, date);
         SlotList slotList = SlotListMapper.createSlotList(quest.getSlotList());
@@ -53,7 +58,7 @@ public class Controller {
 
         model.addAttribute("slots", slots);
         model.addAttribute("quest", quest);
-        model.addAttribute("date", date.format(formatter));
+        model.addAttribute("date", strDate);
 
         return "slot-list-page";
     }
@@ -63,16 +68,33 @@ public class Controller {
         Slot slot = slots.get(slotId);
 
         Reservation reservation = slot.getReservation();
+        if (reservation == null) {
+            reservation = new Reservation();
+            reservation.setQuest(slot.getQuest());
+            reservation.addClient(new Client(admin));
+            reservation.setDateReserve(slot.getDate());
+            reservation.setTimeReserve(slot.getTime());
+        }
+
+        LocalDate date = slot.getDate();
+        String dateFormat = date.format(format);
 
         model.addAttribute("reservation", reservation);
         model.addAttribute("slot", slot);
+        model.addAttribute("date_format", dateFormat);
+
         return "reservation-form";
     }
 
     @PostMapping("/reservation/save-reservation")
     public String saveReservation(@ModelAttribute("reservation") Reservation reservation) {
 
-        System.out.println("PosComtroller camon");
+        reservation.setSourceReserve("default");
+        reservation.setHistoryMessages("default");
+
+        System.out.println(reservation);
+
+        adminService.saveReservation(admin, reservation);
         return "redirect:/slot-list";
     }
 

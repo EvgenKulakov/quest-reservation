@@ -1,4 +1,4 @@
-package ru.questsfera.quest_reservation.model.dto;
+package ru.questsfera.quest_reservation.dto;
 
 import java.util.LinkedHashMap;
 

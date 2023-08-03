@@ -1,4 +1,4 @@
-package ru.questsfera.quest_reservation.model.entity;
+package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
 

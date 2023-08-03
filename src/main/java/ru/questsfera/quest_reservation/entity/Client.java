@@ -1,4 +1,4 @@
-package ru.questsfera.quest_reservation.model.entity;
+package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
 
@@ -36,6 +36,10 @@ public class Client {
     private List<Reservation> reservations = new ArrayList<>();
 
     public Client() {}
+
+    public Client(Admin admin) {
+        this.admin = admin;
+    }
 
     public Client(Admin admin, String firstName, String phone) {
         this.admin = admin;
@@ -121,5 +125,19 @@ public class Client {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", admin=" + (admin != null ? admin.getUsername() : null) +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", mail='" + mail + '\'' +
+                ", blackList=" + (blackList != null ? blackList.getId() : null) +
+                ", reservations size=" + reservations.size() +
+                '}';
     }
 }

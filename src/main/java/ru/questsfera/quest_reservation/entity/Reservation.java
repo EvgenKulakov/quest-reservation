@@ -1,4 +1,4 @@
-package ru.questsfera.quest_reservation.model.entity;
+package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
 
@@ -47,7 +47,8 @@ public class Reservation {
     @Column(name = "changed_price")
     private Integer changedPrice;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH,
+            CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "client_id")
     private Client client;
 
@@ -243,5 +244,27 @@ public class Reservation {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", dateReserve=" + dateReserve +
+                ", timeReserve=" + timeReserve +
+                ", dateAndTimeCreated=" + dateAndTimeCreated +
+                ", timeLastChange=" + timeLastChange +
+                ", changedSlotTime=" + changedSlotTime +
+                ", autoBlock=" + autoBlock +
+                ", questName=" + (quest != null ? quest.getAdmin() : null) +
+                ", status=" + status +
+                ", sourceReserve='" + sourceReserve + '\'' +
+                ", changedPrice=" + changedPrice +
+                ", client=" + client +
+                ", countPersons=" + countPersons +
+                ", adminComment='" + adminComment + '\'' +
+                ", clientComment='" + clientComment + '\'' +
+                ", historyMessages='" + historyMessages + '\'' +
+                '}';
     }
 }

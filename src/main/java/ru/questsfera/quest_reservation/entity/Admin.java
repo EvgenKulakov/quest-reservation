@@ -1,4 +1,4 @@
-package ru.questsfera.quest_reservation.model.entity;
+package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
 
@@ -33,7 +33,7 @@ public class Admin {
     @OneToMany(mappedBy = "admin")
     private Set<BlackList> blackLists = new HashSet<>();
 
-    @OneToMany(mappedBy = "admin")
+    @OneToMany(mappedBy = "admin", fetch = FetchType.EAGER)
     private Set<Quest> quests = new HashSet<>();
 
     @OneToMany(mappedBy = "admin",

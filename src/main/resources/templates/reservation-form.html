@@ -7,7 +7,7 @@
 <body>
 
 <h1 th:text="${slot.quest.questName}"></h1>
-<p>Дата: <span th:text="${slot.date}"></span></p>
+<p>Дата: <span th:text="${date_format}"></span></p>
 <p>Время: <span th:text="${slot.time}"></span></p>
 <p>Стоимость: <span th:text="${slot.price}"></span></p>
 
@@ -45,6 +45,14 @@
     <textarea th:field="*{adminComment}"></textarea>
   </label>
   <br>
+
+  <input type="hidden" th:field="*{id}" th:value="${reservation.id}" />
+  <input type="hidden" th:field="*{client.id}" th:value="${reservation.client.id}" />
+  <input type="hidden" th:field="*{quest}" th:value="${slot.quest.id}" />
+  <input type="hidden" th:field="*{dateReserve}" th:value="${slot.date}" />
+  <input type="hidden" th:field="*{timeReserve}" th:value="${slot.time}" />
+  <input type="hidden" th:field="*{client.admin}" th:value="${slot.quest.admin.id}" />
+
   <input type="submit" value="Сохранить">
 </form>
 

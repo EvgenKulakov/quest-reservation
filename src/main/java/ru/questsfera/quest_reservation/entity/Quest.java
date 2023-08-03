@@ -1,4 +1,4 @@
-package ru.questsfera.quest_reservation.model.entity;
+package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
 
@@ -212,5 +212,18 @@ public class Quest {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Quest{" +
+                "id=" + id +
+                ", questName='" + questName + '\'' +
+                ", slotList length='" + (slotList != null ? slotList.length() : null) + '\'' +
+                ", minPersons=" + minPersons +
+                ", maxPersons=" + maxPersons +
+                ", autoBlock=" + autoBlock +
+                ", sms='" + sms + '\'' +
+                ", admin=" + (admin != null ? admin.getUsername() : null);
     }
 }

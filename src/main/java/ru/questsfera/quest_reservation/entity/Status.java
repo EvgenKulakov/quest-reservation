@@ -1,7 +1,7 @@
-package ru.questsfera.quest_reservation.model.entity;
+package ru.questsfera.quest_reservation.entity;
 
 import jakarta.persistence.*;
-import ru.questsfera.quest_reservation.model.dto.StatusType;
+import ru.questsfera.quest_reservation.dto.StatusType;
 
 import java.util.*;
 
@@ -76,5 +76,14 @@ public class Status {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Status{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                '}';
     }
 }

@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.quest_reservation.dao.*;
 import ru.questsfera.quest_reservation.entity.*;
-import ru.questsfera.quest_reservation.entity.entity.*;
-import ru.questsfera.quest_reservation.model.entity.*;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -211,7 +209,7 @@ public class AdminService {
 
     @Transactional
     public void saveReservation(Admin admin, Reservation reservation) {
-        if (!admin.getQuests().contains(reservation.getQuest())) {
+        if (!reservation.getQuest().getAdmin().equals(admin)) {
             throw new RuntimeException("Попытка создать бронирование аккаунтом,"
                     + " у которого нет доступа к квесту");
         }

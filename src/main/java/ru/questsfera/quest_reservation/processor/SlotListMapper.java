@@ -2,7 +2,7 @@ package ru.questsfera.quest_reservation.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.questsfera.quest_reservation.model.dto.SlotList;
+import ru.questsfera.quest_reservation.dto.SlotList;
 
 public class SlotListMapper {
 

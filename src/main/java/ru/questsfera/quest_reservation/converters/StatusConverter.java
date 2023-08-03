@@ -1,10 +1,10 @@
-package ru.questsfera.quest_reservation.processor;
+package ru.questsfera.quest_reservation.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import ru.questsfera.quest_reservation.dao.StatusRepository;
-import ru.questsfera.quest_reservation.model.entity.Status;
+import ru.questsfera.quest_reservation.entity.Status;
 
 import java.util.Optional;
 

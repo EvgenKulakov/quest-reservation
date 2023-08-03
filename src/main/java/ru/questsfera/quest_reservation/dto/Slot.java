@@ -1,8 +1,8 @@
-package ru.questsfera.quest_reservation.model.dto;
+package ru.questsfera.quest_reservation.dto;
 
-import ru.questsfera.quest_reservation.model.entity.Quest;
-import ru.questsfera.quest_reservation.model.entity.Reservation;
-import ru.questsfera.quest_reservation.model.entity.Status;
+import ru.questsfera.quest_reservation.entity.Status;
+import ru.questsfera.quest_reservation.entity.Quest;
+import ru.questsfera.quest_reservation.entity.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
