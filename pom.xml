@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.questsfera</groupId>
-    <artifactId>quest_reservation</artifactId>
+    <artifactId>quest-reservation</artifactId>
     <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>Quest Reservation</name>

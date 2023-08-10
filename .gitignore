@@ -3,9 +3,9 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-/src/test/java/ru/questsfera/quest_reservation/TestHibernate.java
+/src/test/java/ru/questsfera/questreservation/TestHibernate.java
 /src/main/resources/hibernate.cfg.xml
-/src/test/java/ru/questsfera/quest_reservation/ControllerTest.java
+/src/test/java/ru/questsfera/questreservation/ControllerTest.java
 /src/main/resources/templates/testView/
 
 
