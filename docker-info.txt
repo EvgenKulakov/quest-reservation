@@ -1,0 +1,16 @@
+docker run -d -p 3306:3306 --name db-conf -v ${PWD}:/app -e MYSQL_ROOT_PASSWORD=MySQL54535251 mysql
+docker exec -it db-conf mysql -uroot -p
+CREATE DATABASE quest_reservations DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+docker exec -it db-conf sh
+docker exec -it localhost sh
+mysql -u root -p quest_reservations < /app/Dump1.sql   or /data/Dump1.sql
+
+new:
+docker network create db-spring-net
+--------------------------------------------------
+docker run --name db --network db-spring-net -v .:/app -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=quest_reservations -d mysql
+docker exec -it db sh
+mysql -u root -p quest_reservations < /app/Dump1.sql
+----------------------------------------------------
+docker build -t evgeniydockerman/spring-img:git12 .
+docker run -d --network db-spring-net --name spring-cont -p 8080:8080 evgeniydockerman/spring-img:git12
