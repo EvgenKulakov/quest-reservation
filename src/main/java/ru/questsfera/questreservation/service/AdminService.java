@@ -7,10 +7,7 @@ import ru.questsfera.questreservation.dao.*;
 import ru.questsfera.questreservation.entity.*;
 
 import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class AdminService {
@@ -204,7 +201,7 @@ public class AdminService {
             throw new RuntimeException("Попытка получить бронирования недоступные"
                     + " для данного аккаунта");
         }
-        return reservationRepository.findAllByQuestAndDateReserve(quest, date);
+        return reservationRepository.findAllByQuestAndDateReserveOrderByTimeReserve(quest, date);
     }
 
     @Transactional

@@ -26,6 +26,8 @@ public class SlotFactory {
     }
 
     public List<Slot> getSlots() {
+        checkReservations();
+
         List<Slot> slots = new ArrayList<>();
 
         HashMap<String, Integer> slotListMap = switchDay(date);
@@ -54,6 +56,14 @@ public class SlotFactory {
             case SATURDAY -> slotList.getSaturday();
             case SUNDAY -> slotList.getSunday();
         };
+    }
+
+    private void checkReservations() {
+        for (int i = 1; i < reservations.size(); i++) {
+            if (reservations.get(i).getTimeReserve().equals(reservations.get(i-1).getTimeReserve())) {
+                throw new RuntimeException("Два бронирования на одно и тоже время");
+            }
+        }
     }
 
     private Slot createSlotWithReserve(LocalTime time, Integer price, Reservation reserve) {

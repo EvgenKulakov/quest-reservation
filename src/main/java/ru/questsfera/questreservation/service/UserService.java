@@ -9,7 +9,7 @@ import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.entity.User;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Optional;
 
 @Service
@@ -34,12 +34,12 @@ public class UserService {
     }
 
     @Transactional
-    public List<Reservation> getReservationsByDate(User user, Quest quest, LocalDate date) {
+    public LinkedList<Reservation> getReservationsByDate(User user, Quest quest, LocalDate date) {
         if (!quest.getAdmin().equals(user.getAdmin())) {
             throw new RuntimeException("Попытка получить бронирования недоступные"
                     + " для данного пользователя");
         }
-        return reservationRepository.findAllByQuestAndDateReserve(quest, date);
+        return reservationRepository.findAllByQuestAndDateReserveOrderByTimeReserve(quest, date);
     }
 
     @Transactional

@@ -8,7 +8,7 @@ import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.LinkedList;
 
 @Service
 public class ClientService {
@@ -20,8 +20,8 @@ public class ClientService {
     }
 
     @Transactional
-    public List<Reservation> getReservationsByDate(Quest quest, LocalDate date) {
-        return reservationRepository.findAllByQuestAndDateReserve(quest, date);
+    public LinkedList<Reservation> getReservationsByDate(Quest quest, LocalDate date) {
+        return reservationRepository.findAllByQuestAndDateReserveOrderByTimeReserve(quest, date);
     }
 
     @Transactional
