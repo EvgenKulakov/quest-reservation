@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #f7f7f7; border: 1px solid black">
+  <nav class="navbar navbar-expand-lg navbar-light" id="navigation">
     <div class="container-fluid">
       <button class="btn btn-outline-success mr-2" type="button">Бронирования</button>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
@@ -35,24 +35,30 @@
   </nav>
 
   <br>
-  <div class="container-fluid">
-    <h2><td th:text="'Бронирования по дате '"></td>
-      <button type="submit" class="badge bg-light text-dark"><td th:text="${date}"></td></span>
+  <div class="container my-container" id="date">
+    <h3><td th:text="'Бронирования по дате '"></td>
+      <button type="submit" class="badge bg-light text-dark" style="border-color: #198754"><td th:text="${date}"></td></span>
         <img src="/icons/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
-      </button></h2>
+      </button></h3>
   </div><br>
 
-  <div class="container-fluid">
-    <h2><td th:text="'Квест ' + ${quest.questName}"></td></h2>
-  </div>
 
-  <div class="slot-container">
-    <div th:each="slot : ${slots}">
-      <a th:href="@{reservation/{slotId}(slotId=${slots.indexOf(slot)})}">
-        <button class="slot-button" th:attr="data-status=${slot.status.getType()}">
-          <span th:text="${slot.time}"></span><br/><span th:text="'₽' + ${slot.price}"/>
-        </button>
-      </a>
+  <div class="container my-container" id="slot-container">
+    <div class="row row-cols-2">
+      <div class="col-3 d-flex align-items-center" id="quest-name">
+        <h2><td th:text="'Квест ' + ${quest.questName}"></td></h2>
+      </div>
+      <div class="col-9 d-flex align-items-center" id="slot-list">
+        <div class="slot-container">
+          <div th:each="slot : ${slots}">
+            <a th:href="@{reservation/{slotId}(slotId=${slots.indexOf(slot)})}">
+              <button class="slot-button" th:attr="data-status=${slot.status.getType()}">
+                <span th:text="${slot.time}"></span><br/><span th:text="'₽' + ${slot.price}"/>
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
