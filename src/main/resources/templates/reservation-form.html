@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <title>Бронирование квеста</title>
   <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/css/reserve-form-style.css}" rel="stylesheet">
 </head>
 <body>
-  <div class="container-fluid">
+  <div class="container">
     <h1 th:text="${slot.quest.questName}"></h1>
     <span>Дата: <span th:text="${date_format}"></span></span><br>
     <span>Время: <span th:text="${slot.time}"></span></span><br>
@@ -15,34 +16,41 @@
     <form th:object="${reservation}" th:action="@{save-reservation}" method="post" >
       <label>Статус:
         <br>
-        <select th:field="*{status}">
+        <select class="form-select selections" th:field="*{status}">
           <option th:each="status : ${slot.quest.statuses}" th:value="${status.id}" th:text="${status.name}"></option>
         </select>
       </label><br>
 
       <label>Имя:
         <br>
-        <input type="text" th:field="*{client.firstName}">
+        <input type="text" class="form-control" th:field="*{client.firstName}">
       </label><br>
 
       <label>Фамилия:
         <br>
-        <input type="text" th:field="*{client.lastName}">
+        <input type="text" class="form-control" th:field="*{client.lastName}">
       </label><br>
 
       <label>Телефон:
         <br>
-        <input type="tel" th:field="*{client.phone}">
+        <input type="tel" class="form-control" th:field="*{client.phone}">
       </label><br>
 
-      <label>Email:
-        <br>
-        <input type="email" th:field="*{client.mail}">
-      </label><br>
+      <div class="row">
+        <label for="inputEmail3" class="col-1 col-form-label">Email:</label>
+        <div class="col-3">
+          <input type="email" class="form-control" id="inputEmail3">
+        </div>
+      </div>
+
+<!--      <label>Email:-->
+<!--        <br>-->
+<!--        <input type="email" class="form-control" th:field="*{client.mail}">-->
+<!--      </label><br>-->
 
       <label>Количество человек:
         <br>
-        <select th:field="*{countPersons}">
+        <select class="form-select" th:field="*{countPersons}">
           <option th:each="num : ${#numbers.sequence(slot.quest.minPersons, slot.quest.maxPersons)}"
                   th:value="${num}" th:text="${num}"></option>
         </select>
@@ -50,7 +58,7 @@
 
       <label>Комментарий:
         <br>
-        <textarea th:field="*{adminComment}"></textarea>
+        <textarea class="form-control" th:field="*{adminComment}"></textarea>
       </label><br>
 
       <input type="hidden" th:field="*{id}" th:value="${reservation.id}" />
