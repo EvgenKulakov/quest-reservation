@@ -35,30 +35,25 @@
   </nav>
 
   <br>
-  <div class="container my-container" id="date">
+  <div class="container-fluid my-container" id="date">
     <h3><td th:text="'Бронирования по дате '"></td>
-      <button type="submit" class="badge bg-light text-dark"><td th:text="${date}"></td></span>
+      <button type="submit" class="badge bg-light text-dark" id="dateButton"><td th:text="${date}"></td></span>
         <img src="/icons/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
       </button></h3>
   </div><br>
 
-
-  <div class="container my-container" id="slot-container">
-    <div class="row row-cols-2">
-      <div class="col-3 d-flex align-items-center" id="quest-name">
-        <h2><td th:text="'Квест ' + ${quest.questName}"></td></h2>
-      </div>
-      <div class="col-9 d-flex align-items-center" id="slot-list">
-        <div class="slot-container">
-          <div th:each="slot : ${slots}">
-            <a th:href="@{reservation/{slotId}(slotId=${slots.indexOf(slot)})}">
-              <button class="slot-button" th:attr="data-status=${slot.status.getType()}">
-                <span th:text="${slot.time}"></span><br/><span th:text="'₽' + ${slot.price}"/>
-              </button>
-            </a>
-          </div>
-        </div>
-      </div>
+  <div class="container-fluid">
+    <div class="row-cols-auto d-flex align-items-center quest-name">
+      <h3><td th:text="${quest.questName}"></td></h3>
+    </div>
+    <div class="row-cols-auto d-flex flex-wrap">
+        <td th:each="slot : ${slots}">
+          <a th:href="@{reservation/{slotId}(slotId=${slots.indexOf(slot)})}">
+            <button class="slot-button" th:attr="data-status=${slot.status.getType()}">
+              <span th:text="${slot.time}"></span><br/><span th:text="'₽' + ${slot.price}"/>
+            </button>
+          </a>
+        </td>
     </div>
   </div>
 
