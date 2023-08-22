@@ -2,3 +2,31 @@
 /*    box-shadow: 0 0 0 5px #198754;*/
 /*    border-color: #198754;*/
 /*}*/
+
+.reserve-form button {
+    margin-right: 12px;
+    margin-left: 0px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.close {
+    border-radius: 5px;
+}
+
+.reserve-container {
+    width: 600px;
+    /*background-color: #FFFFE0;*/
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-left: 20px;
+    border-radius: 15px;
+}
+
+section, html {
+    background: rgb(220,220,220);
+    background: linear-gradient(0deg, rgba(220,220,220,1) 0%, rgba(250,235,215,1) 100%);
+}
