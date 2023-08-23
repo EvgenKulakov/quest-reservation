@@ -1,6 +1,8 @@
 package ru.questsfera.questreservation.dto;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class SlotList {
 
@@ -26,6 +28,19 @@ public class SlotList {
     }
 
     public SlotList() {}
+
+    public List<LinkedHashMap<String, Integer>> getAllDays() {
+        List<LinkedHashMap<String, Integer>> allDays = new ArrayList<>();
+        allDays.add(monday);
+        allDays.add(tuesday);
+        allDays.add(wednesday);
+        allDays.add(thursday);
+        allDays.add(friday);
+        allDays.add(saturday);
+        allDays.add(sunday);
+
+        return allDays;
+    }
 
     public LinkedHashMap<String, Integer> getMonday() {
         return monday;

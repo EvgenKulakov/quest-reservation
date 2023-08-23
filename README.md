@@ -8,8 +8,8 @@
 
 ## Stack:
 ```
-Java, MySQL, Spring Boot, Spring Data JPA, Hibernate, Spring Security, 
-Spring MVC, Thymeleaf, BootStrap, Docker
+Java 17, MySQL, Spring Boot 3, Spring Data JPA, Spring Security, 
+Spring MVC, Thymeleaf, BootStrap 5, Docker
 ```
 ***
 
@@ -24,7 +24,7 @@ Front-end, логгирование, security
 
 ## Схема БД:
 
-![Схема БД](db-diagram.png)
+![Схема БД](projectinfo/db-diagram.png)
 ***
 
 ### Сервер:
@@ -35,4 +35,3 @@ MySQL и Spring Boot в двух отдельных Docker контейнера�
 [quest reservations](http://31.129.99.231:8080/slot-list)
 > 
 >__Логин/пароль:__ admin
-

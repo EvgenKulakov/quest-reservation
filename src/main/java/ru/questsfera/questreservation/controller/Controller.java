@@ -18,8 +18,10 @@ import ru.questsfera.questreservation.service.UserService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -52,7 +54,7 @@ public class Controller {
         String strDate = date.format(format);
 
         LinkedList<Reservation> reservations = adminService.getReservationsByDate(admin, quest, date);
-        SlotList slotList = SlotListMapper.createSlotList(quest.getSlotList());
+        SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
         SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
         slots = slotFactory.getSlots();
 
@@ -91,11 +93,36 @@ public class Controller {
 
         reservation.setSourceReserve("default");
         reservation.setHistoryMessages("default");
-
-        System.out.println(reservation);
-
         adminService.saveReservation(admin, reservation);
+
         return "redirect:/slot-list";
+    }
+
+    @GetMapping("/quest-list")
+    public String showQuestList(Model model) {
+        admin = adminService.getAdminById(1);
+
+        Set<Quest> quests = adminService.getQuestsByAdmin(admin);
+
+        model.addAttribute("quests", quests);
+
+        return "quest-list-page";
+    }
+
+    @GetMapping("/quest-info/{questId}")
+    public String showQuest(@PathVariable("questId") int questId, Model model) {
+        Quest quest = moderatorService.getQuestById(questId);
+        SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
+        List<LinkedHashMap<String, Integer>> allDays = slotList.getAllDays();
+
+        model.addAttribute("quest", quest);
+        model.addAttribute("all_slot_list", allDays);
+        return "quest-info-page";
+    }
+
+    @PostMapping("/delete-quest")
+    public String deleteQuest() {
+        return "redirect:/quest-list";
     }
 
 }

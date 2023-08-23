@@ -6,7 +6,7 @@ import ru.questsfera.questreservation.dto.SlotList;
 
 public class SlotListMapper {
 
-    public static SlotList createSlotList(String jsonSlotList) {
+    public static SlotList createSlotListObject(String jsonSlotList) {
         ObjectMapper mapper = new ObjectMapper();
 
         SlotList slotList = null;

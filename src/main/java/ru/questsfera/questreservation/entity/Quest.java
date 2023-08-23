@@ -3,6 +3,7 @@ package ru.questsfera.questreservation.entity;
 import jakarta.persistence.*;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.*;
 
 @Entity
@@ -26,7 +27,7 @@ public class Quest {
     private int maxPersons;
 
     @Column(name = "auto_block")
-    private Time autoBlock;
+    private LocalTime autoBlock;
 
     @Column(name = "sms")
     private String sms;
@@ -186,11 +187,11 @@ public class Quest {
         this.maxPersons = maxPersons;
     }
 
-    public Time getAutoBlock() {
+    public LocalTime getAutoBlock() {
         return autoBlock;
     }
 
-    public void setAutoBlock(Time autoBlock) {
+    public void setAutoBlock(LocalTime autoBlock) {
         this.autoBlock = autoBlock;
     }
 

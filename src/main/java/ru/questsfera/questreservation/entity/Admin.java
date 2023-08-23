@@ -34,7 +34,7 @@ public class Admin {
     private Set<BlackList> blackLists = new HashSet<>();
 
     @OneToMany(mappedBy = "admin", fetch = FetchType.EAGER)
-    private Set<Quest> quests = new HashSet<>();
+    private Set<Quest> quests = new TreeSet<>();
 
     @OneToMany(mappedBy = "admin",
             cascade = {CascadeType.REMOVE})

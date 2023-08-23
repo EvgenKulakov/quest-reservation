@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Информация о квесте</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light" id="navigation">
+        <div class="container-fluid">
+            <button class="btn btn-outline-primary mr-2" type="button">Бронирования</button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-current="page" href="#">Квесты</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-current="page" href="#">Пользователи</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-current="page" href="#">Клиенты</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-current="page" href="#">Чёрный список</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-current="page" href="#">Учетная запись</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section class="container">
+    <h2 th:text="${quest.questName}"></h2>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Кол-во человек</th>
+            <th>Используемые статусы</th>
+            <th>Автоблокировка</th>
+            <th>Назначеные пользователи</th>
+            <th>Синхронизированные квесты</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${quest.minPersons} + ' - ' + ${quest.maxPersons}"></td>
+            <td>
+                <table>
+                    <tr th:each="status : ${quest.statuses}">
+                        <td th:text="${status.name}"></td>
+                    </tr>
+                </table>
+            </td>
+            <td th:text="${quest.autoBlock.hour} + ':' + ${quest.autoBlock.minute}"></td>
+            <td>
+                <table>
+                    <tr th:each="user : ${quest.users}">
+                        <td th:text="${user.username}"></td>
+                    </tr>
+                </table>
+            </td>
+            <td th:switch="${quest.synchronizedQuests.size()}">
+                <p th:case="0">Нет синхронизированных квестов</p>
+                <table th:case="*">
+                    <tr th:each="synchQuest : ${quest.synchronizedQuests}">
+                        <td th:text="${synchQuest.questName}"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Сетка квеста</h2>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Понедельник</th>
+            <th>Вторник</th>
+            <th>Среда</th>
+            <th>Четверг</th>
+            <th>Пятница</th>
+            <th>Суббота</th>
+            <th>Воскресенье</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:each="slot_list : ${all_slot_list}">
+                <table>
+                    <tr th:each="slot : ${slot_list}">
+                        <td th:text="${slot.getKey()} + ' - ' + ${slot.getValue()} + '₽'"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
