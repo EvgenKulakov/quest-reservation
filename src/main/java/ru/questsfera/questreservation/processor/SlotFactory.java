@@ -25,7 +25,7 @@ public class SlotFactory {
         this.reservations = reservations;
     }
 
-    public List<Slot> getSlots() {
+    public List<Slot> getActualSlots() {
         checkReservations();
 
         List<Slot> slots = new ArrayList<>();
@@ -35,6 +35,11 @@ public class SlotFactory {
         for (Map.Entry<String, Integer> pair : slotListMap.entrySet()) {
             LocalTime time = LocalTime.parse(pair.getKey());
             Integer price = pair.getValue();
+
+            while (!reservations.isEmpty()
+                    && reservations.peek().getStatus().getType().equals(StatusType.CANCEL)) {
+                reservations.pop();
+            }
 
             if (!reservations.isEmpty() && reservations.peek().getTimeReserve().equals(time)) {
                 slots.add(createSlotWithReserve(time, price, reservations.pop()));
@@ -60,7 +65,9 @@ public class SlotFactory {
 
     private void checkReservations() {
         for (int i = 1; i < reservations.size(); i++) {
-            if (reservations.get(i).getTimeReserve().equals(reservations.get(i-1).getTimeReserve())) {
+            if (reservations.get(i).getTimeReserve().equals(reservations.get(i-1).getTimeReserve())
+                    && !reservations.get(i).getStatus().getType().equals(StatusType.CANCEL)
+                    && !reservations.get(i-1).getStatus().getType().equals(StatusType.CANCEL)) {
                 throw new RuntimeException("Два бронирования на одно и тоже время");
             }
         }

@@ -226,4 +226,13 @@ public class AdminService {
         }
         throw new RuntimeException("Попытка получить несуществующее бронирование");
     }
+
+    @Transactional
+    public void deleteBlockedReservation(Admin admin, Reservation reservation) {
+        if (!reservation.getQuest().getAdmin().equals(admin)) {
+            throw new RuntimeException("Попытка удалить бронирование без права доступа");
+        }
+        reservationRepository.delete(reservation);
+        clientRepository.delete(reservation.getClient());
+    }
 }

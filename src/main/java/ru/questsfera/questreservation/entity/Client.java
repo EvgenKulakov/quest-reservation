@@ -47,6 +47,14 @@ public class Client {
         this.phone = phone;
     }
 
+    public void clear() {
+        this.firstName = "";
+        this.lastName = "";
+        this.phone = "";
+        this.mail = "";
+        this.blackList = null;
+    }
+
     public void deleteBlackListForClient() {
         this.blackList = null;
     }

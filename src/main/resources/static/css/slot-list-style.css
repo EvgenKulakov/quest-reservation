@@ -10,6 +10,7 @@
     color: #333;
     background-color: #f7f7f7;
     cursor: pointer;
+    font-size: 15px;
 }
 
 /* Стиль для рамки вокруг кнопки при наведении */
@@ -67,5 +68,9 @@
 }
 
 .slot-button[data-status="CONFIRMED"] {
-    background-color: cornflowerblue;
+    background-color: #6495ED;
+}
+
+.slot-button[data-status="COMPLETED"] {
+    background-color: #90EE90;
 }

@@ -30,7 +30,7 @@ Front-end, логгирование, обработка ошибок, security
 
 ### Сервер:
 >__Сборка:__
-MySQL и Spring Boot в двух отдельных Docker контейнерах на общей сети network (без Docker compose)
+MySQL и Spring Boot в двух отдельных Docker контейнерах на общей сети network
 > 
 >__Ссылка на сервер:__ 
 [quest reservations](http://31.129.99.231:8080/slot-list)

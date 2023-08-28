@@ -54,7 +54,7 @@ public class Controller {
         LinkedList<Reservation> reservations = adminService.getReservationsByDate(admin, quest, date);
         SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
         SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
-        slots = slotFactory.getSlots();
+        slots = slotFactory.getActualSlots();
 
         model.addAttribute("slots", slots);
         model.addAttribute("quest", quest);
@@ -66,8 +66,8 @@ public class Controller {
     @GetMapping("/reservation/{slotId}")
     private String showReservation(@PathVariable("slotId") int slotId, Model model) {
         Slot slot = slots.get(slotId);
-
         Reservation reservation = slot.getReservation();
+
         if (reservation == null) {
             reservation = new Reservation();
             reservation.setQuest(slot.getQuest());
@@ -83,16 +83,30 @@ public class Controller {
         model.addAttribute("slot", slot);
         model.addAttribute("date_format", dateFormat);
 
+        if (reservation.getStatus() != null && reservation.getStatus().getType().equals(StatusType.BLOCK)) {
+            return "blocked-reservation-form";
+        }
+
         return "reservation-form";
     }
 
     @PostMapping("/save-reservation")
-    public String saveReservation(@ModelAttribute("reservation") Reservation reservation) {
-
+    public String saveReservation(@ModelAttribute("reservation") Reservation reservation,
+                                  @RequestParam(value = "blocked", required = false) boolean block) {
+        if (block) {
+            reservation.setStatus(moderatorService.getStatusById(12));
+            reservation.getClient().clear();
+        }
         reservation.setSourceReserve("default");
         reservation.setHistoryMessages("default");
         adminService.saveReservation(admin, reservation);
 
+        return "redirect:/slot-list";
+    }
+
+    @PostMapping("/delete-blocked-reservation")
+    public String deleteBlockReserve(@ModelAttribute("reservation") Reservation reservation) {
+        adminService.deleteBlockedReservation(admin, reservation);
         return "redirect:/slot-list";
     }
 

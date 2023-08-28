@@ -101,6 +101,10 @@ public class Reservation {
         this.client = client;
     }
 
+    public Reservation(int id) {
+        this.id = id;
+    }
+
     public void addClient(Client client) {
         client.getReservations().add(this);
         this.client = client;
