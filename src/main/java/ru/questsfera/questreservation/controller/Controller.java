@@ -3,10 +3,8 @@ package ru.questsfera.questreservation.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.questsfera.questreservation.entity.Admin;
-import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.entity.Reservation;
+import ru.questsfera.questreservation.dto.StatusType;
+import ru.questsfera.questreservation.entity.*;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.processor.SlotFactory;
 import ru.questsfera.questreservation.dto.SlotList;
@@ -88,7 +86,7 @@ public class Controller {
         return "reservation-form";
     }
 
-    @PostMapping("/reservation/save-reservation")
+    @PostMapping("/save-reservation")
     public String saveReservation(@ModelAttribute("reservation") Reservation reservation) {
 
         reservation.setSourceReserve("default");
@@ -118,6 +116,26 @@ public class Controller {
         model.addAttribute("quest", quest);
         model.addAttribute("all_slot_list", allDays);
         return "quest-info-page";
+    }
+
+    @GetMapping("/add-quest")
+    public String addQuest(Model model) {
+        Quest quest = new Quest();
+        model.addAttribute("quest", quest);
+        return "add-quest-form";
+    }
+
+    @PostMapping("/save-quest")
+    public String saveQuest() {
+        return null;
+    }
+
+    @GetMapping("/test-save-quest")
+    public String testSaveQuest(@ModelAttribute("quest") Quest quest, Model model,
+                                @RequestParam(value = "checkStatus", required = false) List<StatusType> statuses) {
+        statuses.forEach(statusType -> System.out.println(statusType));
+        model.addAttribute("quest", quest);
+        return "test-save-quest-page";
     }
 
     @PostMapping("/delete-quest")

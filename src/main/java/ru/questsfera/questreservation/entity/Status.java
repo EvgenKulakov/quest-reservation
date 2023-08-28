@@ -13,9 +13,6 @@ public class Status {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name")
-    private String name;
-
     @Column(name = "status_type")
     @Enumerated(value = EnumType.STRING)
     private StatusType type;
@@ -26,11 +23,6 @@ public class Status {
     public Status() {}
 
     public Status(StatusType type) {
-        this.type = type;
-    }
-
-    public Status(String name, StatusType type) {
-        this.name = name;
         this.type = type;
     }
 
@@ -48,14 +40,6 @@ public class Status {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public StatusType getType() {
@@ -82,7 +66,6 @@ public class Status {
     public String toString() {
         return "Status{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
                 ", type=" + type +
                 '}';
     }

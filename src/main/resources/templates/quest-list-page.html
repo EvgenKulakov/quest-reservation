@@ -6,14 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
+<body>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light" id="navigation">
         <div class="container-fluid">
-            <button class="btn btn-outline-primary mr-2" type="button">Бронирования</button>
+            <a class="navbar-brand" th:href="@{slot-list}">Reservations</a>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link disabled" aria-current="page" href="#">Квесты</a>
+                        <a class="nav-link active" aria-current="page" th:href="@{quest-list}">Квесты</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" aria-current="page" href="#">Пользователи</a>
@@ -33,22 +34,34 @@
     </nav>
 </header>
 
-<section>
-    <h2>Список ваших квестов</h2>
-    <br>
+<section class="container">
 
-    <div>
-        <table>
-            <tr th:each="quest : ${quests}">
-                <a th:href="@{/quest-info/{questId}(questId=${quest.id})}">
-                    <h3 th:text="${quest.questName}"></h3>
-                </a>
-                <form th:action="@{/delete-quest}" method="post">
-                    <button type="submit" formmethod="post">Удалить</button>
+    <table>
+        <thead>
+        <form th:action="@{/add-quest}" method="get">
+            <h2>Список ваших квестов
+                <button class="btn btn-outline-primary" type="submit" formmethod="get">+ Добавить квест</button>
+            </h2>
+        </form>
+        </thead>
+        <tbody>
+        <tr th:each="quest : ${quests}">
+            <td>
+                <h3 th:text="${quest.questName}"></h3>
+            </td>
+            <td>
+                <form th:action="@{/quest-info/{questId}(questId=${quest.id})}" method="get">
+                    <button class="btn btn-secondary" type="submit" formmethod="get">Редактировать</button>
                 </form>
-            </tr>
-        </table>
-    </div>
+            </td>
+            <td>
+                <form th:action="@{/delete-quest}" method="post">
+                    <button class="btn btn-danger" type="submit" formmethod="post">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
 </section>
 
