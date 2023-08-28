@@ -8,32 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/slot-list-style.css}">
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light" id="navigation">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{slot-list}">Reservations</a>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{quest-list}">Квесты</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-current="page" href="#">Пользователи</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-current="page" href="#">Клиенты</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-current="page" href="#">Чёрный список</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-current="page" href="#">Учетная запись</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</header>
+<header th:insert="~{header-fragment :: head}"></header>
 
 <section>
     <br>

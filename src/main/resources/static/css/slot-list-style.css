@@ -49,11 +49,6 @@
     margin-top: 5px;
 }
 
-#navigation {
-    background-color: #f7f7f7;
-    border: 1px solid black
-}
-
 /* Стили для разных статусов */
 .slot-button[data-status="NEW_RESERVE"] {
     background-color: palevioletred;

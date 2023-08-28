@@ -1,7 +1,7 @@
-# Система бронирования квестов: Web Application (demo)
+# Система бронирования квестов: Web Application (alpha)
 
 ## Приложение включает:
-+ Разные роли для редактирования 
++ Разные роли с разным доступом для редактирования 
 + Создание схемы слотов для бронирования
 + Частичное или групповое изменение слотов
 + История изменений с указанием автора
@@ -9,8 +9,8 @@
 
 ## Stack:
 ```
-Java 17, MySQL, Spring Boot 3, Spring Data JPA, Spring Security, 
-Spring MVC, Thymeleaf, BootStrap 5, Docker
+Java 17, MySQL 8, Spring Boot 3, Spring Data JPA, Spring Security, 
+Spring MVC, Thymeleaf 3, BootStrap 5, Docker
 ```
 ***
 
