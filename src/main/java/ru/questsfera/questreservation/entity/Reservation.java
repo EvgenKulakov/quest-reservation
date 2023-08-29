@@ -1,6 +1,7 @@
 package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
+import ru.questsfera.questreservation.dto.StatusType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,9 +38,9 @@ public class Reservation {
     @JoinColumn(name = "quest_id")
     private Quest quest;
 
-    @ManyToOne
-    @JoinColumn(name = "status_id")
-    private Status status;
+    @Enumerated(value = EnumType.STRING)
+    @JoinColumn(name = "status_type")
+    private StatusType statusType;
 
     @Column(name = "source_reserve")
     private String sourceReserve;
@@ -68,16 +69,13 @@ public class Reservation {
 
     public Reservation(LocalDate dateReserve, LocalTime timeReserve,
                        LocalDateTime dateAndTimeCreated, Quest quest,
-                       Status status, String sourceReserve,
+                       StatusType statusType, String sourceReserve,
                        int countPersons) {
         this.dateReserve = dateReserve;
         this.timeReserve = timeReserve;
         this.dateAndTimeCreated = dateAndTimeCreated;
         this.quest = quest;
-        if (!this.quest.getStatuses().contains(status)) {
-            throw new RuntimeException("Попытка создать Бронирование с недоступным стусом");
-        }
-        this.status = status;
+        this.statusType = statusType;
         this.sourceReserve = sourceReserve;
         this.countPersons = countPersons;
         this.historyMessages = "default";
@@ -85,16 +83,13 @@ public class Reservation {
 
     public Reservation(LocalDate dateReserve, LocalTime timeReserve,
                        LocalDateTime dateAndTimeCreated, Quest quest,
-                       Status status, String sourceReserve,
+                       StatusType statusType, String sourceReserve,
                        int countPersons, Client client) {
         this.dateReserve = dateReserve;
         this.timeReserve = timeReserve;
         this.dateAndTimeCreated = dateAndTimeCreated;
         this.quest = quest;
-        if (!this.quest.getStatuses().contains(status)) {
-            throw new RuntimeException("Попытка создать Бронирование с недоступным стусом");
-        }
-        this.status = status;
+        this.statusType = statusType;
         this.sourceReserve = sourceReserve;
         this.countPersons = countPersons;
         this.historyMessages = "default";
@@ -110,12 +105,12 @@ public class Reservation {
         this.client = client;
     }
 
-    public Status getStatus() {
-        return status;
+    public StatusType getStatusType() {
+        return statusType;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatusType(StatusType statusType) {
+        this.statusType = statusType;
     }
 
     public Client getClient() {
@@ -261,7 +256,7 @@ public class Reservation {
                 ", changedSlotTime=" + changedSlotTime +
                 ", autoBlock=" + autoBlock +
                 ", questName=" + (quest != null ? quest.getAdmin() : null) +
-                ", status=" + status +
+                ", status=" + statusType +
                 ", sourceReserve='" + sourceReserve + '\'' +
                 ", changedPrice=" + changedPrice +
                 ", client=" + client +

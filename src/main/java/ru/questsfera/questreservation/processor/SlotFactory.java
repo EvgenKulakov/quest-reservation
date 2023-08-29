@@ -37,7 +37,7 @@ public class SlotFactory {
             Integer price = pair.getValue();
 
             while (!reservations.isEmpty()
-                    && reservations.peek().getStatus().getType().equals(StatusType.CANCEL)) {
+                    && reservations.peek().getStatusType().equals(StatusType.CANCEL)) {
                 reservations.pop();
             }
 
@@ -66,22 +66,22 @@ public class SlotFactory {
     private void checkReservations() {
         for (int i = 1; i < reservations.size(); i++) {
             if (reservations.get(i).getTimeReserve().equals(reservations.get(i-1).getTimeReserve())
-                    && !reservations.get(i).getStatus().getType().equals(StatusType.CANCEL)
-                    && !reservations.get(i-1).getStatus().getType().equals(StatusType.CANCEL)) {
+                    && !reservations.get(i).getStatusType().equals(StatusType.CANCEL)
+                    && !reservations.get(i-1).getStatusType().equals(StatusType.CANCEL)) {
                 throw new RuntimeException("Два бронирования на одно и тоже время");
             }
         }
     }
 
     private Slot createSlotWithReserve(LocalTime time, Integer price, Reservation reserve) {
-        Status status = reserve.getStatus();
+        StatusType status = reserve.getStatusType();
         LocalTime autoBlock = reserve.getAutoBlock();
         Slot slot = new Slot(quest, status, reserve, date, time, price, autoBlock);
         return slot;
     }
 
     private Slot createEmptySlot(LocalTime time, Integer price) {
-        Slot slot = new Slot(quest, new Status(StatusType.EMPTY),
+        Slot slot = new Slot(quest, StatusType.EMPTY,
                 null, date, time, price, null);
         return slot;
     }

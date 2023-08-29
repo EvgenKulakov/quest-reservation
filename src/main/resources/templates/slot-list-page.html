@@ -32,7 +32,7 @@
         <div class="row-cols-auto d-flex flex-wrap">
             <td th:each="slot : ${slots}">
                 <a th:href="@{reservation/{slotId}(slotId=${slots.indexOf(slot)})}">
-                    <button class="slot-button" th:attr="data-status=${slot.status.getType()}">
+                    <button class="slot-button" th:attr="data-status=${slot.statusType}">
                         <span th:text="${slot.time}"></span><br/><span th:text="'₽' + ${slot.price}"/>
                     </button>
                 </a>

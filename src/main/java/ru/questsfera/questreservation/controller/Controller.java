@@ -83,7 +83,7 @@ public class Controller {
         model.addAttribute("slot", slot);
         model.addAttribute("date_format", dateFormat);
 
-        if (reservation.getStatus() != null && reservation.getStatus().getType().equals(StatusType.BLOCK)) {
+        if (reservation.getStatusType() != null && reservation.getStatusType().equals(StatusType.BLOCK)) {
             return "blocked-reservation-form";
         }
 
@@ -92,9 +92,9 @@ public class Controller {
 
     @PostMapping("/save-reservation")
     public String saveReservation(@ModelAttribute("reservation") Reservation reservation,
-                                  @RequestParam(value = "blocked", required = false) boolean block) {
+                                  @RequestParam(value = "blocked") boolean block) {
         if (block) {
-            reservation.setStatus(moderatorService.getStatusById(12));
+            reservation.setStatusType(StatusType.BLOCK);
             reservation.getClient().clear();
         }
         reservation.setSourceReserve("default");

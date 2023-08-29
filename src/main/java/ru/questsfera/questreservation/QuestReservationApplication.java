@@ -9,21 +9,18 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ru.questsfera.questreservation.converters.AdminConverter;
 import ru.questsfera.questreservation.converters.QuestConverter;
-import ru.questsfera.questreservation.converters.StatusConverter;
 import ru.questsfera.questreservation.converters.StatusTypeConverter;
 
 @SpringBootApplication
 public class QuestReservationApplication implements WebMvcConfigurer {
     private final StatusTypeConverter statusTypeConverter;
-    private final StatusConverter statusConverter;
     private final QuestConverter questConverter;
     private final AdminConverter adminConverter;
 
     @Autowired
-    public QuestReservationApplication(StatusTypeConverter statusTypeConverter, StatusConverter statusConverter,
+    public QuestReservationApplication(StatusTypeConverter statusTypeConverter,
                                        QuestConverter questConverter, AdminConverter adminConverter) {
         this.statusTypeConverter = statusTypeConverter;
-        this.statusConverter = statusConverter;
         this.questConverter = questConverter;
         this.adminConverter = adminConverter;
 
@@ -41,7 +38,6 @@ public class QuestReservationApplication implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(statusTypeConverter);
-        registry.addConverter(statusConverter);
         registry.addConverter(questConverter);
         registry.addConverter(adminConverter);
 

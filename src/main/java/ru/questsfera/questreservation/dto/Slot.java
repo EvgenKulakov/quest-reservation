@@ -1,6 +1,5 @@
 package ru.questsfera.questreservation.dto;
 
-import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
 
@@ -10,17 +9,17 @@ import java.util.Objects;
 
 public class Slot {
     private Quest quest;
-    private Status status;
+    private StatusType statusType;
     private Reservation reservation;
     private LocalDate date;
     private LocalTime time;
     private Integer price;
     private LocalTime autoBlock;
 
-    public Slot(Quest quest, Status status, Reservation reservation,
+    public Slot(Quest quest, StatusType statusType, Reservation reservation,
                 LocalDate date, LocalTime time, Integer price, LocalTime autoBlock) {
         this.quest = quest;
-        this.status = status;
+        this.statusType = statusType;
         this.reservation = reservation;
         this.date = date;
         this.time = time;
@@ -40,12 +39,12 @@ public class Slot {
         this.quest = quest;
     }
 
-    public Status getStatus() {
-        return status;
+    public StatusType getStatusType() {
+        return statusType;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatusType(StatusType statusType) {
+        this.statusType = statusType;
     }
 
     public Reservation getReservation() {

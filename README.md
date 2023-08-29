@@ -25,7 +25,7 @@ Front-end, логгирование, обработка ошибок, security
 
 ## Схема БД:
 
-![Схема БД](projectinfo/db-diagram.png)
+![Схема БД](projectinfo/database-diagram.png)
 ***
 
 ### Сервер:
