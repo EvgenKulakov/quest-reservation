@@ -35,7 +35,7 @@
                 <div class="col-12 col-lg-6">
                     <select class="form-select" id="inputStatus2" th:field="*{statusType}">
                         <option th:each="status : ${slot.quest.statuses}" th:value="${status.type}"
-                                th:text="${status.type.name}" th:unless="${status.type.name == null}">
+                                th:text="${status.type.name}">
                         </option>
                     </select>
                 </div>

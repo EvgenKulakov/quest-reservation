@@ -36,7 +36,7 @@ public class Admin {
     @OneToMany(mappedBy = "admin", fetch = FetchType.EAGER)
     private Set<Quest> quests = new TreeSet<>();
 
-    @OneToMany(mappedBy = "admin",
+    @OneToMany(mappedBy = "admin", fetch = FetchType.EAGER,
             cascade = {CascadeType.REMOVE})
     private Set<User> users = new HashSet<>();
 

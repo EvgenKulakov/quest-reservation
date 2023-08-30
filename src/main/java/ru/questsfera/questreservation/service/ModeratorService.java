@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.dao.*;
+import ru.questsfera.questreservation.repository.*;
 import ru.questsfera.questreservation.entity.*;
 
 import java.util.Optional;

@@ -2,7 +2,6 @@ package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
 
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -17,6 +16,7 @@ public class Quest {
     @Column(name = "quest_name")
     private String questName;
 
+    /* JSON for SlotList type */
     @Column(name = "slot_list")
     private String slotList;
 
@@ -53,11 +53,9 @@ public class Quest {
 
     public Quest() {}
 
-    public Quest(String questName, String slotList, int minPersons, int maxPersons) {
-        this.questName = questName;
-        this.slotList = slotList;
-        this.minPersons = minPersons;
-        this.maxPersons = maxPersons;
+    public Quest(Admin admin) {
+        this.admin = admin;
+        this.autoBlock = LocalTime.MIN;
     }
 
     public void addStatusForQuest(Status status) {
@@ -215,16 +213,20 @@ public class Quest {
         return getClass().hashCode();
     }
 
-    @Override
-    public String toString() {
-        return "Quest{" +
-                "id=" + id +
-                ", questName='" + questName + '\'' +
-                ", slotList length='" + (slotList != null ? slotList.length() : null) + '\'' +
-                ", minPersons=" + minPersons +
-                ", maxPersons=" + maxPersons +
-                ", autoBlock=" + autoBlock +
-                ", sms='" + sms + '\'' +
-                ", admin=" + (admin != null ? admin.getUsername() : null);
-    }
+//    @Override
+//    public String toString() {
+//        return "Quest{" +
+//                "id=" + id +
+//                ", questName='" + questName + '\'' +
+//                ", slotList length='" + (slotList != null ? slotList.length() : null) + '\'' +
+//                ", minPersons=" + minPersons +
+//                ", maxPersons=" + maxPersons +
+//                ", autoBlock=" + autoBlock +
+//                ", sms='" + sms + '\'' +
+//                ", admin=" + (admin != null ? admin.getUsername() : null) +
+//                ", users=" + users +
+//                ", statuses=" + statuses +
+//                ", synchronizedQuests=" + synchronizedQuests +
+//                '}';
+//    }
 }

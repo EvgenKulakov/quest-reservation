@@ -33,12 +33,6 @@ public class User {
 
     public User() {}
 
-    public User(String username, String passwordCrypt, Admin admin) {
-        this.username = username;
-        this.passwordCrypt = passwordCrypt;
-        this.admin = admin;
-    }
-
     public void addQuestForUser(Quest quest) {
         if (!quest.getAdmin().equals(this.admin)) {
             throw new RuntimeException(
@@ -60,7 +54,6 @@ public class User {
     public void setAdmin(Admin admin) {
         this.admin = admin;
     }
-
 
     public Integer getId() {
         return id;

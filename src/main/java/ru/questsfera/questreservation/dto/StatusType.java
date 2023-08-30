@@ -5,8 +5,8 @@ public enum StatusType {
     BLOCK,
     MODIFIED,
     NEW_RESERVE("Новый"),
-    CONFIRMED("Подтверждён"),
     CANCEL("Отменён"),
+    CONFIRMED("Подтверждён"),
     COMPLETED("Завершён");
 
     private String name;

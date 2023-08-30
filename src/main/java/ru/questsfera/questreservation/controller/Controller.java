@@ -10,36 +10,27 @@ import ru.questsfera.questreservation.processor.SlotFactory;
 import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.processor.SlotListMapper;
 import ru.questsfera.questreservation.service.AdminService;
-import ru.questsfera.questreservation.service.ClientService;
 import ru.questsfera.questreservation.service.ModeratorService;
-import ru.questsfera.questreservation.service.UserService;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @org.springframework.stereotype.Controller
 public class Controller {
 
     private final AdminService adminService;
     private final ModeratorService moderatorService;
-    private final UserService userService;
-    private final ClientService clientService;
     private List<Slot> slots;
     private Admin admin;
     private Quest quest;
     private DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @Autowired
-    public Controller(AdminService adminService, ModeratorService moderatorService,
-                      UserService userService, ClientService clientService) {
+    public Controller(AdminService adminService, ModeratorService moderatorService) {
         this.adminService = adminService;
         this.moderatorService = moderatorService;
-        this.userService = userService;
-        this.clientService = clientService;
     }
 
     @GetMapping("/slot-list")
@@ -134,22 +125,22 @@ public class Controller {
 
     @GetMapping("/add-quest")
     public String addQuest(Model model) {
-        Quest quest = new Quest();
+        Quest quest = new Quest(admin);
+        SlotList slotList = new SlotList();
         model.addAttribute("quest", quest);
+        model.addAttribute("slotList", slotList);
         return "add-quest-form";
     }
 
     @PostMapping("/save-quest")
-    public String saveQuest() {
-        return null;
-    }
-
-    @GetMapping("/test-save-quest")
-    public String testSaveQuest(@ModelAttribute("quest") Quest quest, Model model,
-                                @RequestParam(value = "checkStatus", required = false) List<StatusType> statuses) {
-        statuses.forEach(statusType -> System.out.println(statusType));
-        model.addAttribute("quest", quest);
-        return "test-save-quest-page";
+    public String saveQuest(@ModelAttribute("quest") Quest quest, Model model,
+                            @RequestParam("checkStatus") List<StatusType> statusTypes,
+                            @RequestParam(value = "checkUser", required = false) Set<User> users,
+                            @RequestParam("keysWeekday") List<LocalTime> keysWeekday,
+                            @RequestParam("valuesWeekday") List<Integer> valuesWeekday,
+                            @RequestParam("keysWeekend") List<LocalTime> keysWeekend,
+                            @RequestParam("valuesWeekend") List<Integer> valuesWeekend) {
+        return "redirect:/quest-list";
     }
 
     @PostMapping("/delete-quest")

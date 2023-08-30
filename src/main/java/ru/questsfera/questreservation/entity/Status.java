@@ -10,7 +10,7 @@ import java.util.*;
 public class Status {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
     @Column(name = "status_type")
@@ -21,10 +21,6 @@ public class Status {
     private Set<Quest> quests = new HashSet<>();
 
     public Status() {}
-
-    public Status(StatusType type) {
-        this.type = type;
-    }
 
     public Set<Quest> getQuests() {
         return quests;

@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.converters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import ru.questsfera.questreservation.dao.QuestRepository;
+import ru.questsfera.questreservation.repository.QuestRepository;
 import ru.questsfera.questreservation.entity.Quest;
 
 import java.util.Optional;

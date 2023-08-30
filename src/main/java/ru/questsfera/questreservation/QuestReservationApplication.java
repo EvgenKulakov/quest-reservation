@@ -10,20 +10,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ru.questsfera.questreservation.converters.AdminConverter;
 import ru.questsfera.questreservation.converters.QuestConverter;
 import ru.questsfera.questreservation.converters.StatusTypeConverter;
+import ru.questsfera.questreservation.converters.UserConverter;
 
 @SpringBootApplication
 public class QuestReservationApplication implements WebMvcConfigurer {
     private final StatusTypeConverter statusTypeConverter;
     private final QuestConverter questConverter;
     private final AdminConverter adminConverter;
+    private final UserConverter userConverter;
 
     @Autowired
     public QuestReservationApplication(StatusTypeConverter statusTypeConverter,
-                                       QuestConverter questConverter, AdminConverter adminConverter) {
+                                       QuestConverter questConverter, AdminConverter adminConverter,
+                                       UserConverter userConverter) {
         this.statusTypeConverter = statusTypeConverter;
         this.questConverter = questConverter;
         this.adminConverter = adminConverter;
-
+        this.userConverter = userConverter;
     }
 
     public static void main(String[] args) {
@@ -40,6 +43,7 @@ public class QuestReservationApplication implements WebMvcConfigurer {
         registry.addConverter(statusTypeConverter);
         registry.addConverter(questConverter);
         registry.addConverter(adminConverter);
+        registry.addConverter(userConverter);
 
         DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
         registrar.registerFormatters(registry);

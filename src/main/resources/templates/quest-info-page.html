@@ -28,7 +28,7 @@
             <td>
                 <table>
                     <tr th:each="status : ${quest.statuses}">
-                        <td th:if="${status.type.name != 'null'}" th:text="${status.type.getName()}"></td>
+                        <td th:text="${status.type.getName()}"></td>
                     </tr>
                 </table>
             </td>
@@ -40,8 +40,8 @@
                     </tr>
                 </table>
             </td>
-            <td th:switch="${quest.synchronizedQuests.size()}">
-                <p th:case="0">Нет синхронизированных квестов</p>
+            <td th:switch="${quest.synchronizedQuests.isEmpty()}">
+                <p th:case="${true}">Нет синхронизированных квестов</p>
                 <table th:case="*">
                     <tr th:each="synchQuest : ${quest.synchronizedQuests}">
                         <td th:text="${synchQuest.questName}"></td>
