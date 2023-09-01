@@ -34,11 +34,14 @@ public class Admin {
     private Set<BlackList> blackLists = new HashSet<>();
 
     @OneToMany(mappedBy = "admin", fetch = FetchType.EAGER)
-    private Set<Quest> quests = new TreeSet<>();
+    private Set<Quest> quests = new HashSet<>();
 
     @OneToMany(mappedBy = "admin", fetch = FetchType.EAGER,
             cascade = {CascadeType.REMOVE})
     private Set<User> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "admin")
+    private Set<Reservation> reservations = new HashSet<>();
 
     public Admin() {}
 

@@ -1,6 +1,9 @@
 package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
+
+import ru.questsfera.questreservation.dto.ReservationForm;
+import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.StatusType;
 
 import java.time.LocalDate;
@@ -65,40 +68,32 @@ public class Reservation {
     @Column(name = "history_messages")
     private String historyMessages;
 
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private Admin admin;
+
+    public Reservation(ReservationForm resForm, Slot slot) {
+        this.dateReserve = slot.getDate();
+        this.timeReserve = slot.getTime();
+        this.dateAndTimeCreated = LocalDateTime.now();
+        this.quest = slot.getQuest();
+        this.statusType = resForm.getStatusType();
+        this.countPersons = resForm.getCountPersons();
+        this.adminComment = resForm.getAdminComment();
+        this.clientComment = resForm.getClientComment();
+        this.admin = slot.getQuest().getAdmin();
+    }
+
+    public Reservation(Slot slot) {
+        this.dateReserve = slot.getDate();
+        this.timeReserve = slot.getTime();
+        this.dateAndTimeCreated = LocalDateTime.now();
+        this.quest = slot.getQuest();
+        this.statusType = StatusType.BLOCK;
+        this.admin = slot.getQuest().getAdmin();
+    }
+
     public Reservation() {}
-
-    public Reservation(LocalDate dateReserve, LocalTime timeReserve,
-                       LocalDateTime dateAndTimeCreated, Quest quest,
-                       StatusType statusType, String sourceReserve,
-                       int countPersons) {
-        this.dateReserve = dateReserve;
-        this.timeReserve = timeReserve;
-        this.dateAndTimeCreated = dateAndTimeCreated;
-        this.quest = quest;
-        this.statusType = statusType;
-        this.sourceReserve = sourceReserve;
-        this.countPersons = countPersons;
-        this.historyMessages = "default";
-    }
-
-    public Reservation(LocalDate dateReserve, LocalTime timeReserve,
-                       LocalDateTime dateAndTimeCreated, Quest quest,
-                       StatusType statusType, String sourceReserve,
-                       int countPersons, Client client) {
-        this.dateReserve = dateReserve;
-        this.timeReserve = timeReserve;
-        this.dateAndTimeCreated = dateAndTimeCreated;
-        this.quest = quest;
-        this.statusType = statusType;
-        this.sourceReserve = sourceReserve;
-        this.countPersons = countPersons;
-        this.historyMessages = "default";
-        this.client = client;
-    }
-
-    public Reservation(int id) {
-        this.id = id;
-    }
 
     public void addClient(Client client) {
         client.getReservations().add(this);
@@ -233,6 +228,14 @@ public class Reservation {
         this.historyMessages = historyMessages;
     }
 
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -243,27 +246,5 @@ public class Reservation {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", dateReserve=" + dateReserve +
-                ", timeReserve=" + timeReserve +
-                ", dateAndTimeCreated=" + dateAndTimeCreated +
-                ", timeLastChange=" + timeLastChange +
-                ", changedSlotTime=" + changedSlotTime +
-                ", autoBlock=" + autoBlock +
-                ", questName=" + (quest != null ? quest.getAdmin() : null) +
-                ", status=" + statusType +
-                ", sourceReserve='" + sourceReserve + '\'' +
-                ", changedPrice=" + changedPrice +
-                ", client=" + client +
-                ", countPersons=" + countPersons +
-                ", adminComment='" + adminComment + '\'' +
-                ", clientComment='" + clientComment + '\'' +
-                ", historyMessages='" + historyMessages + '\'' +
-                '}';
     }
 }

@@ -45,7 +45,7 @@ public class Quest {
             inverseJoinColumns = @JoinColumn(name = "status_id"))
     private Set<Status> statuses = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "synchronized_quests",
             joinColumns = @JoinColumn(name = "id_first_quest"),
             inverseJoinColumns = @JoinColumn(name = "id_second_quest"))
@@ -212,21 +212,4 @@ public class Quest {
     public int hashCode() {
         return getClass().hashCode();
     }
-
-//    @Override
-//    public String toString() {
-//        return "Quest{" +
-//                "id=" + id +
-//                ", questName='" + questName + '\'' +
-//                ", slotList length='" + (slotList != null ? slotList.length() : null) + '\'' +
-//                ", minPersons=" + minPersons +
-//                ", maxPersons=" + maxPersons +
-//                ", autoBlock=" + autoBlock +
-//                ", sms='" + sms + '\'' +
-//                ", admin=" + (admin != null ? admin.getUsername() : null) +
-//                ", users=" + users +
-//                ", statuses=" + statuses +
-//                ", synchronizedQuests=" + synchronizedQuests +
-//                '}';
-//    }
 }

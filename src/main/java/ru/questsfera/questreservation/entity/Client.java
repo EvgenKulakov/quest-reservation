@@ -1,6 +1,7 @@
 package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
+import ru.questsfera.questreservation.dto.ReservationForm;
 
 import java.util.*;
 
@@ -25,8 +26,8 @@ public class Client {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "mail")
-    private String mail;
+    @Column(name = "email")
+    private String email;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "blacklist_id")
@@ -35,25 +36,15 @@ public class Client {
     @OneToMany(mappedBy = "client")
     private List<Reservation> reservations = new ArrayList<>();
 
+    public Client(ReservationForm resForm, Admin admin) {
+        this.admin = admin;
+        this.firstName = resForm.getFirstname();
+        this.lastName = resForm.getLastname();
+        this.phone = resForm.getPhone();
+        this.email = resForm.getEmail();
+    }
+
     public Client() {}
-
-    public Client(Admin admin) {
-        this.admin = admin;
-    }
-
-    public Client(Admin admin, String firstName, String phone) {
-        this.admin = admin;
-        this.firstName = firstName;
-        this.phone = phone;
-    }
-
-    public void clear() {
-        this.firstName = "";
-        this.lastName = "";
-        this.phone = "";
-        this.mail = "";
-        this.blackList = null;
-    }
 
     public void deleteBlackListForClient() {
         this.blackList = null;
@@ -107,12 +98,12 @@ public class Client {
         this.phone = phone;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Admin getAdmin() {
@@ -133,19 +124,5 @@ public class Client {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", admin=" + (admin != null ? admin.getUsername() : null) +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", mail='" + mail + '\'' +
-                ", blackList=" + (blackList != null ? blackList.getId() : null) +
-                ", reservations size=" + reservations.size() +
-                '}';
     }
 }

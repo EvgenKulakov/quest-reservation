@@ -1,100 +1,96 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Бронирование квеста</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-  <link th:href="@{/css/reserve-form-style.css}" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Бронирование квеста</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/reserve-form-style.css}" rel="stylesheet">
 </head>
 <body>
 
 <section>
-  <div class="container reserve-container">
-    <div class="row">
-      <div class="col-11">
-        <h1 th:text="${slot.quest.questName}"></h1>
-        <span>Дата: <span th:text="${date_format}"></span></span><br>
-        <span>Время: <span th:text="${slot.time}"></span></span><br>
-        <span>Стоимость: <span th:text="${slot.price}"></span></span><br><br>
-      </div>
-      <div class="col-1">
-        <a th:href="@{/slot-list}">
-          <button type="button" class="close" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </a>
-      </div>
-    </div>
-
-
-    <form class="reserve-form" th:object="${reservation}" th:action="@{/delete-blocked-reservation}" method="post">
-
-      <div class="mb-3 row">
-        <label for="inputStatus2" class="col-12 col-lg-3 col-form-label">Статус:</label>
-        <div class="col-12 col-lg-6">
-          <select class="form-select" id="inputStatus2" disabled>
-            <option>Заблокирован</option>
-          </select>
+    <div class="container reserve-container">
+        <div class="row">
+            <div class="col-11">
+                <h1 th:text="${quest.questName}"></h1>
+                <span>Дата: <span th:text="${#temporals.format(slot.date, 'dd-MM-yyyy')}"></span></span><br>
+                <span>Время: <span th:text="${slot.time}"></span></span><br>
+                <span>Стоимость: <span th:text="${slot.price}"></span></span><br><br>
+            </div>
+            <div class="col-1">
+                <a th:href="@{/slot-list}">
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </a>
+            </div>
         </div>
-      </div>
 
-      <div class="mb-3 row">
-        <label for="inputFirstName2" class="col-12 col-lg-3 col-form-label">Имя:</label>
-        <div class="col-12 col-lg-6">
-          <input type="text" class="form-control" id="inputFirstName2" disabled>
-        </div>
-      </div>
 
-      <div class="mb-3 row">
-        <label for="inputLastName2" class="col-12 col-lg-3 col-form-label">Фамилия:</label>
-        <div class="col-12 col-lg-6">
-          <input type="text" class="form-control" id="inputLastName2" disabled>
-        </div>
-      </div>
+        <form class="reserve-form" th:action="@{/delete-blocked-reservation}" method="post">
 
-      <div class="mb-3 row">
-        <label for="inputPhone2" class="col-12 col-lg-3 col-form-label">Телефон:</label>
-        <div class="col-12 col-lg-6">
-          <input type="tel" class="form-control" id="inputPhone2" disabled>
-        </div>
-      </div>
+            <div class="mb-3 row">
+                <label for="inputStatus2" class="col-12 col-lg-3 col-form-label">Статус:</label>
+                <div class="col-12 col-lg-6">
+                    <select class="form-select" id="inputStatus2" disabled>
+                        <option>Заблокирован</option>
+                    </select>
+                </div>
+            </div>
 
-      <div class="mb-3 row">
-        <label for="inputEmail3" class="col-12 col-lg-3 col-form-label">Email:</label>
-        <div class="col-12 col-lg-6">
-          <input type="email" class="form-control" id="inputEmail3" disabled>
-        </div>
-      </div>
+            <div class="mb-3 row">
+                <label for="inputFirstName2" class="col-12 col-lg-3 col-form-label">Имя:</label>
+                <div class="col-12 col-lg-6">
+                    <input type="text" class="form-control" id="inputFirstName2" disabled>
+                </div>
+            </div>
 
-      <div class="mb-3 row">
-        <label for="inputCountPersons1" class="col-12 col-lg-3 col-form-label">Кол-во человек:</label>
-        <div class="col-12 col-lg-2">
-          <select class="form-select" id="inputCountPersons1" disabled></select>
-        </div>
-      </div>
+            <div class="mb-3 row">
+                <label for="inputLastName2" class="col-12 col-lg-3 col-form-label">Фамилия:</label>
+                <div class="col-12 col-lg-6">
+                    <input type="text" class="form-control" id="inputLastName2" disabled>
+                </div>
+            </div>
 
-      <div class="mb-3 row">
-        <label for="inputComment3" class="col-12 col-lg-3 col-form-label">Комментарий:</label>
-        <div class="col-12 col-lg-8">
+            <div class="mb-3 row">
+                <label for="inputPhone2" class="col-12 col-lg-3 col-form-label">Телефон:</label>
+                <div class="col-12 col-lg-6">
+                    <input type="tel" class="form-control" id="inputPhone2" disabled>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="inputEmail3" class="col-12 col-lg-3 col-form-label">Email:</label>
+                <div class="col-12 col-lg-6">
+                    <input type="email" class="form-control" id="inputEmail3" disabled>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="inputCountPersons1" class="col-12 col-lg-3 col-form-label">Кол-во человек:</label>
+                <div class="col-12 col-lg-2">
+                    <select class="form-select" id="inputCountPersons1" disabled></select>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="inputComment3" class="col-12 col-lg-3 col-form-label">Комментарий:</label>
+                <div class="col-12 col-lg-8">
                     <textarea maxlength="200" rows="4"
                               class="form-control" id="inputComment3" disabled></textarea>
-        </div>
-      </div>
+                </div>
+            </div>
 
-      <input type="hidden" th:field="*{id}" th:value="${reservation.id}"/>
-      <input type="hidden" th:field="*{client.id}" th:value="${reservation.client.id}"/>
-      <input type="hidden" th:field="*{quest}" th:value="${slot.quest.id}"/>
-      <input type="hidden" th:field="*{dateReserve}" th:value="${slot.date}"/>
-      <input type="hidden" th:field="*{timeReserve}" th:value="${slot.time}"/>
-      <input type="hidden" th:field="*{client.admin}" th:value="${slot.quest.admin.id}"/>
+            <input type="hidden" name="slot_id" th:value="${slot_id}">
+            <input type="hidden" name="quest_name" th:value="${quest.questName}">
 
-      <div class="row justify-content-end">
-        <button class="btn btn-secondary mr-2 col-3" type="submit">Разблокировать</button>
-      </div>
+            <div class="row justify-content-end">
+                <button class="btn btn-secondary mr-2 col-3" type="submit">Разблокировать</button>
+            </div>
 
-    </form>
-  </div>
+        </form>
+    </div>
 </section>
 
 <script src="/js/bootstrap.bundle.min.js"></script>

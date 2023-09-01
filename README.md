@@ -8,8 +8,8 @@
 
 ## Stack:
 ```
-Java 17, MySQL 8, Spring Boot 3, Spring Data JPA, Spring Security, 
-Spring MVC, Thymeleaf 3, BootStrap 5, Docker
+Java 17, MySQL, Spring Boot 3, Spring Data JPA, Spring Security, 
+Spring MVC, Hibernate Validator, Thymeleaf, BootStrap 5, Docker
 ```
 ***
 
@@ -21,7 +21,7 @@ Spring MVC, Thymeleaf 3, BootStrap 5, Docker
 View, валидация, security, refactoring
 ***
 
-## Схема БД:
+## Схема Database:
 
 ![Схема БД](projectinfo/database-diagram.png)
 ***

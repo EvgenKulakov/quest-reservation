@@ -13,8 +13,8 @@
     <div class="container reserve-container">
         <div class="row">
             <div class="col-11">
-                <h1 th:text="${slot.quest.questName}"></h1>
-                <span>Дата: <span th:text="${date_format}"></span></span><br>
+                <h1 th:text="${quest.questName}"></h1>
+                <span>Дата: <span th:text="${#temporals.format(slot.date, 'dd-MM-yyyy')}"></span></span><br>
                 <span>Время: <span th:text="${slot.time}"></span></span><br>
                 <span>Стоимость: <span th:text="${slot.price}"></span></span><br><br>
             </div>
@@ -28,13 +28,13 @@
         </div>
 
 
-        <form class="reserve-form" th:object="${reservation}" th:action="@{/save-reservation}" method="post">
+        <form class="reserve-form" th:object="${res_form}" th:action="@{/save-reservation}" th:method="post">
 
             <div class="mb-3 row">
                 <label for="inputStatus2" class="col-12 col-lg-3 col-form-label">Статус:</label>
                 <div class="col-12 col-lg-6">
                     <select class="form-select" id="inputStatus2" th:field="*{statusType}">
-                        <option th:each="status : ${slot.quest.statuses}" th:value="${status.type}"
+                        <option th:each="status : ${quest.statuses}" th:value="${status.type}"
                                 th:text="${status.type.name}">
                         </option>
                     </select>
@@ -44,28 +44,29 @@
             <div class="mb-3 row">
                 <label for="inputFirstName2" class="col-12 col-lg-3 col-form-label">Имя:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" class="form-control" id="inputFirstName2" th:field="*{client.firstName}">
+                    <input type="text" class="form-control" id="inputFirstName2" th:field="*{firstname}">
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label for="inputLastName2" class="col-12 col-lg-3 col-form-label">Фамилия:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" class="form-control" id="inputLastName2" th:field="*{client.lastName}">
+                    <input type="text" class="form-control" id="inputLastName2" th:field="*{lastname}">
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label for="inputPhone2" class="col-12 col-lg-3 col-form-label">Телефон:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="tel" class="form-control" id="inputPhone2" th:field="*{client.phone}">
+                    <input type="tel" class="form-control" id="inputPhone2" th:field="*{phone}">
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label for="inputEmail3" class="col-12 col-lg-3 col-form-label">Email:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="email" class="form-control" id="inputEmail3" th:field="*{client.mail}">
+                    <input type="text" class="form-control" id="inputEmail3" th:field="*{email}">
+<!--                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Message error</div>-->
                 </div>
             </div>
 
@@ -73,7 +74,7 @@
                 <label for="inputCountPersons1" class="col-12 col-lg-3 col-form-label">Кол-во человек:</label>
                 <div class="col-12 col-lg-2">
                     <select class="form-select" id="inputCountPersons1" th:field="*{countPersons}">
-                        <option th:each="num : ${#numbers.sequence(slot.quest.minPersons, slot.quest.maxPersons)}"
+                        <option th:each="num : ${#numbers.sequence(quest.minPersons, quest.maxPersons)}"
                                 th:value="${num}" th:text="${num}"></option>
                     </select>
                 </div>
@@ -84,19 +85,16 @@
                 <div class="col-12 col-lg-8">
                     <textarea maxlength="200" rows="4" class="form-control" id="inputComment3"
                               th:field="*{adminComment}"></textarea>
+<!--                    <div th:if="${#fields.hasErrors('adminComment')}" th:errors="*{adminComment}">Error message</div>-->
                 </div>
             </div>
 
-            <input type="hidden" th:field="*{id}" th:value="${reservation.id}"/>
-            <input type="hidden" th:field="*{client.id}" th:value="${reservation.client.id}"/>
-            <input type="hidden" th:field="*{quest}" th:value="${slot.quest.id}"/>
-            <input type="hidden" th:field="*{dateReserve}" th:value="${slot.date}"/>
-            <input type="hidden" th:field="*{timeReserve}" th:value="${slot.time}"/>
-            <input type="hidden" th:field="*{client.admin}" th:value="${slot.quest.admin.id}"/>
+            <input type="hidden" name="slot_id" th:value="${slot_id}">
+            <input type="hidden" name="quest_name" th:value="${quest.questName}">
 
             <div class="row justify-content-end">
-                <button class="btn btn-secondary mr-2 col-3" type="submit" name="blocked" value=true>Заблокировать</button>
-                <button class="btn btn-primary mr-2 col-3" type="submit" name="blocked" value=false>Сохранить</button>
+                <button class="btn btn-secondary mr-2 col-3" type="submit" formaction="/slot-block">Заблокировать</button>
+                <button class="btn btn-primary mr-2 col-3" type="submit">Сохранить</button>
             </div>
 
         </form>

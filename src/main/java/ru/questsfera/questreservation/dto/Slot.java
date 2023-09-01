@@ -27,9 +27,7 @@ public class Slot {
         this.autoBlock = autoBlock;
     }
 
-    public Slot() {
-    }
-
+    public Slot() {}
 
     public Quest getQuest() {
         return quest;

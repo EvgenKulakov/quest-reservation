@@ -73,8 +73,9 @@ public class AdminService {
 
     //***Quests
     @Transactional
-    public Set<Quest> getQuestsByAdmin(Admin admin) {
-        return admin.getQuests();
+    public List<Quest> getQuestsByAdmin(Admin admin) {
+        List<Quest> quests = questRepository.findQuestsByAdminOrderByQuestName(admin);
+        return quests;
     }
 
     @Transactional
@@ -233,6 +234,5 @@ public class AdminService {
             throw new RuntimeException("Попытка удалить бронирование без права доступа");
         }
         reservationRepository.delete(reservation);
-        clientRepository.delete(reservation.getClient());
     }
 }
