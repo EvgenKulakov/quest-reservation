@@ -1,5 +1,5 @@
 docker run -d -p 3306:3306 --name db-conf -v ${PWD}:/app -e MYSQL_ROOT_PASSWORD=MySQL54535251 mysql
-docker exec -it db-conf mysql -uroot -p
+docker exec -it db mysql -uroot -p
 CREATE DATABASE quest_reservations DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 docker exec -it db-conf sh
 docker exec -it localhost sh
@@ -13,8 +13,8 @@ docker network create db-spring-net
 --------------------------------------------------
 docker run --name db --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v .:/app -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=quest_reservations -d mysql:8.0.33
 docker exec -it db sh
-mysql -u root -p quest_reservations < /app/Dump1.sql
+mysql -u root -p quest_reservations < /app/Dump5-added-admin_id-for-reservations.sql
 --------------------------------------------------
-docker build -t evgeniydockerman/questreservations:git18 .
-docker run -d --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro --name spring-cont -p 8080:8080 evgeniydockerman/questreservations:git18
+docker build -t evgeniydockerman/questreservations:git26 .
+docker run -d --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro --name spring-cont -p 8080:8080 evgeniydockerman/questreservations:git26
 ========================================================================================================================

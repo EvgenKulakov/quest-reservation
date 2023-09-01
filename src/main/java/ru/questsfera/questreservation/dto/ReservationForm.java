@@ -21,9 +21,7 @@ public class ReservationForm {
         initWithReservation();
     }
 
-    public ReservationForm() {
-        this.reservation = new Reservation();
-    }
+    public ReservationForm() {}
 
     private void initWithReservation() {
         Client client = reservation.getClient();

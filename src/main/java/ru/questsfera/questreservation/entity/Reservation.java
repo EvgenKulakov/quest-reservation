@@ -84,16 +84,18 @@ public class Reservation {
         this.admin = slot.getQuest().getAdmin();
     }
 
-    public Reservation(Slot slot) {
-        this.dateReserve = slot.getDate();
-        this.timeReserve = slot.getTime();
-        this.dateAndTimeCreated = LocalDateTime.now();
-        this.quest = slot.getQuest();
-        this.statusType = StatusType.BLOCK;
-        this.admin = slot.getQuest().getAdmin();
-    }
-
     public Reservation() {}
+
+    public static Reservation createBlockReservation(Slot slot) {
+        Reservation reservation = new Reservation();
+        reservation.dateReserve = slot.getDate();
+        reservation.timeReserve = slot.getTime();
+        reservation.dateAndTimeCreated = LocalDateTime.now();
+        reservation.quest = slot.getQuest();
+        reservation.statusType = StatusType.BLOCK;
+        reservation.admin = slot.getQuest().getAdmin();
+        return reservation;
+    }
 
     public void addClient(Client client) {
         client.getReservations().add(this);

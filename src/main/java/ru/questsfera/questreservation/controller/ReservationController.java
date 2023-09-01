@@ -14,13 +14,11 @@ import ru.questsfera.questreservation.processor.SlotFactory;
 import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.processor.SlotListMapper;
 import ru.questsfera.questreservation.service.AdminService;
-import ru.questsfera.questreservation.service.ModeratorService;
 import ru.questsfera.questreservation.validator.SaveReserveValidator;
 import ru.questsfera.questreservation.validator.SlotBlockValidator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 @org.springframework.stereotype.Controller
@@ -150,7 +148,7 @@ public class ReservationController {
             return "reservation-form";
         }
 
-        reservation = new Reservation(slot);
+        reservation = Reservation.createBlockReservation(slot);
         reservation.setSourceReserve("default");
         reservation.setHistoryMessages("default");
         adminService.saveReservation(admin, reservation);
