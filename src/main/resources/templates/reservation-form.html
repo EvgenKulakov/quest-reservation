@@ -38,35 +38,39 @@
                                 th:text="${status.type.name}">
                         </option>
                     </select>
+                    <div class="error-message" th:if="${#fields.hasErrors('statusType')}" th:errors="*{statusType}"></div>
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label for="inputFirstName2" class="col-12 col-lg-3 col-form-label">Имя:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" class="form-control" id="inputFirstName2" th:field="*{firstname}">
+                    <input type="text" maxlength="25" class="form-control" id="inputFirstName2" th:field="*{firstname}">
+                    <div class="error-message" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></div>
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label for="inputLastName2" class="col-12 col-lg-3 col-form-label">Фамилия:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" class="form-control" id="inputLastName2" th:field="*{lastname}">
+                    <input type="text" maxlength="25" class="form-control" id="inputLastName2" th:field="*{lastname}">
+                    <div class="error-message" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></div>
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label for="inputPhone2" class="col-12 col-lg-3 col-form-label">Телефон:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="tel" class="form-control" id="inputPhone2" th:field="*{phone}">
+                    <input type="text" maxlength="18" class="form-control" id="inputPhone2" th:field="*{phone}">
+                    <div class="error-message" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label for="inputEmail3" class="col-12 col-lg-3 col-form-label">Email:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" class="form-control" id="inputEmail3" th:field="*{email}">
-<!--                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Message error</div>-->
+                    <input type="text" maxlength="45" class="form-control" id="inputEmail3" th:field="*{email}">
+                    <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                 </div>
             </div>
 
@@ -85,7 +89,7 @@
                 <div class="col-12 col-lg-8">
                     <textarea maxlength="200" rows="4" class="form-control" id="inputComment3"
                               th:field="*{adminComment}"></textarea>
-<!--                    <div th:if="${#fields.hasErrors('adminComment')}" th:errors="*{adminComment}">Error message</div>-->
+                    <div class="error-message" th:if="${#fields.hasErrors('adminComment')}" th:errors="*{adminComment}"></div>
                 </div>
             </div>
 
@@ -93,7 +97,7 @@
             <input type="hidden" name="quest_name" th:value="${quest.questName}">
 
             <div class="row justify-content-end">
-                <button class="btn btn-secondary mr-2 col-3" type="submit" formaction="/slot-block">Заблокировать</button>
+                <button class="btn btn-secondary mr-2 col-3" type="submit" formaction="/block-slot">Заблокировать</button>
                 <button class="btn btn-primary mr-2 col-3" type="submit">Сохранить</button>
             </div>
 

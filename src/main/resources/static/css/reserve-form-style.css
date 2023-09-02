@@ -26,6 +26,11 @@
     border-radius: 15px;
 }
 
+.error-message {
+    color: red;
+    font-size: 14px;
+}
+
 section, html {
     background: rgb(220,220,220);
     background: linear-gradient(0deg, rgba(220,220,220,1) 0%, rgba(250,235,215,1) 100%);

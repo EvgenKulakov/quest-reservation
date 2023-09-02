@@ -15,7 +15,7 @@ import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.processor.SlotListMapper;
 import ru.questsfera.questreservation.service.AdminService;
 import ru.questsfera.questreservation.validator.SaveReserveValidator;
-import ru.questsfera.questreservation.validator.SlotBlockValidator;
+import ru.questsfera.questreservation.validator.BlockSlotValidator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -90,16 +90,15 @@ public class ReservationController {
         Slot slot = questsAndSlots.get(questName).get(slotId);
         Reservation reservation = slot.getReservation();
 
-//        if (reserveBinding.hasErrors()) {
-////            Slot slot = slots.get(0);
-////            LocalDate date = slot.getDate();
-////            String dateFormat = date.format(format);
-////
-////            model.addAttribute("reservation", reservation);
-////            model.addAttribute("slot", slot);
-////            model.addAttribute("date_format", dateFormat);
-//            return "reservation-form";
-//        }
+        if (reserveBinding.hasErrors()) {
+            resForm.setAdmin(admin);
+            resForm.setReservation(reservation);
+            model.addAttribute("res_form", resForm);
+            model.addAttribute("slot", slot);
+            model.addAttribute("slot_id", slotId);
+            model.addAttribute("quest", slot.getQuest());
+            return "reservation-form";
+        }
 
         if (reservation == null) {
             reservation = new Reservation(resForm, slot);
@@ -117,8 +116,8 @@ public class ReservationController {
         return "redirect:/slot-list";
     }
 
-    @PostMapping("/slot-block")
-    public String slotBlock(@Validated(SlotBlockValidator.class)
+    @PostMapping("/block-slot")
+    public String blockSlot(@Validated(BlockSlotValidator.class)
                             @ModelAttribute("res_form") ReservationForm resForm,
                             BindingResult reserveBinding,
                             @RequestParam("slot_id") Integer slotId,
@@ -127,24 +126,19 @@ public class ReservationController {
         Slot slot = questsAndSlots.get(questName).get(slotId);
         Reservation reservation = slot.getReservation();
 
-//        if (reserveBinding.hasErrors()) {
-////            Slot slot = slots.get(0);
-////            LocalDate date = slot.getDate();
-////            String dateFormat = date.format(format);
-//
-////            model.addAttribute("reservation", reservation);
-////            model.addAttribute("slot", slot);
-////            model.addAttribute("date_format", dateFormat);
-//            return "reservation-form";
-//        }
-
-        if (reservation != null) {
+        if (reservation != null || reserveBinding.hasErrors()) {
             resForm.setAdmin(admin);
             resForm.setReservation(reservation);
             model.addAttribute("res_form", resForm);
             model.addAttribute("slot", slot);
             model.addAttribute("slot_id", slotId);
             model.addAttribute("quest", slot.getQuest());
+
+            if (reservation != null) {
+                reserveBinding.rejectValue("statusType", "errorCode",
+                        "*Нельзя заблокировать слот с существующим бронированием");
+            }
+
             return "reservation-form";
         }
 

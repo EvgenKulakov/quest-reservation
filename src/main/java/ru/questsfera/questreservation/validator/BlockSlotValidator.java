@@ -1,4 +1,4 @@
 package ru.questsfera.questreservation.validator;
 
-public interface SlotBlockValidator {
+public interface BlockSlotValidator {
 }

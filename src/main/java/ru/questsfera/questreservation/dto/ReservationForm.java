@@ -1,19 +1,43 @@
 package ru.questsfera.questreservation.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import ru.questsfera.questreservation.entity.Admin;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
+import ru.questsfera.questreservation.validator.BlockSlotValidator;
+import ru.questsfera.questreservation.validator.SaveReserveValidator;
 
 public class ReservationForm {
+
     private Admin admin;
     private Reservation reservation;
     private StatusType statusType;
+
+    @NotBlank(message = "*Обязательное поле", groups = SaveReserveValidator.class)
+    @Size(max = 0, message = "*Для блокировки все поля должны быть пустыми", groups = BlockSlotValidator.class)
     private String firstname;
+
+    @Size(max = 0, message = "*Для блокировки все поля должны быть пустыми", groups = BlockSlotValidator.class)
     private String lastname;
-    private String phone;
+
+    @Pattern(regexp = "^(?:\\+7|7|8)[ ]?(?:\\(\\d{3}\\)|\\d{3})[ ]?\\d{3}(?:-?\\d{2}-?\\d{2}|\\d{6})$",
+            message = "*Проверьте правильное написание номера телефона",
+            groups = SaveReserveValidator.class)
+    @Size(max = 2, message = "*Для блокировки все поля должны быть пустыми", groups = BlockSlotValidator.class)
+    private String phone = "+7";
+
+    @Pattern(regexp = "^$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            message = "*Проверьте правильное написание Email", groups = SaveReserveValidator.class)
+    @Size(max = 0, message = "*Для блокировки все поля должны быть пустыми", groups = BlockSlotValidator.class)
     private String email;
+
     private Integer countPersons;
+
+    @Size(max = 0, message = "*Для блокировки все поля должны быть пустыми", groups = BlockSlotValidator.class)
     private String adminComment;
+
     private String clientComment;
 
     public ReservationForm(Reservation reservation) {

@@ -18,7 +18,7 @@ Spring MVC, Hibernate Validator, Thymeleaf, BootStrap 5, Docker
 
 
 ### В разработке: 
-View, валидация, security, refactoring
+View, security, refactoring
 ***
 
 ## Схема Database:
