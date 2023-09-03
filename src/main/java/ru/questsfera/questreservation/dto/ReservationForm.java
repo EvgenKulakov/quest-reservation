@@ -10,7 +10,6 @@ import ru.questsfera.questreservation.validator.SaveReserveValidator;
 
 public class ReservationForm {
 
-    private Reservation reservation;
     private StatusType statusType;
 
     @NotBlank(message = "*Обязательное поле", groups = SaveReserveValidator.class)
@@ -39,13 +38,12 @@ public class ReservationForm {
     private String clientComment;
 
     public ReservationForm(Reservation reservation) {
-        this.reservation = reservation;
-        initWithReservation();
+        initWithReservation(reservation);
     }
 
     public ReservationForm() {}
 
-    private void initWithReservation() {
+    private void initWithReservation(Reservation reservation) {
         Client client = reservation.getClient();
         this.statusType = reservation.getStatusType();
         this.firstname = client != null ? client.getFirstName() : null;
@@ -55,14 +53,6 @@ public class ReservationForm {
         this.countPersons = reservation.getCountPersons();
         this.adminComment = reservation.getAdminComment();
         this.clientComment = reservation.getClientComment();
-    }
-
-    public Reservation getReservation() {
-        return reservation;
-    }
-
-    public void setReservation(Reservation reservation) {
-        this.reservation = reservation;
     }
 
     public StatusType getStatusType() {

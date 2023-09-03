@@ -6,7 +6,7 @@ import ru.questsfera.questreservation.entity.Reservation;
 
 public class Editor {
 
-    public static void editReservation(ReservationForm resForm, Reservation reservation) {
+    public static void editReservation(Reservation reservation, ReservationForm resForm) {
         Client client = reservation.getClient();
 
         reservation.setStatusType(resForm.getStatusType());
@@ -18,5 +18,11 @@ public class Editor {
         client.setLastName(resForm.getLastname());
         client.setPhone(resForm.getPhone());
         client.setEmail(resForm.getEmail());
+    }
+
+    public static String convertToStandardPhoneFormat(String phone) {
+        String formattedPhone = phone.replaceAll("[^\\d]", "");
+        formattedPhone = "+7" + formattedPhone.substring(1);
+        return formattedPhone;
     }
 }

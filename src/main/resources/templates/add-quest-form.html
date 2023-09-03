@@ -55,9 +55,15 @@
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="checkStatus"
-                           value="COMPLETED"
+                           value="NOT_COME"
                            id="check4" checked>
-                    <label class="form-check-label" for="check4">Завершён</label>
+                    <label class="form-check-label" for="check4">Не пришёл</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="checkStatus"
+                           value="COMPLETED"
+                           id="check5" checked>
+                    <label class="form-check-label" for="check5">Завершён</label>
                 </div>
             </div>
         </div>
@@ -69,7 +75,7 @@
             </div>
         </div>
 
-        <div class="mt-3 row" th:switch="${quest.admin.users.isEmpty()}" th:case="${false}">
+        <div class="mt-3 row" th:if="${!quest.admin.users.isEmpty()}">
             <label class="col-2 col-form-label">Добавить пользователей</label>
             <div class="col">
                 <div class="form-check" th:each="user : ${quest.admin.users}">

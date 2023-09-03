@@ -91,7 +91,6 @@ public class ReservationController {
         Reservation reservation = slot.getReservation();
 
         if (reserveBinding.hasErrors()) {
-            resForm.setReservation(reservation);
             model.addAttribute("res_form", resForm);
             model.addAttribute("slot", slot);
             model.addAttribute("slot_id", slotId);
@@ -99,13 +98,16 @@ public class ReservationController {
             return "reservation-form";
         }
 
+        String standardPhone = Editor.convertToStandardPhoneFormat(resForm.getPhone());
+        resForm.setPhone(standardPhone);
+
         if (reservation == null) {
             reservation = new Reservation(resForm, slot);
             Client client = new Client(resForm, admin);
             reservation.addClient(client);
             reservation.setSourceReserve("default");
         } else {
-            Editor.editReservation(resForm, reservation);
+            Editor.editReservation(reservation, resForm);
         }
 
         reservation.setTimeLastChange(LocalDateTime.now());
@@ -123,10 +125,8 @@ public class ReservationController {
                             @RequestParam("quest_name") String questName,
                             Model model) {
         Slot slot = questsAndSlots.get(questName).get(slotId);
-        Reservation reservation = slot.getReservation();
 
         if (reserveBinding.hasErrors()) {
-            resForm.setReservation(reservation);
             model.addAttribute("res_form", resForm);
             model.addAttribute("slot", slot);
             model.addAttribute("slot_id", slotId);
@@ -134,7 +134,7 @@ public class ReservationController {
             return "reservation-form";
         }
 
-        reservation = Reservation.createBlockReservation(slot);
+        Reservation reservation = Reservation.createBlockReservation(slot);
         reservation.setSourceReserve("default");
         reservation.setHistoryMessages("default");
         adminService.saveReservation(admin, reservation);

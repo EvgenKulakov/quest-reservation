@@ -15,7 +15,7 @@
         <thead>
         <form th:action="@{/add-quest}" method="get">
             <h2>Список ваших квестов
-                <button class="btn btn-outline-primary" type="submit" formmethod="get">+ Добавить квест</button>
+                <button class="btn btn-outline-primary" type="submit">+ Добавить квест</button>
             </h2>
         </form>
         </thead>
@@ -26,12 +26,12 @@
             </td>
             <td>
                 <form th:action="@{/quest-info/{questId}(questId=${quest.id})}" method="get">
-                    <button class="btn btn-secondary" type="submit" formmethod="get">Подробнее</button>
+                    <button class="btn btn-secondary" type="submit">Подробнее</button>
                 </form>
             </td>
             <td>
                 <form th:action="@{/delete-quest}" method="post">
-                    <button class="btn btn-danger" type="submit" formmethod="post">Удалить</button>
+                    <button class="btn btn-danger" type="submit">Удалить</button>
                 </form>
             </td>
         </tr>

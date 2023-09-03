@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Admin;
@@ -36,6 +35,7 @@ public class QuestController {
 
     @GetMapping("/quest-list")
     public String showQuestList(Model model) {
+        /* admin test account */
         admin = adminService.getAdminById(1);
 
         List<Quest> quests = adminService.getQuestsByAdmin(admin);
@@ -73,6 +73,7 @@ public class QuestController {
                             @RequestParam("valuesWeekday") List<Integer> valuesWeekday,
                             @RequestParam("keysWeekend") List<LocalTime> keysWeekend,
                             @RequestParam("valuesWeekend") List<Integer> valuesWeekend) {
+        System.out.println(quest.getAdmin().getId());
         return "redirect:/quest-list";
     }
 

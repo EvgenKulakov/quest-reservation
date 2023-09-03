@@ -95,7 +95,7 @@
             <input type="hidden" name="quest_name" th:value="${quest.questName}">
 
             <div class="row justify-content-end">
-                <button th:if="${res_form.reservation == null}" class="btn btn-secondary mr-2 col-3"
+                <button th:if="${slot.reservation == null}" class="btn btn-secondary mr-2 col-3"
                         type="submit" formaction="/block-slot">Заблокировать</button>
                 <button class="btn btn-primary mr-2 col-3" type="submit">Сохранить</button>
             </div>

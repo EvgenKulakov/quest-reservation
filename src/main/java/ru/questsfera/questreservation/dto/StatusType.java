@@ -7,6 +7,7 @@ public enum StatusType {
     NEW_RESERVE("Новый"),
     CANCEL("Отменён"),
     CONFIRMED("Подтверждён"),
+    NOT_COME("Не пришёл"),
     COMPLETED("Завершён");
 
     private String name;
