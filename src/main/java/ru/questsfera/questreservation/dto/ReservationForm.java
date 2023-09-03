@@ -3,7 +3,6 @@ package ru.questsfera.questreservation.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import ru.questsfera.questreservation.entity.Admin;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.validator.BlockSlotValidator;
@@ -11,7 +10,6 @@ import ru.questsfera.questreservation.validator.SaveReserveValidator;
 
 public class ReservationForm {
 
-    private Admin admin;
     private Reservation reservation;
     private StatusType statusType;
 
@@ -49,7 +47,6 @@ public class ReservationForm {
 
     private void initWithReservation() {
         Client client = reservation.getClient();
-        this.admin = reservation.getAdmin();
         this.statusType = reservation.getStatusType();
         this.firstname = client != null ? client.getFirstName() : null;
         this.lastname = client != null ? client.getLastName() : null;
@@ -58,14 +55,6 @@ public class ReservationForm {
         this.countPersons = reservation.getCountPersons();
         this.adminComment = reservation.getAdminComment();
         this.clientComment = reservation.getClientComment();
-    }
-
-    public Admin getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
     }
 
     public Reservation getReservation() {

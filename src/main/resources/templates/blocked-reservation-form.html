@@ -31,54 +31,53 @@
         <form class="reserve-form" th:action="@{/delete-blocked-reservation}" method="post">
 
             <div class="mb-3 row">
-                <label for="inputStatus2" class="col-12 col-lg-3 col-form-label">Статус:</label>
+                <label for="input-status" class="col-12 col-lg-3 col-form-label">Статус:</label>
                 <div class="col-12 col-lg-6">
-                    <select class="form-select" id="inputStatus2" disabled>
+                    <select class="form-select" id="input-status" disabled>
                         <option>Заблокирован</option>
                     </select>
                 </div>
             </div>
 
             <div class="mb-3 row">
-                <label for="inputFirstName2" class="col-12 col-lg-3 col-form-label">Имя:</label>
+                <label for="input-firstname" class="col-12 col-lg-3 col-form-label">Имя:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" class="form-control" id="inputFirstName2" disabled>
+                    <input type="text" class="form-control" id="input-firstname" disabled>
                 </div>
             </div>
 
             <div class="mb-3 row">
-                <label for="inputLastName2" class="col-12 col-lg-3 col-form-label">Фамилия:</label>
+                <label for="input-lastname" class="col-12 col-lg-3 col-form-label">Фамилия:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" class="form-control" id="inputLastName2" disabled>
+                    <input type="text" class="form-control" id="input-lastname" disabled>
                 </div>
             </div>
 
             <div class="mb-3 row">
-                <label for="inputPhone2" class="col-12 col-lg-3 col-form-label">Телефон:</label>
+                <label for="input-phone" class="col-12 col-lg-3 col-form-label">Телефон:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="tel" class="form-control" id="inputPhone2" disabled>
+                    <input type="text" class="form-control" id="input-phone" disabled>
                 </div>
             </div>
 
             <div class="mb-3 row">
-                <label for="inputEmail3" class="col-12 col-lg-3 col-form-label">Email:</label>
+                <label for="input-email" class="col-12 col-lg-3 col-form-label">Email:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="email" class="form-control" id="inputEmail3" disabled>
+                    <input type="text" class="form-control" id="input-email" disabled>
                 </div>
             </div>
 
             <div class="mb-3 row">
-                <label for="inputCountPersons1" class="col-12 col-lg-3 col-form-label">Кол-во человек:</label>
+                <label for="input-count-persons" class="col-12 col-lg-3 col-form-label">Кол-во человек:</label>
                 <div class="col-12 col-lg-2">
-                    <select class="form-select" id="inputCountPersons1" disabled></select>
+                    <select class="form-select" id="input-count-persons" disabled></select>
                 </div>
             </div>
 
             <div class="mb-3 row">
-                <label for="inputComment3" class="col-12 col-lg-3 col-form-label">Комментарий:</label>
+                <label for="input-admin-comment" class="col-12 col-lg-3 col-form-label">Комментарий:</label>
                 <div class="col-12 col-lg-8">
-                    <textarea maxlength="200" rows="4"
-                              class="form-control" id="inputComment3" disabled></textarea>
+                    <textarea rows="4" class="form-control" id="input-admin-comment" disabled></textarea>
                 </div>
             </div>
 

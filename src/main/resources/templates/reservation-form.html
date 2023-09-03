@@ -27,57 +27,55 @@
             </div>
         </div>
 
-
         <form class="reserve-form" th:object="${res_form}" th:action="@{/save-reservation}" th:method="post">
 
             <div class="mb-3 row">
-                <label for="inputStatus2" class="col-12 col-lg-3 col-form-label">Статус:</label>
+                <label for="input-status" class="col-12 col-lg-3 col-form-label">Статус:</label>
                 <div class="col-12 col-lg-6">
-                    <select class="form-select" id="inputStatus2" th:field="*{statusType}">
+                    <select class="form-select" id="input-status" th:field="*{statusType}">
                         <option th:each="status : ${quest.statuses}" th:value="${status.type}"
                                 th:text="${status.type.name}">
                         </option>
                     </select>
-                    <div class="error-message" th:if="${#fields.hasErrors('statusType')}" th:errors="*{statusType}"></div>
                 </div>
             </div>
 
             <div class="mb-3 row">
-                <label for="inputFirstName2" class="col-12 col-lg-3 col-form-label">Имя:</label>
+                <label for="input-firstname" class="col-12 col-lg-3 col-form-label">Имя:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" maxlength="25" class="form-control" id="inputFirstName2" th:field="*{firstname}">
+                    <input type="text" maxlength="25" class="form-control" id="input-firstname" th:field="*{firstname}">
                     <div class="error-message" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></div>
                 </div>
             </div>
 
             <div class="mb-3 row">
-                <label for="inputLastName2" class="col-12 col-lg-3 col-form-label">Фамилия:</label>
+                <label for="input-lastname" class="col-12 col-lg-3 col-form-label">Фамилия:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" maxlength="25" class="form-control" id="inputLastName2" th:field="*{lastname}">
+                    <input type="text" maxlength="25" class="form-control" id="input-lastname" th:field="*{lastname}">
                     <div class="error-message" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></div>
                 </div>
             </div>
 
             <div class="mb-3 row">
-                <label for="inputPhone2" class="col-12 col-lg-3 col-form-label">Телефон:</label>
+                <label for="input-phone" class="col-12 col-lg-3 col-form-label">Телефон:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" maxlength="18" class="form-control" id="inputPhone2" th:field="*{phone}">
+                    <input type="text" maxlength="18" class="form-control" id="input-phone" th:field="*{phone}">
                     <div class="error-message" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
                 </div>
             </div>
 
             <div class="mb-3 row">
-                <label for="inputEmail3" class="col-12 col-lg-3 col-form-label">Email:</label>
+                <label for="input-email" class="col-12 col-lg-3 col-form-label">Email:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" maxlength="45" class="form-control" id="inputEmail3" th:field="*{email}">
+                    <input type="text" maxlength="45" class="form-control" id="input-email" th:field="*{email}">
                     <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                 </div>
             </div>
 
             <div class="mb-3 row">
-                <label for="inputCountPersons1" class="col-12 col-lg-3 col-form-label">Кол-во человек:</label>
+                <label for="input-count-persons" class="col-12 col-lg-3 col-form-label">Кол-во человек:</label>
                 <div class="col-12 col-lg-2">
-                    <select class="form-select" id="inputCountPersons1" th:field="*{countPersons}">
+                    <select class="form-select" id="input-count-persons" th:field="*{countPersons}">
                         <option th:each="num : ${#numbers.sequence(quest.minPersons, quest.maxPersons)}"
                                 th:value="${num}" th:text="${num}"></option>
                     </select>
@@ -85,9 +83,9 @@
             </div>
 
             <div class="mb-3 row">
-                <label for="inputComment3" class="col-12 col-lg-3 col-form-label">Комментарий:</label>
+                <label for="input-admin-comment" class="col-12 col-lg-3 col-form-label">Комментарий:</label>
                 <div class="col-12 col-lg-8">
-                    <textarea maxlength="200" rows="4" class="form-control" id="inputComment3"
+                    <textarea maxlength="200" rows="4" class="form-control" id="input-admin-comment"
                               th:field="*{adminComment}"></textarea>
                     <div class="error-message" th:if="${#fields.hasErrors('adminComment')}" th:errors="*{adminComment}"></div>
                 </div>
@@ -97,7 +95,8 @@
             <input type="hidden" name="quest_name" th:value="${quest.questName}">
 
             <div class="row justify-content-end">
-                <button class="btn btn-secondary mr-2 col-3" type="submit" formaction="/block-slot">Заблокировать</button>
+                <button th:if="${res_form.reservation == null}" class="btn btn-secondary mr-2 col-3"
+                        type="submit" formaction="/block-slot">Заблокировать</button>
                 <button class="btn btn-primary mr-2 col-3" type="submit">Сохранить</button>
             </div>
 

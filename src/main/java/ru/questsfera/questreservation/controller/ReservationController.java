@@ -91,7 +91,6 @@ public class ReservationController {
         Reservation reservation = slot.getReservation();
 
         if (reserveBinding.hasErrors()) {
-            resForm.setAdmin(admin);
             resForm.setReservation(reservation);
             model.addAttribute("res_form", resForm);
             model.addAttribute("slot", slot);
@@ -126,19 +125,12 @@ public class ReservationController {
         Slot slot = questsAndSlots.get(questName).get(slotId);
         Reservation reservation = slot.getReservation();
 
-        if (reservation != null || reserveBinding.hasErrors()) {
-            resForm.setAdmin(admin);
+        if (reserveBinding.hasErrors()) {
             resForm.setReservation(reservation);
             model.addAttribute("res_form", resForm);
             model.addAttribute("slot", slot);
             model.addAttribute("slot_id", slotId);
             model.addAttribute("quest", slot.getQuest());
-
-            if (reservation != null) {
-                reserveBinding.rejectValue("statusType", "errorCode",
-                        "*Нельзя заблокировать слот с существующим бронированием");
-            }
-
             return "reservation-form";
         }
 
