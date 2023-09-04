@@ -12,7 +12,7 @@ import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.processor.Editor;
 import ru.questsfera.questreservation.processor.SlotFactory;
 import ru.questsfera.questreservation.dto.SlotList;
-import ru.questsfera.questreservation.processor.SlotListMapper;
+import ru.questsfera.questreservation.converters.SlotListMapper;
 import ru.questsfera.questreservation.service.AdminService;
 import ru.questsfera.questreservation.validator.SaveReserveValidator;
 import ru.questsfera.questreservation.validator.BlockSlotValidator;

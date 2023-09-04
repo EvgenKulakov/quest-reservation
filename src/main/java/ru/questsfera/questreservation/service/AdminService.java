@@ -3,6 +3,7 @@ package ru.questsfera.questreservation.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.repository.*;
 import ru.questsfera.questreservation.entity.*;
 
@@ -133,6 +134,11 @@ public class AdminService {
     @Transactional
     public Set<Status> getStatusesByQuest(Quest quest) {
         return quest.getStatuses();
+    }
+
+    @Transactional
+    public Set<Status> getStatusesByTypes(Set<StatusType> statusTypes) {
+        return statusRepository.findStatusesByTypeIn(statusTypes);
     }
 
     //***SynchronizeQuests

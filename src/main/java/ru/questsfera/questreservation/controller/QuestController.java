@@ -8,15 +8,16 @@ import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Admin;
 import ru.questsfera.questreservation.entity.Quest;
+import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.entity.User;
-import ru.questsfera.questreservation.processor.SlotListMapper;
+import ru.questsfera.questreservation.converters.SlotListMapper;
+import ru.questsfera.questreservation.processor.SlotListFactory;
 import ru.questsfera.questreservation.service.AdminService;
 import ru.questsfera.questreservation.service.ModeratorService;
 
 import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -49,7 +50,7 @@ public class QuestController {
     public String showQuest(@PathVariable("questId") int questId, Model model) {
         Quest quest = moderatorService.getQuestById(questId);
         SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
-        List<LinkedHashMap<String, Integer>> allDays = slotList.getAllDays();
+        List<LinkedHashMap<LocalTime, Integer>> allDays = slotList.getAllDays();
 
         model.addAttribute("quest", quest);
         model.addAttribute("all_slot_list", allDays);
@@ -59,21 +60,30 @@ public class QuestController {
     @GetMapping("/add-quest")
     public String addQuest(Model model) {
         Quest quest = new Quest(admin);
-        SlotList slotList = new SlotList();
         model.addAttribute("quest", quest);
-        model.addAttribute("slotList", slotList);
         return "add-quest-form";
     }
 
     @PostMapping("/save-quest")
-    public String saveQuest(@ModelAttribute("quest") Quest quest, Model model,
-                            @RequestParam("checkStatus") List<StatusType> statusTypes,
+    public String saveQuest(@ModelAttribute("quest") Quest quest,
+                            @RequestParam("checkStatus") Set<StatusType> statusTypes,
                             @RequestParam(value = "checkUser", required = false) Set<User> users,
-                            @RequestParam("keysWeekday") List<LocalTime> keysWeekday,
-                            @RequestParam("valuesWeekday") List<Integer> valuesWeekday,
-                            @RequestParam("keysWeekend") List<LocalTime> keysWeekend,
-                            @RequestParam("valuesWeekend") List<Integer> valuesWeekend) {
-        System.out.println(quest.getAdmin().getId());
+                            @RequestParam("timesWeekday") List<LocalTime> timesWeekday,
+                            @RequestParam("pricesWeekday") List<Integer> pricesWeekday,
+                            @RequestParam("timesWeekend") List<LocalTime> timesWeekend,
+                            @RequestParam("pricesWeekend") List<Integer> pricesWeekend) {
+
+        Set<Status> statuses = adminService.getStatusesByTypes(statusTypes);
+        quest.setStatuses(statuses);
+
+        if (users != null) quest.setUsers(users);
+
+        SlotList slotList = SlotListFactory.create(timesWeekday, pricesWeekday, timesWeekend, pricesWeekend);
+        String jsonSlotList = SlotListMapper.createJSONSlotList(slotList);
+        quest.setSlotList(jsonSlotList);
+
+        adminService.saveQuest(admin, quest);
+
         return "redirect:/quest-list";
     }
 

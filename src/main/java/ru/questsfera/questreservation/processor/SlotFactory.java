@@ -30,10 +30,10 @@ public class SlotFactory {
 
         List<Slot> slots = new ArrayList<>();
 
-        HashMap<String, Integer> slotListMap = switchDay(date);
+        HashMap<LocalTime, Integer> slotListMap = switchDay(date);
 
-        for (Map.Entry<String, Integer> pair : slotListMap.entrySet()) {
-            LocalTime time = LocalTime.parse(pair.getKey());
+        for (Map.Entry<LocalTime, Integer> pair : slotListMap.entrySet()) {
+            LocalTime time = pair.getKey();
             Integer price = pair.getValue();
 
             while (!reservations.isEmpty()
@@ -51,7 +51,7 @@ public class SlotFactory {
         return slots;
     }
 
-    private LinkedHashMap<String, Integer> switchDay(LocalDate date) {
+    private LinkedHashMap<LocalTime, Integer> switchDay(LocalDate date) {
         return switch (date.getDayOfWeek()) {
             case MONDAY -> slotList.getMonday();
             case TUESDAY -> slotList.getTuesday();
