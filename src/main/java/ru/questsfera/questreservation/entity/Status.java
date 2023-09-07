@@ -20,7 +20,27 @@ public class Status {
     @ManyToMany(mappedBy = "statuses")
     private Set<Quest> quests = new HashSet<>();
 
+    public Status(StatusType statusType) {
+        this.id = statusType.getId();
+        this.type = statusType;
+    }
+
     public Status() {}
+
+    public static Set<Status> getDefaultStatuses() {
+        Set<Status> defaultStatuses = new HashSet<>();
+        defaultStatuses.add(new Status(StatusType.NEW_RESERVE));
+        defaultStatuses.add(new Status(StatusType.CANCEL));
+        return defaultStatuses;
+    }
+
+    public static List<Status> getUserStatuses() {
+        List<Status> userStatuses = new ArrayList<>();
+        userStatuses.add(new Status(StatusType.CONFIRMED));
+        userStatuses.add(new Status(StatusType.NOT_COME));
+        userStatuses.add(new Status(StatusType.COMPLETED));
+        return userStatuses;
+    }
 
     public Set<Quest> getQuests() {
         return quests;

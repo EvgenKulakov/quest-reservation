@@ -7,21 +7,15 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import ru.questsfera.questreservation.converters.*;
+import ru.questsfera.questreservation.converter.*;
 
 @SpringBootApplication
 public class QuestReservationApplication implements WebMvcConfigurer {
     private final StatusTypeConverter statusTypeConverter;
-    private final QuestConverter questConverter;
-    private final UserConverter userConverter;
 
     @Autowired
-    public QuestReservationApplication(StatusTypeConverter statusTypeConverter,
-                                       QuestConverter questConverter,
-                                       UserConverter userConverter) {
+    public QuestReservationApplication(StatusTypeConverter statusTypeConverter) {
         this.statusTypeConverter = statusTypeConverter;
-        this.questConverter = questConverter;
-        this.userConverter = userConverter;
     }
 
     public static void main(String[] args) {
@@ -36,8 +30,6 @@ public class QuestReservationApplication implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(statusTypeConverter);
-        registry.addConverter(questConverter);
-        registry.addConverter(userConverter);
 
         DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
         registrar.registerFormatters(registry);

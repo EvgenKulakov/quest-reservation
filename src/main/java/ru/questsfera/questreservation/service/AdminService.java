@@ -74,6 +74,15 @@ public class AdminService {
 
     //***Quests
     @Transactional
+    public Quest getQuestById(int id) {
+        Optional<Quest> optionalQuest = questRepository.findById(id);
+        if (optionalQuest.isPresent()) {
+            return optionalQuest.get();
+        }
+        throw new RuntimeException("Попытка получить несуществующий квест");
+    }
+
+    @Transactional
     public List<Quest> getQuestsByAdmin(Admin admin) {
         List<Quest> quests = questRepository.findQuestsByAdminOrderByQuestName(admin);
         return quests;
@@ -82,6 +91,7 @@ public class AdminService {
     @Transactional
     public void saveQuest(Admin admin, Quest quest) {
         admin.addQuestForAdmin(quest);
+        quest.saveUsers();
         questRepository.save(quest);
     }
 
@@ -134,11 +144,6 @@ public class AdminService {
     @Transactional
     public Set<Status> getStatusesByQuest(Quest quest) {
         return quest.getStatuses();
-    }
-
-    @Transactional
-    public Set<Status> getStatusesByTypes(Set<StatusType> statusTypes) {
-        return statusRepository.findStatusesByTypeIn(statusTypes);
     }
 
     //***SynchronizeQuests

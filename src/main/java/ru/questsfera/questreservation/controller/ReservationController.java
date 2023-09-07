@@ -6,13 +6,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.dto.ReservationForm;
+import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.*;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.processor.Editor;
 import ru.questsfera.questreservation.processor.SlotFactory;
-import ru.questsfera.questreservation.dto.SlotList;
-import ru.questsfera.questreservation.converters.SlotListMapper;
+import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.service.AdminService;
 import ru.questsfera.questreservation.validator.SaveReserveValidator;
 import ru.questsfera.questreservation.validator.BlockSlotValidator;
@@ -97,9 +97,6 @@ public class ReservationController {
             model.addAttribute("quest", slot.getQuest());
             return "reservation-form";
         }
-
-        String standardPhone = Editor.convertToStandardPhoneFormat(resForm.getPhone());
-        resForm.setPhone(standardPhone);
 
         if (reservation == null) {
             reservation = new Reservation(resForm, slot);

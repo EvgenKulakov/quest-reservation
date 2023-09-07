@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.converters;
+package ru.questsfera.questreservation.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

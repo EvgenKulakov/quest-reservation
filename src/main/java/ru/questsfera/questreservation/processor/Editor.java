@@ -19,10 +19,4 @@ public class Editor {
         client.setPhone(resForm.getPhone());
         client.setEmail(resForm.getEmail());
     }
-
-    public static String convertToStandardPhoneFormat(String phone) {
-        String formattedPhone = phone.replaceAll("[^\\d]", "");
-        formattedPhone = "+7" + formattedPhone.substring(1);
-        return formattedPhone;
-    }
 }

@@ -3,9 +3,9 @@ package ru.questsfera.questreservation.processor;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.StatusType;
+import ru.questsfera.questreservation.dto.TimePrice;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
-import ru.questsfera.questreservation.entity.Status;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -30,11 +30,11 @@ public class SlotFactory {
 
         List<Slot> slots = new ArrayList<>();
 
-        HashMap<LocalTime, Integer> slotListMap = switchDay(date);
+        List<TimePrice> timePriceList = switchDay(date);
 
-        for (Map.Entry<LocalTime, Integer> pair : slotListMap.entrySet()) {
-            LocalTime time = pair.getKey();
-            Integer price = pair.getValue();
+        for (TimePrice timePrice : timePriceList) {
+            LocalTime time = timePrice.getTime();
+            Integer price = timePrice.getPrice();
 
             while (!reservations.isEmpty()
                     && reservations.peek().getStatusType().equals(StatusType.CANCEL)) {
@@ -51,7 +51,7 @@ public class SlotFactory {
         return slots;
     }
 
-    private LinkedHashMap<LocalTime, Integer> switchDay(LocalDate date) {
+    private List<TimePrice> switchDay(LocalDate date) {
         return switch (date.getDayOfWeek()) {
             case MONDAY -> slotList.getMonday();
             case TUESDAY -> slotList.getTuesday();

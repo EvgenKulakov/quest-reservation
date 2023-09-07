@@ -16,23 +16,23 @@
         <h3>
             <td th:text="'Бронирования по дате '"></td>
             <button type="submit" class="badge bg-light text-dark" id="dateButton">
-                <td th:text="${#temporals.format(date, 'dd-MM-yyyy')}"></td>
+                <td th:text="${#temporals.format(date, 'dd-MM-yyyy (EEEE)')}"></td>
                 <img src="/icons/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
             </button>
         </h3>
     </div>
     <br>
 
-    <div th:each="quest_slots : ${quests_and_slots.entrySet()}" class="container-fluid">
+    <div th:each="one_quest_with_slots : ${quests_and_slots}" class="container-fluid">
         <div class="row-cols-auto d-flex align-items-center quest-name">
-            <h3><td th:text="${quest_slots.getKey()}"></td></h3>
+            <h3><td th:text="${one_quest_with_slots.key}"></td></h3>
         </div>
         <div class="row-cols-auto d-flex flex-wrap">
-            <td th:each="slot, index : ${quest_slots.getValue()}">
-                <form th:action="@{/reservation/{questName}/{slotId}(questName=${quest_slots.getKey()}, slotId=${index.index})}"
+            <td th:each="slot, index : ${one_quest_with_slots.value}">
+                <form th:action="@{/reservation/{questName}/{slotId}(questName=${one_quest_with_slots.key}, slotId=${index.index})}"
                       method="get">
                     <button class="slot-button" th:attr="data-status=${slot.statusType}" type="submit">
-                        <span th:text="${slot.time}"></span><br/><span th:text="'₽' + ${slot.price}"/>
+                        <span th:utext="${slot.time} + '<br/>₽' + ${slot.price}">
                     </button>
                 </form>
             </td>

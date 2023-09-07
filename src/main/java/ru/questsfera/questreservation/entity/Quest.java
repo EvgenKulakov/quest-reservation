@@ -56,6 +56,7 @@ public class Quest {
     public Quest(Admin admin) {
         this.admin = admin;
         this.autoBlock = LocalTime.MIN;
+        statuses = Status.getDefaultStatuses();
     }
 
     public void addStatusForQuest(Status status) {
@@ -66,6 +67,10 @@ public class Quest {
     public void deleteStatusForQuest(Status status) {
         status.getQuests().remove(this);
         statuses.remove(status);
+    }
+
+    public void saveUsers() {
+        users.forEach(user -> user.getQuests().add(this));
     }
 
     public static void synchronizeQuests(Quest... quests) {

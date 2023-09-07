@@ -10,29 +10,31 @@ import ru.questsfera.questreservation.validator.SaveReserveValidator;
 
 public class ReservationForm {
 
+    private static final String ERROR_BLOCK_MESSAGE = "*Для блокировки все поля должны быть пустыми";
+
     private StatusType statusType;
 
     @NotBlank(message = "*Обязательное поле", groups = SaveReserveValidator.class)
-    @Size(max = 0, message = "*Для блокировки все поля должны быть пустыми", groups = BlockSlotValidator.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
     private String firstname;
 
-    @Size(max = 0, message = "*Для блокировки все поля должны быть пустыми", groups = BlockSlotValidator.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
     private String lastname;
 
-    @Pattern(regexp = "^(?:\\+7|7|8)[ ]?(?:\\(\\d{3}\\)|\\d{3})[ ]?\\d{3}(?:-?\\d{2}-?\\d{2}|\\d{6})$",
-            message = "*Проверьте правильное написание номера телефона",
+    @Pattern(regexp = "^\\+7\\d{10}$",
+            message = "*Введите номер телефона в формате +7хххххххххх",
             groups = SaveReserveValidator.class)
-    @Size(max = 2, message = "*Для блокировки все поля должны быть пустыми", groups = BlockSlotValidator.class)
+    @Size(max = 2, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
     private String phone = "+7";
 
     @Pattern(regexp = "^$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             message = "*Проверьте правильное написание Email", groups = SaveReserveValidator.class)
-    @Size(max = 0, message = "*Для блокировки все поля должны быть пустыми", groups = BlockSlotValidator.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
     private String email;
 
     private Integer countPersons;
 
-    @Size(max = 0, message = "*Для блокировки все поля должны быть пустыми", groups = BlockSlotValidator.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
     private String adminComment;
 
     private String clientComment;

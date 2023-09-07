@@ -28,11 +28,11 @@
             <td>
                 <table>
                     <tr th:each="status : ${quest.statuses}">
-                        <td th:text="${status.type.getName()}"></td>
+                        <td th:text="${status.type.name}"></td>
                     </tr>
                 </table>
             </td>
-            <td th:text="${quest.autoBlock.hour} + ':' + ${quest.autoBlock.minute}"></td>
+            <td th:text="${#temporals.format(quest.autoBlock, 'HH:mm')}"></td>
             <td>
                 <table>
                     <tr th:each="user : ${quest.users}">
@@ -71,7 +71,7 @@
             <td th:each="slot_list : ${all_slot_list}">
                 <table>
                     <tr th:each="slot : ${slot_list}">
-                        <td th:text="${slot.getKey()} + ' - ' + ${slot.getValue()} + '₽'"></td>
+                        <td th:text="${slot.time} + ' - ' + ${slot.price} + '₽'"></td>
                     </tr>
                 </table>
             </td>

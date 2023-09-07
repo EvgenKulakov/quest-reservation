@@ -4,15 +4,17 @@ public enum StatusType {
     EMPTY,
     BLOCK,
     MODIFIED,
-    NEW_RESERVE("Новый"),
-    CANCEL("Отменён"),
-    CONFIRMED("Подтверждён"),
-    NOT_COME("Не пришёл"),
-    COMPLETED("Завершён");
+    NEW_RESERVE(1, "Новый"),
+    CANCEL(2, "Отменён"),
+    CONFIRMED(3, "Подтверждён"),
+    NOT_COME(4, "Не пришёл"),
+    COMPLETED(5, "Завершён");
 
+    private Integer id;
     private String name;
 
-    StatusType(String name) {
+    StatusType(Integer id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -20,5 +22,9 @@ public enum StatusType {
 
     public String getName() {
         return name;
+    }
+
+    public Integer getId() {
+        return id;
     }
 }
