@@ -1,6 +1,7 @@
 package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -13,19 +14,27 @@ public class Quest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "*Обязательное поле")
     @Column(name = "quest_name")
     private String questName;
 
-    /* JSON for SlotList type */
+    /* JSON for SlotList object */
     @Column(name = "slot_list")
     private String slotList;
 
+    @Min(value = 1, message = "*Минимум 1")
+    @Max(value = 100, message = "*Максимум 100")
+    @NotNull(message = "*Обязательное поле")
     @Column(name = "min_persons")
-    private int minPersons;
+    private Integer minPersons;
 
+    @Min(value = 1, message = "*Минимум 1")
+    @Max(value = 100, message = "*Максимум 100")
+    @NotNull(message = "*Обязательное поле")
     @Column(name = "max_persons")
-    private int maxPersons;
+    private Integer maxPersons;
 
+    @NotNull(message = "*Обязательное поле")
     @Column(name = "auto_block")
     private LocalTime autoBlock;
 
@@ -174,19 +183,19 @@ public class Quest {
         this.slotList = slotList;
     }
 
-    public int getMinPersons() {
+    public Integer getMinPersons() {
         return minPersons;
     }
 
-    public void setMinPersons(int minPersons) {
+    public void setMinPersons(Integer minPersons) {
         this.minPersons = minPersons;
     }
 
-    public int getMaxPersons() {
+    public Integer getMaxPersons() {
         return maxPersons;
     }
 
-    public void setMaxPersons(int maxPersons) {
+    public void setMaxPersons(Integer maxPersons) {
         this.maxPersons = maxPersons;
     }
 

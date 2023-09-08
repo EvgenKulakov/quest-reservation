@@ -1,4 +1,8 @@
 .check-default {
     pointer-events: none;
-    opacity: 50%;
+}
+
+.error-message {
+    font-size: 14px;
+    color: red;
 }

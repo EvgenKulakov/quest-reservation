@@ -1,0 +1,8 @@
+.error-message {
+    font-size: 15px;
+    color: red;
+    /*border-radius: 5px;*/
+    background-color: #f2f2f2;
+    border-left: 3px solid indianred;
+    padding: 9px;
+}

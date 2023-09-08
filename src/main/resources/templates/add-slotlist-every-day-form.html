@@ -5,35 +5,38 @@
     <title>Добавить квест</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/add-quest-first-form-style.css}" rel="stylesheet">
+    <link th:href="@{/css/add-slotlist-every-day-style.css}" rel="stylesheet">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
 
 <section class="container">
-    <h2>Сетка квеста</h2>
+    <h2 class="mt-3">Сетка квеста</h2>
+    <h6><tt>Шаг 2 из 2-х</tt></h6>
 
     <form class="reserve-form" th:object="${slot_list}" th:action="@{/save-quest}" method="post">
 
-        <h3 class="mt-3">Сетка квеста</h3>
-        <h4 class="mt-3 mb-3">Каждый день</h4>
+        <h4 class="mt-3 mb-3 text">Все дни недели</h4>
         <div class="row mt-3" th:each="i : ${#numbers.sequence(0, 9)}">
-            <label for="inputTimeWeekday" class="col-1 col-form-label">Время:</label>
+            <label for="input-time" class="col-1 col-form-label">Время:</label>
             <div class="col-2">
-                <input type="time" class="form-control" id="inputTimeWeekday" th:field="*{monday[__${i}__].time}">
+                <input type="time" class="form-control" id="input-time"
+                       th:field="*{monday[__${i}__].time}">
             </div>
-            <label for="inputPriceWeekday" class="col-1 col-form-label">Стоимость:</label>
+            <label for="input-price" class="col-1 col-form-label">Стоимость:</label>
             <div class="col-1">
-                <input type="number" class="form-control" id="inputPriceWeekday" th:field="*{monday[__${i}__].price}">
+                <input type="number" min="0" max="100000" class="form-control" id="input-price"
+                       th:field="*{monday[__${i}__].price}">
             </div>
         </div>
 
         <input type="hidden" name="quest" th:value="${quest.id}">
 
-        <div class="row">
-            <div class="col col-3"></div>
-            <button class="mt-4 mb-4 btn btn-primary col-2" type="submit">Сохранить</button>
+        <div class="mt-4 error-message row col-5" th:if="${#fields.hasErrors('global')}"
+             th:each="err : ${#fields.errors('global')}" th:text="${err}">
         </div>
+
+        <button class="mt-4 mb-4 btn btn-primary row col-5" type="submit">Сохранить</button>
 
     </form>
 </section>
