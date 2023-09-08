@@ -1,0 +1,15 @@
+.buttons {
+    margin: 5px;
+}
+
+.quest-text {
+    margin-right: 5px;
+    margin-left: 20px;
+}
+
+.add-quest {
+    margin-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid black;
+    width: fit-content;
+}

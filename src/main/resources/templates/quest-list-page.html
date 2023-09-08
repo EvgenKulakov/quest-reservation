@@ -5,6 +5,7 @@
     <title>Список квестов</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/quest-list-style.css}" rel="stylesheet">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
@@ -14,23 +15,23 @@
     <table>
         <thead>
         <form th:action="@{/add-quest-first-page}" method="post">
-            <h2>Список ваших квестов
+            <h3 class="add-quest">Список ваших квестов
                 <button class="btn btn-outline-primary" type="submit">+ Добавить квест</button>
-            </h2>
+            </h3>
         </form>
         </thead>
         <tbody>
         <tr th:each="quest : ${quests}">
             <td>
-                <h3 th:text="${quest.questName}"></h3>
+                <h3 class="quest-text" th:text="${quest.questName}"></h3>
             </td>
             <td>
-                <form th:action="@{/quest-info/{questId}(questId=${quest.id})}" method="get">
+                <form class="buttons" th:action="@{/quest-info/{questId}(questId=${quest.id})}" method="get">
                     <button class="btn btn-secondary" type="submit">Подробнее</button>
                 </form>
             </td>
             <td>
-                <form th:action="@{/delete-quest}" method="post">
+                <form class="buttons" th:action="@{/delete-quest}" method="post">
                     <input type="hidden" name="quest" th:value="${quest.id}">
                     <button class="btn btn-danger" type="submit">Удалить</button>
                 </form>

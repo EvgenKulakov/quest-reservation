@@ -10,5 +10,6 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
     LinkedList<Reservation> findAllByQuestAndDateReserveOrderByTimeReserve(Quest quest, LocalDate date);
-    List<Reservation> findAllByQuest(Quest quest);
+    boolean existsByQuest(Quest quest);
+    void deleteByQuest(Quest quest);
 }

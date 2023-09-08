@@ -96,13 +96,24 @@ public class AdminService {
     }
 
     @Transactional
+    public boolean hasReservations(Quest quest) {
+        return reservationRepository.existsByQuest(quest);
+    }
+
+    @Transactional
     public void deleteQuest(Admin admin, Quest quest) {
         if (!quest.getAdmin().equals(admin)) {
             throw new RuntimeException("Попытка удалить квест админом, у которого нет доступа");
         }
 
-        if (!reservationRepository.findAllByQuest(quest).isEmpty()) {
-            throw new RuntimeException("Попытка удалить квест, у которого есть бронирования");
+        reservationRepository.deleteByQuest(quest);
+
+        for (User user : quest.getUsers()) {
+            user.deleteQuestForUser(quest);
+        }
+
+        for (Status status : quest.getStatuses()) {
+            quest.deleteStatusForQuest(status);
         }
 
         if (!quest.getSynchronizedQuests().isEmpty()) {

@@ -44,7 +44,6 @@ public class User {
 
     public void deleteQuestForUser(Quest quest) {
         quests.remove(quest);
-        quest.getUsers().remove(this);
     }
 
     public Admin getAdmin() {

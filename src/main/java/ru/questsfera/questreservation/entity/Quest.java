@@ -75,7 +75,6 @@ public class Quest {
 
     public void deleteStatusForQuest(Status status) {
         status.getQuests().remove(this);
-        statuses.remove(status);
     }
 
     public void saveUsers() {

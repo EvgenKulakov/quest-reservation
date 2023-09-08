@@ -111,7 +111,17 @@ public class QuestController {
     }
 
     @PostMapping("/delete-quest")
-    public String deleteQuest(@RequestParam("quest") Quest quest) {
+    public String deleteQuest(@RequestParam("quest") Quest quest, Model model) {
+        if (adminService.hasReservations(quest)) {
+            model.addAttribute("quest", quest);
+            return "question-delete-quest";
+        }
+        adminService.deleteQuest(admin, quest);
+        return "redirect:/quest-list";
+    }
+
+    @PostMapping("/delete-quest-final")
+    public String deleteQuestFinal(@RequestParam("quest") Quest quest) {
         adminService.deleteQuest(admin, quest);
         return "redirect:/quest-list";
     }
