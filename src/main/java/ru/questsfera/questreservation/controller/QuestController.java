@@ -15,8 +15,8 @@ import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.processor.SlotListFactory;
 import ru.questsfera.questreservation.service.AdminService;
+import ru.questsfera.questreservation.validator.SlotListValidator;
 
-import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -76,7 +76,6 @@ public class QuestController {
                 binding.addError(new ObjectError("global",
                         "*Значение \"От\" не может быть больше значения \"До\""));
             }
-
             return "add-quest-first-form";
         }
 
@@ -91,16 +90,14 @@ public class QuestController {
                             @RequestParam("quest") Quest quest,
                             Model model) {
 
-        for (TimePrice timePrice : slotList.getMonday()) {
-            if (timePrice.getTime() == null || timePrice.getPrice() == null) {
-                binding.addError(new ObjectError("global", "*Все поля должны быть заполнены"));
-                model.addAttribute("quest" , quest);
-                model.addAttribute("slot_list", slotList);
-                return "add-slotlist-every-day-form";
-            }
+        String errorMessage = SlotListValidator.checkOneDay(slotList.getMonday());
+        if (!errorMessage.isEmpty()) {
+            binding.addError(new ObjectError("global", errorMessage));
+            model.addAttribute("quest" , quest);
+            model.addAttribute("slot_list", slotList);
+            return "add-slotlist-every-day-form";
         }
 
-        Collections.sort(slotList.getMonday());
         SlotListFactory.makeSlotListEveryDay(slotList);
         String jsonSlotList = SlotListMapper.createJSONSlotList(slotList);
         quest.setSlotList(jsonSlotList);
@@ -115,6 +112,7 @@ public class QuestController {
         if (adminService.hasReservations(quest)) {
             model.addAttribute("quest", quest);
             return "question-delete-quest";
+
         }
         adminService.deleteQuest(admin, quest);
         return "redirect:/quest-list";

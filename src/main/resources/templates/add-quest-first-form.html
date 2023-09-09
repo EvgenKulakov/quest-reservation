@@ -29,11 +29,11 @@
             <label class="col-2 col-form-label">Кол-во человек: (от-до)</label>
             <div class="col-1">
                 <input class="form-control" type="number" max="999" min="-999" th:field="*{minPersons}">
-                <div class="error-message" th:if="${#fields.hasErrors('minPersons')}" th:errors="*{minPersons}"></div>
+                <div class="error-message-peoples" th:if="${#fields.hasErrors('minPersons')}" th:errors="*{minPersons}"></div>
             </div>
             <div class="col-1">
                 <input class="form-control" type="number" max="999" min="-999" th:field="*{maxPersons}">
-                <div class="error-message" th:if="${#fields.hasErrors('maxPersons')}" th:errors="*{maxPersons}"></div>
+                <div class="error-message-peoples" th:if="${#fields.hasErrors('maxPersons')}" th:errors="*{maxPersons}"></div>
             </div>
             <div class="row" th:if="${#fields.hasErrors('global')}">
                 <div class="col-2"></div>

@@ -13,8 +13,8 @@ docker network create db-spring-net
 --------------------------------------------------
 docker run --name db --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v .:/app -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=quest_reservations -d mysql:8.0.33
 docker exec -it db sh
-mysql -u root -p quest_reservations < /app/Dump6-correct-clients-table.sql
+mysql -u root -p quest_reservations < /app/Dump7.sql
 --------------------------------------------------
-docker build -t evgeniydockerman/questreservations:git28 .
-docker run -d --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro --name spring-cont -p 8080:8080 evgeniydockerman/questreservations:git28
+docker build -t evgeniydockerman/questreservations:git34 .
+docker run -d --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro --name spring-cont -p 8080:8080 evgeniydockerman/questreservations:git34
 ========================================================================================================================

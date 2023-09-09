@@ -62,8 +62,12 @@
     background-color: darksalmon;
 }
 
+.slot-button[data-status="NOT_COME"] {
+    background-color: #F0E68C;
+}
+
 .slot-button[data-status="CONFIRMED"] {
-    background-color: #6495ED;
+    background-color: #87CEEB;
 }
 
 .slot-button[data-status="COMPLETED"] {

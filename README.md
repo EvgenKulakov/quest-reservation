@@ -14,11 +14,11 @@ Spring MVC, Hibernate Validator, Thymeleaf, BootStrap 5, Docker
 ***
 
 ### Сделанная часть: 
-Взаимодействие с БД, основная логика программы, часть view
+Взаимодействие с БД, основная логика программы, часть view, валидация
 
 
 ### В разработке: 
-View, security, refactoring
+View, security, refactoring, внешний виджет
 ***
 
 ## Схема Database:
@@ -31,6 +31,6 @@ View, security, refactoring
 MySQL и Spring Boot в двух отдельных Docker контейнерах на общей сети network
 > 
 >__Ссылка на сервер:__ 
-> <a href="http://31.129.99.231:8080/slot-list" target="_blank">quest-reservations</a>
+> <a target="_blank"> http://31.129.99.231:8080/slot-list </a>
 > 
 >__Логин/пароль от тестового аккаунта:__ _admin_
