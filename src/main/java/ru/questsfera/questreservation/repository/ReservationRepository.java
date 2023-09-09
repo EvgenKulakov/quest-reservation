@@ -6,7 +6,6 @@ import ru.questsfera.questreservation.entity.Reservation;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
-import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
     LinkedList<Reservation> findAllByQuestAndDateReserveOrderByTimeReserve(Quest quest, LocalDate date);

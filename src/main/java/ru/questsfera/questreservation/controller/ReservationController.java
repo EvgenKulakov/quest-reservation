@@ -13,6 +13,7 @@ import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.processor.Editor;
 import ru.questsfera.questreservation.processor.SlotFactory;
 import ru.questsfera.questreservation.converter.SlotListMapper;
+import ru.questsfera.questreservation.processor.StatusFactory;
 import ru.questsfera.questreservation.service.AdminService;
 import ru.questsfera.questreservation.validator.SaveReserveValidator;
 import ru.questsfera.questreservation.validator.BlockSlotValidator;
@@ -43,15 +44,19 @@ public class ReservationController {
 
         questsAndSlots.clear();
 
+        Set<StatusType> useStatuses = new TreeSet<>();
+
         for (Quest quest : quests) {
             LinkedList<Reservation> reservations = adminService.getReservationsByDate(admin, quest, date);
             SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
             SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
             List<Slot> slots = slotFactory.getActualSlots();
+            StatusFactory.addUniqueStatusTypes(useStatuses, slots);
             questsAndSlots.put(quest.getQuestName(), slots);
         }
 
         model.addAttribute("quests_and_slots", questsAndSlots);
+        model.addAttribute("use_statuses" , useStatuses);
         model.addAttribute("date", date);
 
         return "slot-list-page";

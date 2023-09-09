@@ -9,16 +9,25 @@
     text-decoration: none;
     color: #333;
     background-color: #f7f7f7;
-    cursor: pointer;
-    font-size: 15px;
 }
 
 /* Стиль для рамки вокруг кнопки при наведении */
-.slot-button:hover {
+.slot-button.custom-button:hover {
     /*border: 2px solid #198754;*/
     /*border: 3px solid #86b7fe;*/
     border-color: #0d6efd;
     outline: 3px solid #86b7fe;
+    cursor: pointer;
+}
+
+.slot-button.custom-button {
+    font-size: 15px;
+}
+
+.slot-button.custom-status {
+    font-size: 14px;
+    font-family: Monospaced, monospace;
+    cursor: default;
 }
 
 /*.my-container {*/
@@ -38,7 +47,7 @@
     /*background-color: #DCDCDC;*/
 }
 
-#date h3 {
+#date {
     /*margin-top: -5px;*/
     padding-bottom: 10px;
     border-bottom: 2px solid black;
@@ -47,6 +56,15 @@
 
 #dateButton {
     margin-top: 5px;
+}
+
+#status-info {
+    align-items: center;
+    padding-top: 10px;
+}
+
+#status-info h5 {
+    font-family: Monospaced, monospace;
 }
 
 /* Стили для разных статусов */
