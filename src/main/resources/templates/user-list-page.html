@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список квестов</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/user-list-style.css}" rel="stylesheet">
+</head>
+<body>
+<header th:insert="~{header-fragment :: head}"></header>
+
+<section class="container font-style">
+
+    <table>
+        <thead>
+        <form th:action="@{/add-user}" method="post">
+            <h3 class="add-quest">Список ваших пользователей
+                <input type="hidden" name="admin" th:value="${admin.id}">
+                <button type="submit" class="btn btn-outline-primary">+ Добавить пользователя</button>
+            </h3>
+        </form>
+        </thead>
+        <tbody>
+        <tr class="quest-functions" th:each="user : ${users}">
+            <td>
+                <h3 class="quest-text" th:text="${user.username}"></h3>
+            </td>
+            <td>
+                <form class="buttons" th:action="@{/user-info}" method="post">
+                    <input type="hidden" name="quest" th:value="${user.id}">
+                    <button type="submit" class="btn btn-warning">Подробнее</button>
+                </form>
+            </td>
+            <td>
+                <form class="buttons" th:action="@{/delete-user}" method="post">
+                    <input type="hidden" name="quest" th:value="${user.id}">
+                    <button type="submit" class="btn btn-danger">Удалить позьзователя</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</section>
+
+<script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

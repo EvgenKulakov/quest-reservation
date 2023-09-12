@@ -18,8 +18,14 @@ public class User {
     @Column(name = "password_crypt")
     private String passwordCrypt;
 
-    @Column(name = "mail")
-    private String mail;
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "email")
+    private String email;
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
@@ -32,6 +38,10 @@ public class User {
     private Set<Quest> quests = new HashSet<>();
 
     public User() {}
+
+    public User(Admin admin) {
+        this.admin = admin;
+    }
 
     public void addQuestForUser(Quest quest) {
         if (!quest.getAdmin().equals(this.admin)) {
@@ -78,12 +88,28 @@ public class User {
         this.passwordCrypt = passwordCrypt;
     }
 
-    public String getMail() {
-        return mail;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Set<Quest> getQuests() {
@@ -104,5 +130,19 @@ public class User {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", passwordCrypt='" + passwordCrypt + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", admin=" + admin +
+                ", quests=" + quests +
+                '}';
     }
 }

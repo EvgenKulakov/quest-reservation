@@ -12,9 +12,9 @@
 
 <section>
     <br>
-    <div class="container-fluid my-container">
-        <div class="row">
-            <h3 class="col-6" id="date">
+    <div class="container-fluid my-container" >
+        <div>
+            <h3 id="date">
                 <td th:text="'Бронирования по дате '"></td>
                 <button type="submit" class="badge bg-light text-dark" id="dateButton">
                     <td th:text="${#temporals.format(date, 'dd-MM-yyyy (EEEE)')}"></td>
@@ -22,7 +22,7 @@
                 </button>
             </h3>
             <div class="row row-cols-auto" id="status-info">
-                <h5>Статусы</h5>
+                <h6>Статусы</h6>
                 <th:block th:each="status_type : ${use_statuses}">
                     <div class="slot-button custom-status col-auto" th:text="${status_type.name}"
                          th:attr="data-status=${status_type}"></div>
@@ -30,9 +30,8 @@
             </div>
         </div>
     </div>
-    <br>
 
-    <div th:each="one_quest_with_slots : ${quests_and_slots}" class="container-fluid">
+    <div th:each="one_quest_with_slots : ${quests_and_slots}" class="container-fluid" id="block-reserves">
         <div class="row-cols-auto d-flex align-items-center quest-name">
             <h3><td th:text="${one_quest_with_slots.key}"></td></h3>
         </div>

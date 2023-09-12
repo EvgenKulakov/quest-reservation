@@ -26,7 +26,8 @@
                 <h3 class="quest-text" th:text="${quest.questName}"></h3>
             </td>
             <td>
-                <form class="buttons" th:action="@{/quest-info/{questId}(questId=${quest.id})}" method="get">
+                <form class="buttons" th:action="@{/quest-info}" method="post">
+                    <input type="hidden" name="quest" th:value="${quest.id}">
                     <button class="btn btn-secondary" type="submit">Подробнее</button>
                 </form>
             </td>

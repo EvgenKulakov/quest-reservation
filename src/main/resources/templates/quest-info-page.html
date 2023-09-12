@@ -40,7 +40,7 @@
                     </tr>
                 </table>
             </td>
-            <td th:switch="${quest.synchronizedQuests.isEmpty()}">
+            <td th:switch="${#lists.isEmpty(quest.synchronizedQuests)}">
                 <p th:case="${true}">Нет синхронизированных квестов</p>
                 <table th:case="*">
                     <tr th:each="synchQuest : ${quest.synchronizedQuests}">

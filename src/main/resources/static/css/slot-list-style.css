@@ -1,54 +1,42 @@
 /* Стили для кнопок-слотов */
 .slot-button {
     display: inline-block;
-    padding: 10px;
     margin: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
     text-align: center;
+    font-size: 14px;
     text-decoration: none;
     color: #333;
     background-color: #f7f7f7;
+    border-radius: 5px;
 }
 
 /* Стиль для рамки вокруг кнопки при наведении */
 .slot-button.custom-button:hover {
-    /*border: 2px solid #198754;*/
-    /*border: 3px solid #86b7fe;*/
     border-color: #0d6efd;
     outline: 3px solid #86b7fe;
     cursor: pointer;
 }
 
 .slot-button.custom-button {
-    font-size: 15px;
+    padding: 10px;
 }
 
 .slot-button.custom-status {
-    font-size: 14px;
-    font-family: Monospaced, monospace;
     cursor: default;
+    padding: 5px;
 }
-
-/*.my-container {*/
-/*    margin-left: 0px;*/
-/*}*/
 
 .quest-name {
     /*border: 2px solid #198754;*/
-    /*background-color: #f7f7f7;*/
-    border-radius: 5px;
+    background-color: #f2f2f2;
+    border-top: 1px solid black;
+    /*border-radius: 5px;*/
     padding-left: 11px;
-    background-color: #e4e4e4;
-}
-
-#slot-container {
-    /*background-color: #FAEBD7;*/
-    /*background-color: #DCDCDC;*/
+    /*background-color: #e4e4e4;*/
 }
 
 #date {
-    /*margin-top: -5px;*/
     padding-bottom: 10px;
     border-bottom: 2px solid black;
     width: fit-content;
@@ -60,11 +48,7 @@
 
 #status-info {
     align-items: center;
-    padding-top: 10px;
-}
-
-#status-info h5 {
-    font-family: Monospaced, monospace;
+    padding-left: 11px;
 }
 
 /* Стили для разных статусов */
@@ -85,7 +69,7 @@
 }
 
 .slot-button[data-status="CONFIRMED"] {
-    background-color: #87CEEB;
+    background-color: #ADD8E6;
 }
 
 .slot-button[data-status="COMPLETED"] {

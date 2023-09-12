@@ -122,13 +122,13 @@ public class ReservationController {
     @PostMapping("/block-slot")
     public String blockSlot(@Validated(BlockSlotValidator.class)
                             @ModelAttribute("res_form") ReservationForm resForm,
-                            BindingResult reserveBinding,
+                            BindingResult bindingResult,
                             @RequestParam("slot_id") Integer slotId,
                             @RequestParam("quest_name") String questName,
                             Model model) {
         Slot slot = questsAndSlots.get(questName).get(slotId);
 
-        if (reserveBinding.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             model.addAttribute("res_form", resForm);
             model.addAttribute("slot", slot);
             model.addAttribute("slot_id", slotId);

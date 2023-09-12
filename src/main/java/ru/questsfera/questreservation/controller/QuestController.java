@@ -42,9 +42,8 @@ public class QuestController {
         return "quest-list-page";
     }
 
-    @GetMapping("/quest-info/{questId}")
-    public String showQuest(@PathVariable("questId") int questId, Model model) {
-        Quest quest = adminService.getQuestById(questId);
+    @PostMapping("/quest-info")
+    public String show2quest(@RequestParam("quest") Quest quest, Model model) {
         SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
         List<List<TimePrice>> allDays = slotList.getAllDays();
 
