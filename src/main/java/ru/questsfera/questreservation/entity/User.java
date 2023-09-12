@@ -1,22 +1,27 @@
 package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.util.*;
 
 @Entity
 @Table(name = "users", schema = "quest_reservations")
-public class User {
+public class User implements Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "*Обязательное поле")
     @Column(name = "username")
     private String username;
 
-    @Column(name = "password_crypt")
-    private String passwordCrypt;
+    @Size(min = 5, message = "*Пароль минимум 5 символов")
+    @Column(name = "password_hash")
+    private String passwordHash;
 
     @Column(name = "first_name")
     private String firstName;
@@ -24,6 +29,8 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
+    @Pattern(regexp = "^$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            message = "*Проверьте правильное написание Email")
     @Column(name = "email")
     private String email;
 
@@ -80,12 +87,14 @@ public class User {
         this.username = username;
     }
 
-    public String getPasswordCrypt() {
-        return passwordCrypt;
+    @Override
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPasswordCrypt(String passwordCrypt) {
-        this.passwordCrypt = passwordCrypt;
+    @Override
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public String getFirstName() {
@@ -137,7 +146,7 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", passwordCrypt='" + passwordCrypt + '\'' +
+                ", passwordCrypt='" + passwordHash + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +

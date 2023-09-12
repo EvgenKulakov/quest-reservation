@@ -57,8 +57,7 @@ public class AdminService {
     }
 
     @Transactional
-    public void saveUser(Admin admin, User user) {
-        admin.addUserForAdmin(user);
+    public void saveUser(User user) {
         userRepository.save(user);
     }
 

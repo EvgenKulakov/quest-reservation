@@ -6,7 +6,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "admins", schema = "quest_reservations")
-public class Admin {
+public class Admin implements Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +21,8 @@ public class Admin {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "password_crypt")
-    private String passwordCrypt;
+    @Column(name = "password_hash")
+    private String passwordHash;
 
     @Column(name = "money")
     private int money;
@@ -45,22 +45,11 @@ public class Admin {
 
     public Admin() {}
 
-    public Admin(String mail, String passwordCrypt) {
+    public Admin(String mail, String passwordHash) {
         this.username = "User";
         this.mail = mail;
-        this.passwordCrypt = passwordCrypt;
+        this.passwordHash = passwordHash;
         this.money = 0;
-    }
-
-    public void addUserForAdmin(User user) {
-        if (user.getAdmin() != null) {
-            if(!user.getAdmin().equals(this)) {
-                throw  new RuntimeException("Юзеру " + user.getId()
-                        + " уже установлен админ id: " + user.getAdmin().getId());
-            }
-        }
-        user.setAdmin(this);
-        this.users.add(user);
     }
 
     public void deleteUserForAdmin(User user) {
@@ -155,12 +144,14 @@ public class Admin {
         this.phone = phone;
     }
 
-    public String getPasswordCrypt() {
-        return passwordCrypt;
+    @Override
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPasswordCrypt(String passwordCrypt) {
-        this.passwordCrypt = passwordCrypt;
+    @Override
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public int getMoney() {

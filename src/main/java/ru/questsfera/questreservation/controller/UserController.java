@@ -1,14 +1,17 @@
 package ru.questsfera.questreservation.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.questsfera.questreservation.entity.Admin;
 import ru.questsfera.questreservation.entity.User;
+import ru.questsfera.questreservation.processor.PasswordGenerator;
 import ru.questsfera.questreservation.service.AdminService;
 
 import java.util.Set;
@@ -36,15 +39,24 @@ public class UserController {
 
     @PostMapping("/add-user")
     public String addUser(@RequestParam("admin") Admin admin, Model model) {
-        model.addAttribute("user", new User(admin));
+        User user = new User(admin);
+        user.setPasswordHash(PasswordGenerator.createRandomPassword());
+        model.addAttribute("user", user);
         return "add-user-form";
     }
 
     @PostMapping("/save-user")
-    public String saveUser(@ModelAttribute("user") User user) {
+    public String saveUser(@Valid @ModelAttribute("user") User user,
+                           BindingResult bindingResult,
+                           Model model) {
 
-        System.out.println(user);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("user", user);
+            return "add-user-form";
+        }
 
+        PasswordGenerator.createBCrypt(user);
+        adminService.saveUser(user);
         return "redirect:/user-list";
     }
 }
