@@ -52,8 +52,13 @@ public class AdminService {
 
     //***Users
     @Transactional
-    public Set<User> getUsersByAdmin(Admin admin) {
-        return admin.getUsers();
+    public List<User> getUsersByAdmin(Admin admin) {
+        return userRepository.findAllByAdminOrderByUsername(admin);
+    }
+
+    @Transactional
+    public boolean existsUsername(User user) {
+        return userRepository.existsUserByUsernameAndAdmin(user.getUsername(), user.getAdmin());
     }
 
     @Transactional
@@ -62,12 +67,7 @@ public class AdminService {
     }
 
     @Transactional
-    public void deleteUser(Admin admin, User user) {
-        if (!user.getAdmin().equals(admin)) {
-            throw new RuntimeException("Попытка удалить юзера админом, " +
-                    "у которого нет доступа");
-        }
-        admin.deleteUserForAdmin(user);
+    public void deleteUser(User user) {
         userRepository.delete(user);
     }
 
@@ -83,8 +83,7 @@ public class AdminService {
 
     @Transactional
     public List<Quest> getQuestsByAdmin(Admin admin) {
-        List<Quest> quests = questRepository.findQuestsByAdminOrderByQuestName(admin);
-        return quests;
+        return questRepository.findQuestsByAdminOrderByQuestName(admin);
     }
 
     @Transactional

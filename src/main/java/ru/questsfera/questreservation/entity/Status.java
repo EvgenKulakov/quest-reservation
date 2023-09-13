@@ -34,7 +34,7 @@ public class Status {
         return defaultStatuses;
     }
 
-    public static List<Status> getUserStatuses() {
+    public static List<Status> getUseStatuses() {
         List<Status> userStatuses = new ArrayList<>();
         userStatuses.add(new Status(StatusType.CONFIRMED));
         userStatuses.add(new Status(StatusType.NOT_COME));

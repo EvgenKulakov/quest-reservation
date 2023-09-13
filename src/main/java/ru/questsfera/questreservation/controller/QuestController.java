@@ -13,6 +13,7 @@ import ru.questsfera.questreservation.entity.Admin;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.converter.SlotListMapper;
+import ru.questsfera.questreservation.entity.User;
 import ru.questsfera.questreservation.processor.SlotListFactory;
 import ru.questsfera.questreservation.service.AdminService;
 import ru.questsfera.questreservation.validator.SlotListValidator;
@@ -37,27 +38,36 @@ public class QuestController {
 
         List<Quest> quests = adminService.getQuestsByAdmin(admin);
 
+        model.addAttribute("admin" , admin);
         model.addAttribute("quests", quests);
 
-        return "quest-list-page";
+        return "quests/quest-list-page";
     }
 
     @PostMapping("/quest-info")
-    public String show2quest(@RequestParam("quest") Quest quest, Model model) {
+    public String showQuest(@RequestParam("quest") Quest quest, Model model) {
+        List<User> users = adminService.getUsersByAdmin(quest.getAdmin());
+
         SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
         List<List<TimePrice>> allDays = slotList.getAllDays();
 
         model.addAttribute("quest", quest);
+        model.addAttribute("users", users);
         model.addAttribute("all_slot_list", allDays);
-        return "quest-info-page";
+
+        return "quests/quest-info-page";
     }
 
     @PostMapping("/add-quest-first-page")
-    public String addQuest(Model model) {
+    public String addQuest(@RequestParam("admin") Admin admin, Model model) {
         Quest quest = new Quest(admin);
+        List<User> users = adminService.getUsersByAdmin(admin);
+
         model.addAttribute("quest", quest);
-        model.addAttribute("user_statuses", Status.getUserStatuses());
-        return "add-quest-first-form";
+        model.addAttribute("users", users);
+        model.addAttribute("use_statuses", Status.getUseStatuses());
+
+        return "quests/add-quest-first-form";
     }
 
     @PostMapping("/add-slotlist-every-day")
@@ -67,7 +77,7 @@ public class QuestController {
         model.addAttribute("quest", quest);
 
         if (binding.hasErrors() || quest.getMinPersons() > quest.getMaxPersons()) {
-            model.addAttribute("user_statuses", Status.getUserStatuses());
+            model.addAttribute("user_statuses", Status.getUseStatuses());
 
             if (quest.getMinPersons() != null
                     && quest.getMaxPersons() != null
@@ -75,12 +85,12 @@ public class QuestController {
                 binding.addError(new ObjectError("global",
                         "*Значение \"От\" не может быть больше значения \"До\""));
             }
-            return "add-quest-first-form";
+            return "quests/add-quest-first-form";
         }
 
         adminService.saveQuest(admin, quest);
         model.addAttribute("slot_list", new SlotList());
-        return "add-slotlist-every-day-form";
+        return "quests/add-slotlist-every-day-form";
     }
 
     @PostMapping("/save-quest")
@@ -94,7 +104,7 @@ public class QuestController {
             binding.addError(new ObjectError("global", errorMessage));
             model.addAttribute("quest" , quest);
             model.addAttribute("slot_list", slotList);
-            return "add-slotlist-every-day-form";
+            return "quests/add-slotlist-every-day-form";
         }
 
         SlotListFactory.makeSlotListEveryDay(slotList);
@@ -110,7 +120,7 @@ public class QuestController {
     public String deleteQuest(@RequestParam("quest") Quest quest, Model model) {
         if (adminService.hasReservations(quest)) {
             model.addAttribute("quest", quest);
-            return "question-delete-quest";
+            return "quests/question-delete-quest";
 
         }
         adminService.deleteQuest(admin, quest);

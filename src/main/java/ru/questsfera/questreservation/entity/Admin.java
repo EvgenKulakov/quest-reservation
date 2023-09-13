@@ -36,7 +36,7 @@ public class Admin implements Account {
     @OneToMany(mappedBy = "admin", fetch = FetchType.EAGER)
     private Set<Quest> quests = new HashSet<>();
 
-    @OneToMany(mappedBy = "admin", fetch = FetchType.EAGER,
+    @OneToMany(mappedBy = "admin",
             cascade = {CascadeType.REMOVE})
     private Set<User> users = new HashSet<>();
 
@@ -44,17 +44,6 @@ public class Admin implements Account {
     private Set<Reservation> reservations = new HashSet<>();
 
     public Admin() {}
-
-    public Admin(String mail, String passwordHash) {
-        this.username = "User";
-        this.mail = mail;
-        this.passwordHash = passwordHash;
-        this.money = 0;
-    }
-
-    public void deleteUserForAdmin(User user) {
-        this.users.remove(user);
-    }
 
     public void addQuestForAdmin(Quest quest) {
         if (quest.getAdmin() != null) {

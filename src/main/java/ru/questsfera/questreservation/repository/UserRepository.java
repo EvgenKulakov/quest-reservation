@@ -7,5 +7,8 @@ import ru.questsfera.questreservation.entity.User;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-    List<User> findUsersByAdmin(Admin admin);
+
+    boolean existsUserByUsernameAndAdmin(String username, Admin admin);
+
+    List<User> findAllByAdminOrderByUsername(Admin admin);
 }

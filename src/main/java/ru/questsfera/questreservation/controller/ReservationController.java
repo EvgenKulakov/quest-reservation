@@ -59,7 +59,7 @@ public class ReservationController {
         model.addAttribute("use_statuses" , useStatuses);
         model.addAttribute("date", date);
 
-        return "slot-list-page";
+        return "reservations/slot-list-page";
     }
 
     @GetMapping("/reservation/{questName}/{slotId}")
@@ -79,10 +79,10 @@ public class ReservationController {
         model.addAttribute("quest", slot.getQuest());
 
         if (resForm.getStatusType() != null && resForm.getStatusType().equals(StatusType.BLOCK)) {
-            return "blocked-reservation-form";
+            return "reservations/blocked-reservation-form";
         }
 
-        return "reservation-form";
+        return "reservations/reservation-form";
     }
 
     @PostMapping("/save-reservation")
@@ -100,7 +100,7 @@ public class ReservationController {
             model.addAttribute("slot", slot);
             model.addAttribute("slot_id", slotId);
             model.addAttribute("quest", slot.getQuest());
-            return "reservation-form";
+            return "reservations/reservation-form";
         }
 
         if (reservation == null) {
@@ -133,7 +133,7 @@ public class ReservationController {
             model.addAttribute("slot", slot);
             model.addAttribute("slot_id", slotId);
             model.addAttribute("quest", slot.getQuest());
-            return "reservation-form";
+            return "reservations/reservation-form";
         }
 
         Reservation reservation = Reservation.createBlockReservation(slot);

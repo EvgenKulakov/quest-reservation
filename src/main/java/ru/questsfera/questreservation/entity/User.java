@@ -140,18 +140,4 @@ public class User implements Account {
     public int hashCode() {
         return getClass().hashCode();
     }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", passwordCrypt='" + passwordHash + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", admin=" + admin +
-                ", quests=" + quests +
-                '}';
-    }
 }

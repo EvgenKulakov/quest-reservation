@@ -35,7 +35,7 @@
             <td th:text="${#temporals.format(quest.autoBlock, 'HH:mm')}"></td>
             <td>
                 <table>
-                    <tr th:each="user : ${quest.users}">
+                    <tr th:each="user : ${users}">
                         <td th:text="${user.username}"></td>
                     </tr>
                 </table>

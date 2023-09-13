@@ -14,6 +14,7 @@ import ru.questsfera.questreservation.entity.User;
 import ru.questsfera.questreservation.processor.PasswordGenerator;
 import ru.questsfera.questreservation.service.AdminService;
 
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -31,10 +32,13 @@ public class UserController {
     public String showUserList(Model model) {
         /* test admin account */
         admin = adminService.getAdminById(1);
-        Set<User> users = adminService.getUsersByAdmin(admin);
+
+        List<User> users = adminService.getUsersByAdmin(admin);
+
         model.addAttribute("admin", admin);
         model.addAttribute("users", users);
-        return "user-list-page";
+
+        return "users/user-list-page";
     }
 
     @PostMapping("/add-user")
@@ -42,21 +46,34 @@ public class UserController {
         User user = new User(admin);
         user.setPasswordHash(PasswordGenerator.createRandomPassword());
         model.addAttribute("user", user);
-        return "add-user-form";
+        return "users/add-user-form";
     }
 
     @PostMapping("/save-user")
     public String saveUser(@Valid @ModelAttribute("user") User user,
                            BindingResult bindingResult,
                            Model model) {
+        boolean existsUsername = adminService.existsUsername(user);
 
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors() || existsUsername) {
+
+            if (existsUsername) {
+                bindingResult.rejectValue("username", "errorCode",
+                        "Username " + user.getUsername() + " уже существует");
+            }
+
             model.addAttribute("user", user);
-            return "add-user-form";
+            return "users/add-user-form";
         }
 
         PasswordGenerator.createBCrypt(user);
         adminService.saveUser(user);
+        return "redirect:/user-list";
+    }
+
+    @PostMapping("/delete-user")
+    public String deleteUser(@RequestParam("user") User user) {
+        adminService.deleteUser(user);
         return "redirect:/user-list";
     }
 }
