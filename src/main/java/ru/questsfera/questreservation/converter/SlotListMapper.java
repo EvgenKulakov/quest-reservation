@@ -1,14 +1,9 @@
 package ru.questsfera.questreservation.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ru.questsfera.questreservation.dto.SlotList;
-
-import java.time.LocalTime;
 
 public class SlotListMapper {
 

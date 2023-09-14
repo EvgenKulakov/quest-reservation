@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import ru.questsfera.questreservation.validator.Patterns;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ public class User implements Account {
     @Column(name = "username")
     private String username;
 
-    @Size(min = 5, message = "*Пароль минимум 5 символов")
+    @Pattern(regexp = Patterns.PASSWORD, message = "*Минимум 8 символов без пробелов")
     @Column(name = "password_hash")
     private String passwordHash;
 
@@ -29,8 +29,7 @@ public class User implements Account {
     @Column(name = "last_name")
     private String lastName;
 
-    @Pattern(regexp = "^$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
-            message = "*Проверьте правильное написание Email")
+    @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание Email")
     @Column(name = "email")
     private String email;
 
@@ -48,15 +47,6 @@ public class User implements Account {
 
     public User(Admin admin) {
         this.admin = admin;
-    }
-
-    public void addQuestForUser(Quest quest) {
-        if (!quest.getAdmin().equals(this.admin)) {
-            throw new RuntimeException(
-                    "Quest id: " + quest.getId() + " нет доступа для добавления");
-        }
-        quests.add(quest);
-        quest.getUsers().add(this);
     }
 
     public void deleteQuestForUser(Quest quest) {

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.validator.BlockSlotValidator;
+import ru.questsfera.questreservation.validator.Patterns;
 import ru.questsfera.questreservation.validator.SaveReserveValidator;
 
 public class ReservationForm {
@@ -21,13 +22,13 @@ public class ReservationForm {
     @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
     private String lastname;
 
-    @Pattern(regexp = "^\\+7\\d{10}$",
+    @Pattern(regexp = Patterns.PHONE,
             message = "*Введите номер телефона в формате +7хххххххххх",
             groups = SaveReserveValidator.class)
     @Size(max = 2, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
     private String phone = "+7";
 
-    @Pattern(regexp = "^$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+    @Pattern(regexp = Patterns.EMAIL,
             message = "*Проверьте правильное написание Email", groups = SaveReserveValidator.class)
     @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
     private String email;

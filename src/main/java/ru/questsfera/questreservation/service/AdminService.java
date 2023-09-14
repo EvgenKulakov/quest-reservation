@@ -1,9 +1,9 @@
 package ru.questsfera.questreservation.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.repository.*;
 import ru.questsfera.questreservation.entity.*;
 
@@ -61,6 +61,7 @@ public class AdminService {
         return userRepository.existsUserByUsernameAndAdmin(user.getUsername(), user.getAdmin());
     }
 
+    @Modifying
     @Transactional
     public void saveUser(User user) {
         userRepository.save(user);
@@ -126,16 +127,6 @@ public class AdminService {
     @Transactional
     public Set<Quest> getQuestsByUser(User user) {
         return user.getQuests();
-    }
-
-    @Transactional
-    public void addQuestForUser(User user, Quest quest) {
-        user.addQuestForUser(quest);
-    }
-
-    @Transactional
-    public void deleteQuestForUser(User user, Quest quest) {
-        user.deleteQuestForUser(quest);
     }
 
     //***Statuses

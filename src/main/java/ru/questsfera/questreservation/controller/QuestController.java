@@ -19,6 +19,8 @@ import ru.questsfera.questreservation.service.AdminService;
 import ru.questsfera.questreservation.validator.SlotListValidator;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Controller
 public class QuestController {
@@ -46,7 +48,8 @@ public class QuestController {
 
     @PostMapping("/quest-info")
     public String showQuest(@RequestParam("quest") Quest quest, Model model) {
-        List<User> users = adminService.getUsersByAdmin(quest.getAdmin());
+        Set<User> users = new TreeSet<>((u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername()));
+        users.addAll(quest.getUsers());
 
         SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
         List<List<TimePrice>> allDays = slotList.getAllDays();
