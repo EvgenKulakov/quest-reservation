@@ -9,6 +9,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ru.questsfera.questreservation.converter.*;
 
+import java.time.format.DateTimeFormatter;
+
 @SpringBootApplication
 public class QuestReservationApplication implements WebMvcConfigurer {
     private final StatusTypeConverter statusTypeConverter;
@@ -32,6 +34,7 @@ public class QuestReservationApplication implements WebMvcConfigurer {
         registry.addConverter(statusTypeConverter);
 
         DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
+        registrar.setDateFormatter(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         registrar.registerFormatters(registry);
     }
 }

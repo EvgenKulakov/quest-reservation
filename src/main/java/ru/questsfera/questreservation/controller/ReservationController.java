@@ -20,6 +20,7 @@ import ru.questsfera.questreservation.validator.BlockSlotValidator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @org.springframework.stereotype.Controller
@@ -41,13 +42,27 @@ public class ReservationController {
 
         List<Quest> quests = adminService.getQuestsByAdmin(admin);
         LocalDate date = LocalDate.now();
-
         questsAndSlots.clear();
 
+        return slotListRendering(quests, date, model);
+    }
+
+    @GetMapping("/slot-list/")
+    public String showSlotListWithDate(@RequestParam("date") LocalDate date, Model model) {
+        /* test admin account */
+        admin = adminService.getAdminById(1);
+
+        List<Quest> quests = adminService.getQuestsByAdmin(admin);
+        questsAndSlots.clear();
+
+        return slotListRendering(quests, date, model);
+    }
+
+    public String slotListRendering(List<Quest> quests, LocalDate date, Model model) {
         Set<StatusType> useStatuses = new TreeSet<>();
 
         for (Quest quest : quests) {
-            LinkedList<Reservation> reservations = adminService.getReservationsByDate(admin, quest, date);
+            LinkedList<Reservation> reservations = adminService.getReservationsByDate(quest, date);
             SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
             SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
             List<Slot> slots = slotFactory.getActualSlots();

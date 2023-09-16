@@ -208,11 +208,7 @@ public class AdminService {
 
     //***Reservations
     @Transactional
-    public LinkedList<Reservation> getReservationsByDate(Admin admin, Quest quest, LocalDate date) {
-        if (!quest.getAdmin().equals(admin)) {
-            throw new RuntimeException("Попытка получить бронирования недоступные"
-                    + " для данного аккаунта");
-        }
+    public LinkedList<Reservation> getReservationsByDate(Quest quest, LocalDate date) {
         return reservationRepository.findAllByQuestAndDateReserveOrderByTimeReserve(quest, date);
     }
 

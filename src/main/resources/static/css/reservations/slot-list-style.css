@@ -2,7 +2,8 @@
 .slot-button {
     display: inline-block;
     margin: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #6c757d;
+    /*border: 1px solid #ccc;*/
     text-align: center;
     font-size: 14px;
     text-decoration: none;
@@ -42,8 +43,13 @@
     width: fit-content;
 }
 
-#dateButton {
-    margin-top: 5px;
+#date-button {
+    border-radius: 5px;
+}
+
+#input-data {
+    width: min-content;
+    display: none;
 }
 
 #status-info {
@@ -74,4 +80,8 @@
 
 .slot-button[data-status="COMPLETED"] {
     background-color: #90EE90;
+}
+
+.back-forward {
+    margin-right: 8px;
 }

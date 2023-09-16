@@ -5,35 +5,41 @@
     <title>Бронирования по дате</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/air-datepicker.css}" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/reservations/slot-list-style.css}">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
 
 <section>
-    <br>
-    <div class="container-fluid my-container" >
-        <div>
-            <h3 id="date">
-                <td th:text="'Бронирования по дате '"></td>
-                <button type="submit" class="badge bg-light text-dark" id="dateButton">
-                    <td th:text="${#temporals.format(date, 'dd-MM-yyyy (EEEE)')}"></td>
-                    <img src="/icons/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
-                </button>
-            </h3>
-            <div class="row row-cols-auto" id="status-info">
-                <h6>Статусы</h6>
-                <th:block th:each="status_type : ${use_statuses}">
-                    <div class="slot-button custom-status col-auto" th:text="${status_type.name}"
-                         th:attr="data-status=${status_type}"></div>
-                </th:block>
+    <div class="container-fluid mt-4">
+        <form id="date-form" th:action="@{/slot-list/}" method="get">
+            <div>
+                <h3 id="date">Бронирования по дате
+                    <button type="button" class="badge bg-light text-dark" id="date-button">
+                        <td th:text="${#temporals.format(date, 'dd-MM-yyyy (EEEE)')}"></td>
+                        <img src="/icons/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
+                        <input class="form-control" type="text" id="input-data"
+                               name="date" th:value="${#temporals.format(date, 'dd-MM-yyyy')}">
+                    </button>
+                </h3>
             </div>
+        </form>
+
+        <div class="row row-cols-auto" id="status-info">
+            <h6>Статусы</h6>
+            <th:block th:each="status_type : ${use_statuses}">
+                <div class="slot-button custom-status col-auto" th:text="${status_type.name}"
+                     th:attr="data-status=${status_type}"></div>
+            </th:block>
         </div>
     </div>
 
     <div th:each="one_quest_with_slots : ${quests_and_slots}" class="container-fluid" id="block-reserves">
         <div class="row-cols-auto d-flex align-items-center quest-name">
-            <h3><td th:text="${one_quest_with_slots.key}"></td></h3>
+            <h3>
+                <td th:text="${one_quest_with_slots.key}"></td>
+            </h3>
         </div>
         <div class="row-cols-auto d-flex flex-wrap">
             <td th:each="slot, index : ${one_quest_with_slots.value}">
@@ -46,8 +52,19 @@
             </td>
         </div>
     </div>
+
+    <div class="container-fluid mt-3">
+        <form th:action="@{/slot-list/}" method="get">
+            <button type="submit" class="btn btn-outline-secondary back-forward" name="date"
+                    th:value="${date.minusDays(1)}" th:text="'← Назад'"></button>
+            <button type="submit" class="btn btn-outline-secondary back-forward" name="date"
+                    th:value="${date.plusDays(1)}" th:text="'Вперёд →'"></button>
+        </form>
+    </div>
 </section>
 
 <script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/air-datepicker.js"></script>
+<script src="/js/calendar-script.js"></script>
 </body>
 </html>
