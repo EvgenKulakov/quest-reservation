@@ -51,8 +51,11 @@ public class QuestController {
         Set<User> users = new TreeSet<>((u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername()));
         users.addAll(quest.getUsers());
 
-        SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
-        List<List<TimePrice>> allDays = slotList.getAllDays();
+        List<List<TimePrice>> allDays = null;
+        if (quest.getSlotList() != null) {
+            SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
+            allDays = slotList.getAllDays();
+        }
 
         model.addAttribute("quest", quest);
         model.addAttribute("users", users);
@@ -64,11 +67,11 @@ public class QuestController {
     @PostMapping("/add-quest-first-page")
     public String addQuest(@RequestParam("admin") Admin admin, Model model) {
         Quest quest = new Quest(admin);
-        List<User> users = adminService.getUsersByAdmin(admin);
+        List<User> allUsers = adminService.getUsersByAdmin(admin);
 
         model.addAttribute("quest", quest);
-        model.addAttribute("users", users);
-        model.addAttribute("use_statuses", Status.getUseStatuses());
+        model.addAttribute("all_users", allUsers);
+        model.addAttribute("user_statuses", Status.getUserStatuses());
 
         return "quests/add-quest-first-form";
     }
@@ -77,16 +80,25 @@ public class QuestController {
     public String addQuestEveryDay(@Valid @ModelAttribute("quest") Quest quest,
                                    BindingResult binding,
                                    Model model) {
+        quest.setQuestName(quest.getQuestName().trim());
         model.addAttribute("quest", quest);
 
-        if (binding.hasErrors() || quest.getMinPersons() > quest.getMaxPersons()) {
-            model.addAttribute("user_statuses", Status.getUseStatuses());
+        boolean existQuestName = adminService.existQuestName(quest) && quest.getId() == null;
+
+        if (binding.hasErrors() || quest.getMinPersons() > quest.getMaxPersons() || existQuestName) {
+            model.addAttribute("user_statuses", Status.getUserStatuses());
+            model.addAttribute("all_users", adminService.getUsersByAdmin(admin));
 
             if (quest.getMinPersons() != null
                     && quest.getMaxPersons() != null
                     && quest.getMinPersons() > quest.getMaxPersons()) {
                 binding.addError(new ObjectError("global",
                         "*Значение \"От\" не может быть больше значения \"До\""));
+            }
+
+            if (existQuestName) {
+                binding.rejectValue("questName", "errorCode",
+                        String.format("У вас уже есть квест с названием \"%s\"", quest.getQuestName()));
             }
             return "quests/add-quest-first-form";
         }

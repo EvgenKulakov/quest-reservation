@@ -54,6 +54,7 @@ public class UserController {
     public String saveUser(@Valid @ModelAttribute("user") User user,
                            BindingResult bindingResult,
                            Model model) {
+        user.setUsername(user.getUsername().trim());
         boolean existsUsername = adminService.existsUsername(user) && user.getId() == null;
 
         if (bindingResult.hasErrors() || existsUsername) {

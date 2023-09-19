@@ -33,8 +33,9 @@
                 </table>
             </td>
             <td th:text="${#temporals.format(quest.autoBlock, 'HH:mm')}"></td>
-            <td>
-                <table>
+            <td th:switch="${#lists.isEmpty(users)}">
+                <p th:case="${true}">Нет назначенных пользователей</p>
+                <table th:case="${false}">
                     <tr th:each="user : ${users}">
                         <td th:text="${user.username}"></td>
                     </tr>
@@ -54,30 +55,34 @@
 
     <h3>Сетка квеста</h3>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Понедельник</th>
-            <th>Вторник</th>
-            <th>Среда</th>
-            <th>Четверг</th>
-            <th>Пятница</th>
-            <th>Суббота</th>
-            <th>Воскресенье</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td th:each="slot_list : ${all_slot_list}">
-                <table>
-                    <tr th:each="slot : ${slot_list}">
-                        <td th:text="${slot.time} + ' - ' + ${slot.price} + '₽'"></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <th:block th:switch="${all_slot_list == null}">
+        <h4 th:case="${true}">Сетка квеста не задана</h4>
+
+        <table th:case="${false}" class="table">
+            <thead>
+            <tr>
+                <th>Понедельник</th>
+                <th>Вторник</th>
+                <th>Среда</th>
+                <th>Четверг</th>
+                <th>Пятница</th>
+                <th>Суббота</th>
+                <th>Воскресенье</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td th:each="slot_list : ${all_slot_list}">
+                    <table>
+                        <tr th:each="slot : ${slot_list}">
+                            <td th:text="${slot.time} + ' - ' + ${slot.price} + '₽'"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </th:block>
 </section>
 
 <script src="/js/bootstrap.bundle.min.js"></script>

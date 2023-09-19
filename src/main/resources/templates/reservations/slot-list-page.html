@@ -17,11 +17,11 @@
             <div>
                 <h3 id="date">Бронирования по дате
                     <button type="button" class="badge bg-light text-dark" id="date-button">
-                        <td th:text="${#temporals.format(date, 'dd-MM-yyyy (EEEE)')}"></td>
+                        <span id="current-date" th:text="${#temporals.format(date, 'dd-MM-yyyy (EEEE)')}"></span>
                         <img src="/icons/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
-                        <input class="form-control" type="text" id="input-data"
-                               name="date" th:value="${#temporals.format(date, 'dd-MM-yyyy')}">
+                        <input class="form-control" type="text" id="input-date" name="date" readonly>
                     </button>
+                    <button type="submit" class="btn btn-outline-secondary" id="choose-date"></button>
                 </h3>
             </div>
         </form>
@@ -61,6 +61,7 @@
                     th:value="${date.plusDays(1)}" th:text="'Вперёд →'"></button>
         </form>
     </div>
+
 </section>
 
 <script src="/js/bootstrap.bundle.min.js"></script>

@@ -14,16 +14,17 @@
         <div class="row">
             <div class="col-11">
                 <h1 th:text="${quest.questName}"></h1>
-                <span>Дата: <span th:text="${#temporals.format(slot.date, 'dd-MM-yyyy')}"></span></span><br>
+                <span>Дата: <span th:text="${#temporals.format(slot.date, 'dd-MM-yyyy (EEEE)')}"></span></span><br>
                 <span>Время: <span th:text="${slot.time}"></span></span><br>
                 <span>Стоимость: <span th:text="${slot.price}"></span></span><br><br>
             </div>
             <div class="col-1">
-                <a th:href="@{/slot-list}">
-                    <button type="button" class="close" aria-label="Close">
+                <form th:action="@{/slot-list/}" method="get">
+                    <button type="submit" id="close" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
+                        <input type="hidden" name="date" th:value="${slot.date}">
                     </button>
-                </a>
+                </form>
             </div>
         </div>
 

@@ -34,7 +34,7 @@ public class QuestReservationApplication implements WebMvcConfigurer {
         registry.addConverter(statusTypeConverter);
 
         DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
-        registrar.setDateFormatter(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        registrar.setDateFormatter(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         registrar.registerFormatters(registry);
     }
 }

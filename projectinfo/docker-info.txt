@@ -15,6 +15,6 @@ docker run --name db --network db-spring-net --restart always -v /etc/timezone:/
 docker exec -it db sh
 mysql -u root -p quest_reservations < /app/Dump8.sql
 --------------------------------------------------
-docker build -t evgeniydockerman/questreservations:git40 .
-docker run -d --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro --name spring-cont -p 8080:8080 evgeniydockerman/questreservations:git40
+docker build -t evgeniydockerman/questreservations:git41 .
+docker run -d --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro --name spring-cont -p 8080:8080 evgeniydockerman/questreservations:git41
 ========================================================================================================================

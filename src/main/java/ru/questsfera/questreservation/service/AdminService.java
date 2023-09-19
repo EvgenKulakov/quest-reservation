@@ -88,6 +88,11 @@ public class AdminService {
     }
 
     @Transactional
+    public boolean existQuestName(Quest quest) {
+        return questRepository.existsQuestByQuestNameAndAdmin(quest.getQuestName(), quest.getAdmin());
+    }
+
+    @Transactional
     public void saveQuest(Admin admin, Quest quest) {
         admin.addQuestForAdmin(quest);
         quest.saveUsers();

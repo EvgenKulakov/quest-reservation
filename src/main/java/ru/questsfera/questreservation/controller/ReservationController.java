@@ -20,7 +20,6 @@ import ru.questsfera.questreservation.validator.BlockSlotValidator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @org.springframework.stereotype.Controller
@@ -62,6 +61,7 @@ public class ReservationController {
         Set<StatusType> useStatuses = new TreeSet<>();
 
         for (Quest quest : quests) {
+            if (quest.getSlotList() == null) continue;
             LinkedList<Reservation> reservations = adminService.getReservationsByDate(quest, date);
             SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
             SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
@@ -131,7 +131,7 @@ public class ReservationController {
         reservation.setHistoryMessages("default");
         adminService.saveReservation(admin, reservation);
 
-        return "redirect:/slot-list";
+        return "redirect:/slot-list/?date=" + reservation.getDateReserve();
     }
 
     @PostMapping("/block-slot")
@@ -156,7 +156,7 @@ public class ReservationController {
         reservation.setHistoryMessages("default");
         adminService.saveReservation(admin, reservation);
 
-        return "redirect:/slot-list";
+        return "redirect:/slot-list/?date=" + reservation.getDateReserve();
     }
 
     @PostMapping("/delete-blocked-reservation")
@@ -165,6 +165,6 @@ public class ReservationController {
         Slot slot = questsAndSlots.get(questName).get(slotId);
         Reservation reservation = slot.getReservation();
         adminService.deleteBlockedReservation(admin, reservation);
-        return "redirect:/slot-list";
+        return "redirect:/slot-list/?date=" + reservation.getDateReserve();
     }
 }
