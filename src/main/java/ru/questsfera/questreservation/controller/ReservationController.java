@@ -1,5 +1,8 @@
 package ru.questsfera.questreservation.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -73,54 +76,31 @@ public class ReservationController {
         model.addAttribute("quests_and_slots", questsAndSlots);
         model.addAttribute("use_statuses" , useStatuses);
         model.addAttribute("date", date);
+        model.addAttribute("res_form", new ReservationForm());
 
         return "reservations/slot-list-page";
-    }
-
-    @GetMapping("/reservation/{questName}/{slotId}")
-    private String showReservation(@PathVariable("questName") String questName,
-                                   @PathVariable("slotId") Integer slotId,
-                                   Model model) {
-        Slot slot = questsAndSlots.get(questName).get(slotId);
-        Reservation reservation = slot.getReservation();
-
-        ReservationForm resForm = reservation == null
-                ? new ReservationForm()
-                : new ReservationForm(reservation);
-
-        model.addAttribute("res_form", resForm);
-        model.addAttribute("slot", slot);
-        model.addAttribute("slot_id", slotId);
-        model.addAttribute("quest", slot.getQuest());
-
-        if (resForm.getStatusType() != null && resForm.getStatusType().equals(StatusType.BLOCK)) {
-            return "reservations/blocked-reservation-form";
-        }
-
-        return "reservations/reservation-form";
     }
 
     @PostMapping("/save-reservation")
     public String saveReservation(@Validated(SaveReserveValidator.class)
                                   @ModelAttribute("res_form") ReservationForm resForm,
                                   BindingResult reserveBinding,
-                                  @RequestParam("slot_id") Integer slotId,
-                                  @RequestParam("quest_name") String questName,
+                                  @RequestParam("slot") String slotJSON,
                                   Model model) {
-        Slot slot = questsAndSlots.get(questName).get(slotId);
-        Reservation reservation = slot.getReservation();
-
-        if (reserveBinding.hasErrors()) {
-            model.addAttribute("res_form", resForm);
-            model.addAttribute("slot", slot);
-            model.addAttribute("slot_id", slotId);
-            model.addAttribute("quest", slot.getQuest());
-            return "reservations/reservation-form";
+        Slot slot = null;
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        try {
+            slot = mapper.readValue(slotJSON, Slot.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
+
+        Reservation reservation = slot.getReservation();
 
         if (reservation == null) {
             reservation = new Reservation(resForm, slot);
-            Client client = new Client(resForm, admin);
+            Client client = new Client(resForm, slot);
             reservation.addClient(client);
             reservation.setSourceReserve("default");
         } else {
@@ -129,7 +109,7 @@ public class ReservationController {
 
         reservation.setTimeLastChange(LocalDateTime.now());
         reservation.setHistoryMessages("default");
-        adminService.saveReservation(admin, reservation);
+        adminService.saveReservation(reservation);
 
         return "redirect:/slot-list/?date=" + reservation.getDateReserve();
     }
@@ -138,33 +118,38 @@ public class ReservationController {
     public String blockSlot(@Validated(BlockSlotValidator.class)
                             @ModelAttribute("res_form") ReservationForm resForm,
                             BindingResult bindingResult,
-                            @RequestParam("slot_id") Integer slotId,
-                            @RequestParam("quest_name") String questName,
+                            @RequestParam("slot") String slotJSON,
                             Model model) {
-        Slot slot = questsAndSlots.get(questName).get(slotId);
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("res_form", resForm);
-            model.addAttribute("slot", slot);
-            model.addAttribute("slot_id", slotId);
-            model.addAttribute("quest", slot.getQuest());
-            return "reservations/reservation-form";
+        Slot slot = null;
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        try {
+            slot = mapper.readValue(slotJSON, Slot.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
 
         Reservation reservation = Reservation.createBlockReservation(slot);
         reservation.setSourceReserve("default");
         reservation.setHistoryMessages("default");
-        adminService.saveReservation(admin, reservation);
+        adminService.saveReservation(reservation);
 
         return "redirect:/slot-list/?date=" + reservation.getDateReserve();
     }
 
-    @PostMapping("/delete-blocked-reservation")
-    public String deleteBlockReserve(@RequestParam("slot_id") Integer slotId,
-                                     @RequestParam("quest_name") String questName) {
-        Slot slot = questsAndSlots.get(questName).get(slotId);
+    @PostMapping("/unBlock")
+    public String deleteBlockReserve(@RequestParam("slot") String slotJSON) {
+        Slot slot = null;
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        try {
+            slot = mapper.readValue(slotJSON, Slot.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
         Reservation reservation = slot.getReservation();
-        adminService.deleteBlockedReservation(admin, reservation);
-        return "redirect:/slot-list/?date=" + reservation.getDateReserve();
+        adminService.deleteBlockedReservation(reservation);
+        return "redirect:/slot-list/?date=" + slot.getDate();
     }
 }

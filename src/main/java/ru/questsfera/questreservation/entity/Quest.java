@@ -1,5 +1,6 @@
 package ru.questsfera.questreservation.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -8,6 +9,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "quests", schema = "quest_reservations")
+@JsonIgnoreProperties({"slotList", "autoBlock", "sms", "users", "synchronizedQuests"})
 public class Quest {
 
     @Id

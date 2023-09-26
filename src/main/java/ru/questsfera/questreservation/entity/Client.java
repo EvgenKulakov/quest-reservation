@@ -1,7 +1,9 @@
 package ru.questsfera.questreservation.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import ru.questsfera.questreservation.dto.ReservationForm;
+import ru.questsfera.questreservation.dto.Slot;
 
 import java.util.*;
 
@@ -34,12 +36,13 @@ public class Client {
     private BlackList blackList;
 
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     private List<Reservation> reservations = new ArrayList<>();
 
-    public Client(ReservationForm resForm, Admin admin) {
-        this.admin = admin;
-        this.firstName = resForm.getFirstname();
-        this.lastName = resForm.getLastname();
+    public Client(ReservationForm resForm, Slot slot) {
+        this.admin = slot.getQuest().getAdmin();
+        this.firstName = resForm.getFirstName();
+        this.lastName = resForm.getLastName();
         this.phone = resForm.getPhone();
         this.email = resForm.getEmail();
     }

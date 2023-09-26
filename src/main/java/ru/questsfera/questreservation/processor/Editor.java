@@ -14,8 +14,8 @@ public class Editor {
         reservation.setAdminComment(resForm.getAdminComment());
         reservation.setClientComment(resForm.getClientComment());
 
-        client.setFirstName(resForm.getFirstname());
-        client.setLastName(resForm.getLastname());
+        client.setFirstName(resForm.getFirstName());
+        client.setLastName(resForm.getLastName());
         client.setPhone(resForm.getPhone());
         client.setEmail(resForm.getEmail());
     }

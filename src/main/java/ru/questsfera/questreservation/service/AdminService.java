@@ -218,33 +218,18 @@ public class AdminService {
     }
 
     @Transactional
-    public void saveReservation(Admin admin, Reservation reservation) {
-        if (!reservation.getQuest().getAdmin().equals(admin)) {
-            throw new RuntimeException("Попытка создать бронирование аккаунтом,"
-                    + " у которого нет доступа к квесту");
-        }
+    public void saveReservation(Reservation reservation) {
         reservationRepository.save(reservation);
     }
 
     @Transactional
-    public Reservation getReserveById(Admin admin, int id) {
+    public Reservation getReserveById(int id) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(id);
-        if (optionalReservation.isPresent()) {
-            Reservation reservation = optionalReservation.get();
-            if (!admin.getQuests().contains(reservation.getQuest())) {
-                throw new RuntimeException("Попытка открыть бронирование аккаунтом,"
-                        + " у которого нет доступа к квесту");
-            }
-            return reservation;
-        }
-        throw new RuntimeException("Попытка получить несуществующее бронирование");
+        return optionalReservation.orElse(null);
     }
 
     @Transactional
-    public void deleteBlockedReservation(Admin admin, Reservation reservation) {
-        if (!reservation.getQuest().getAdmin().equals(admin)) {
-            throw new RuntimeException("Попытка удалить бронирование без права доступа");
-        }
+    public void deleteBlockedReservation(Reservation reservation) {
         reservationRepository.delete(reservation);
     }
 }

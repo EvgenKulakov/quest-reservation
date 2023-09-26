@@ -1,5 +1,6 @@
 package ru.questsfera.questreservation.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import ru.questsfera.questreservation.dto.StatusType;
 
@@ -17,12 +18,17 @@ public class Status {
     @Enumerated(value = EnumType.STRING)
     private StatusType type;
 
+    @Column(name = "name")
+    private String name;
+
     @ManyToMany(mappedBy = "statuses")
+    @JsonIgnore
     private Set<Quest> quests = new HashSet<>();
 
     public Status(StatusType statusType) {
         this.id = statusType.getId();
         this.type = statusType;
+        this.name = statusType.getName();
     }
 
     public Status() {}
@@ -66,6 +72,14 @@ public class Status {
 
     public void setType(StatusType type) {
         this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

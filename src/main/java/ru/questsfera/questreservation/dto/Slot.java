@@ -1,5 +1,10 @@
 package ru.questsfera.questreservation.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
 
@@ -11,7 +16,9 @@ public class Slot {
     private Quest quest;
     private StatusType statusType;
     private Reservation reservation;
+    @JsonFormat(pattern = "dd-MM-yyyy (EEEE)")
     private LocalDate date;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
     private Integer price;
     private LocalTime autoBlock;
@@ -28,6 +35,17 @@ public class Slot {
     }
 
     public Slot() {}
+
+    @JsonIgnore
+    public String getJSON() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public Quest getQuest() {
         return quest;

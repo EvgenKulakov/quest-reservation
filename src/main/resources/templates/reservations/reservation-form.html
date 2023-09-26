@@ -44,16 +44,16 @@
             <div class="mb-3 row">
                 <label for="input-firstname" class="col-12 col-lg-3 col-form-label">Имя:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" maxlength="25" class="form-control" id="input-firstname" th:field="*{firstname}">
-                    <div class="error-message" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></div>
+                    <input type="text" maxlength="25" class="form-control" id="input-firstname" th:field="*{firstName}">
+                    <div class="error-message" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstName}"></div>
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label for="input-lastname" class="col-12 col-lg-3 col-form-label">Фамилия:</label>
                 <div class="col-12 col-lg-6">
-                    <input type="text" maxlength="25" class="form-control" id="input-lastname" th:field="*{lastname}">
-                    <div class="error-message" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></div>
+                    <input type="text" maxlength="25" class="form-control" id="input-lastname" th:field="*{lastName}">
+                    <div class="error-message" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastName}"></div>
                 </div>
             </div>
 

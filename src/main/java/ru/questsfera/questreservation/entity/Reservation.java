@@ -34,9 +34,6 @@ public class Reservation {
     @Column(name = "changed_slot_time")
     private LocalTime changedSlotTime;
 
-    @Column(name = "auto_block")
-    private LocalTime autoBlock;
-
     @ManyToOne
     @JoinColumn(name = "quest_id")
     private Quest quest;
@@ -164,14 +161,6 @@ public class Reservation {
 
     public void setChangedSlotTime(LocalTime changedSlotTime) {
         this.changedSlotTime = changedSlotTime;
-    }
-
-    public LocalTime getAutoBlock() {
-        return autoBlock;
-    }
-
-    public void setAutoBlock(LocalTime autoBlock) {
-        this.autoBlock = autoBlock;
     }
 
     public Quest getQuest() {

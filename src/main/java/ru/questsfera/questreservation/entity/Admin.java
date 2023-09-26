@@ -1,11 +1,14 @@
 package ru.questsfera.questreservation.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.*;
 
 @Entity
 @Table(name = "admins", schema = "quest_reservations")
+@JsonIgnoreProperties({"username", "mail", "phone", "passwordHash",
+        "money", "clients", "blackLists", "quests", "users"})
 public class Admin implements Account {
 
     @Id

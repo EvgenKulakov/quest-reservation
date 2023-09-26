@@ -17,16 +17,16 @@ public class ReservationForm {
 
     @NotBlank(message = "*Обязательное поле", groups = SaveReserveValidator.class)
     @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
-    private String firstname;
+    private String firstName;
 
     @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
-    private String lastname;
+    private String lastName;
 
     @Pattern(regexp = Patterns.PHONE,
             message = "*Введите номер телефона в формате +7хххххххххх",
             groups = SaveReserveValidator.class)
     @Size(max = 2, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
-    private String phone = "+7";
+    private String phone;
 
     @Pattern(regexp = Patterns.EMAIL,
             message = "*Проверьте правильное написание Email", groups = SaveReserveValidator.class)
@@ -40,23 +40,7 @@ public class ReservationForm {
 
     private String clientComment;
 
-    public ReservationForm(Reservation reservation) {
-        initWithReservation(reservation);
-    }
-
     public ReservationForm() {}
-
-    private void initWithReservation(Reservation reservation) {
-        Client client = reservation.getClient();
-        this.statusType = reservation.getStatusType();
-        this.firstname = client != null ? client.getFirstName() : null;
-        this.lastname = client != null ? client.getLastName() : null;
-        this.phone = client != null ? client.getPhone() : null;
-        this.email = client != null ? client.getEmail() : null;
-        this.countPersons = reservation.getCountPersons();
-        this.adminComment = reservation.getAdminComment();
-        this.clientComment = reservation.getClientComment();
-    }
 
     public StatusType getStatusType() {
         return statusType;
@@ -66,20 +50,20 @@ public class ReservationForm {
         this.statusType = statusType;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getPhone() {
@@ -120,5 +104,19 @@ public class ReservationForm {
 
     public void setClientComment(String clientComment) {
         this.clientComment = clientComment;
+    }
+
+    @Override
+    public String toString() {
+        return "ReservationForm{" +
+                "statusType=" + statusType +
+                ", firstname='" + firstName + '\'' +
+                ", lastname='" + lastName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", countPersons=" + countPersons +
+                ", adminComment='" + adminComment + '\'' +
+                ", clientComment='" + clientComment + '\'' +
+                '}';
     }
 }
