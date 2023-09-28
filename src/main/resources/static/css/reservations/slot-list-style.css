@@ -98,26 +98,6 @@
     margin-right: 8px;
 }
 
-.reserve-form button {
-    margin-right: 12px;
-    margin-left: 0px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-#close {
-    position: relative;
-    left: 0.5em;
-    top: -0.6em;
-    cursor: pointer;
-    border-radius: 3px;
-}
-
-.error-message {
-    color: red;
-    font-size: 14px;
-}
-
 .reserve-modal {
     position: fixed;
     width: 100%;
@@ -158,6 +138,26 @@
     transition: all 0.4s ease 0s;
     opacity: 0;
     transform: translate(0px, 100%);
+}
+
+#close {
+    position: relative;
+    left: 0.5em;
+    top: -0.6em;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+}
+
+.reserve-form button {
+    margin-right: 12px;
+    margin-left: 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #unBlockButton {

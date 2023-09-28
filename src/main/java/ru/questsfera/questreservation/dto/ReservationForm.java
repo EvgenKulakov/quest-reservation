@@ -3,9 +3,8 @@ package ru.questsfera.questreservation.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import ru.questsfera.questreservation.validator.BlockSlotValidator;
 import ru.questsfera.questreservation.validator.Patterns;
-import ru.questsfera.questreservation.validator.SaveReserveValidator;
+import ru.questsfera.questreservation.validator.Validator;
 
 public class ReservationForm {
 
@@ -13,27 +12,27 @@ public class ReservationForm {
 
     private StatusType statusType;
 
-    @NotBlank(message = "*Обязательное поле", groups = SaveReserveValidator.class)
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
+    @NotBlank(message = "*Обязательное поле", groups = Validator.SaveReserve.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
     private String firstName;
 
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
     private String lastName;
 
     @Pattern(regexp = Patterns.PHONE,
             message = "*Введите номер телефона в формате +7хххххххххх",
-            groups = SaveReserveValidator.class)
-    @Size(max = 2, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
-    private String phone;
+            groups = Validator.SaveReserve.class)
+    @Size(max = 2, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
+    private String phone = "+7";
 
     @Pattern(regexp = Patterns.EMAIL,
-            message = "*Проверьте правильное написание Email", groups = SaveReserveValidator.class)
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
+            message = "*Проверьте правильное написание Email", groups = Validator.SaveReserve.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
     private String email;
 
     private Integer countPersons;
 
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = BlockSlotValidator.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
     private String adminComment;
 
     private String clientComment;
@@ -102,19 +101,5 @@ public class ReservationForm {
 
     public void setClientComment(String clientComment) {
         this.clientComment = clientComment;
-    }
-
-    @Override
-    public String toString() {
-        return "ReservationForm{" +
-                "statusType=" + statusType +
-                ", firstname='" + firstName + '\'' +
-                ", lastname='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", countPersons=" + countPersons +
-                ", adminComment='" + adminComment + '\'' +
-                ", clientComment='" + clientComment + '\'' +
-                '}';
     }
 }

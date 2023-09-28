@@ -17,13 +17,18 @@ const phone = document.querySelector('#phone')
 const email = document.querySelector('#email')
 const selectCountPersons = document.querySelector('#countPersons')
 
+let errorMessages = document.querySelectorAll('.error-message')
+const changeStatus = document.querySelector('#change-status')
+const changeCountPersons = document.querySelector('#change-count-persons')
+
 const slotInfo = document.querySelector('#slotInfo')
+const errorSlot = document.querySelector('#error-slot')
 const saveButton = document.querySelector('#saveButton')
 const blockButton = document.querySelector('#blockButton')
 const unBlockButton = document.querySelector('#unBlockButton')
 
 function clickSlot(slotButton) {
-    const slot = JSON.parse(slotButton.value)
+    const slot = JSON.parse(slotButton)
     const quest = slot.quest
 
     body.style.overflowY = 'hidden'
@@ -63,7 +68,10 @@ function showReservation(slot, quest) {
         selectCountPersons.appendChild(newOption);
     }
 
-    if (slot.reservation) {
+    if (errorMessages.length > 0) {
+        selectStatus.value = changeStatus.value
+        selectCountPersons.value = changeCountPersons.value
+    } else if (slot.reservation) {
         const reservation = slot.reservation
         const client = reservation.client
 
@@ -73,10 +81,7 @@ function showReservation(slot, quest) {
         phone.value = client.phone
         email.value = client.email
         selectCountPersons.value = reservation.countPersons
-
         blockButton.style.display = 'none'
-    } else {
-        phone.value = '+7'
     }
 }
 
@@ -86,9 +91,10 @@ function showBlockSlot() {
     selectStatus.appendChild(newOption);
 
     allInput.forEach(el => {
-        if (el.name !== '_csrf' && el.name !== 'slot') {
+        if (el.type !== 'hidden') {
             el.disabled = true
         }
+        if (el.name === 'phone') el.value = null
     })
     allSelect.forEach(select => select.disabled = true)
     allTextarea.forEach(el => el.disabled = true)
@@ -105,10 +111,11 @@ function closeSlot() {
     reserveContent.style.opacity = '0'
 
     allInput.forEach(el => {
-        if (el.name !== '_csrf') {
+        if (el.type !== 'hidden') {
             el.value = null
             el.disabled = false
         }
+        if (el.name === 'phone') el.value = '+7'
     })
     allSelect.forEach(select => {
         select.disabled = false
@@ -120,6 +127,8 @@ function closeSlot() {
         el.value = null
         el.disabled = false
     })
+    errorMessages.forEach(el => el.remove())
+    errorMessages = []
 
     setTimeout(function () {
         saveButton.style.display = 'block'
@@ -133,3 +142,9 @@ function saveSlot() {
     reserveModal.style.opacity = '0'
     reserveModal.style.visibility = 'hidden'
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (errorMessages.length > 0) {
+        clickSlot(errorSlot.value)
+    }
+})

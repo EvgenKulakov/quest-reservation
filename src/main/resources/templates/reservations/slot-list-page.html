@@ -47,7 +47,7 @@
                     <form>
                         <button class="slot-button custom-button"
                                 th:value="${slot.getJSON()}"
-                                onclick="clickSlot(this)"
+                                onclick="clickSlot(this.value)"
                                 th:attr="data-status=${slot.statusType}" type="button"
                                 th:utext="${slot.time} + '<br/>₽' + ${slot.price}">
                         </button>
@@ -150,6 +150,10 @@
                     </div>
 
                     <input type="hidden" id="slotInfo" name="slot">
+                    <input type="hidden" name="date" th:value="${date}">
+                    <input type="hidden" id="error-slot" th:value="${error_slot}">
+                    <input type="hidden" id="change-status" th:value="${change_status}">
+                    <input type="hidden" id="change-count-persons" th:value="${change_count_persons}">
 
                     <div class="row justify-content-end">
                         <button id="unBlockButton" onclick="saveSlot()" class="btn btn-secondary mr-2 col-3"
