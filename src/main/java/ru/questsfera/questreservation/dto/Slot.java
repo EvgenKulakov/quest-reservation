@@ -21,6 +21,7 @@ public class Slot {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
     private Integer price;
+    @JsonIgnore
     private LocalTime autoBlock;
 
     public Slot(Quest quest, StatusType statusType, Reservation reservation,

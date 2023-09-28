@@ -3,8 +3,6 @@ package ru.questsfera.questreservation.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.validator.BlockSlotValidator;
 import ru.questsfera.questreservation.validator.Patterns;
 import ru.questsfera.questreservation.validator.SaveReserveValidator;
