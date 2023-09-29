@@ -43,7 +43,6 @@ public class ReservationController {
 
         List<Quest> quests = adminService.getQuestsByAdmin(admin);
         LocalDate date = LocalDate.now();
-        questsAndSlots.clear();
 
         return slotListRendering(quests, date, model);
     }
@@ -54,12 +53,14 @@ public class ReservationController {
         Admin admin = adminService.getAdminById(1);
 
         List<Quest> quests = adminService.getQuestsByAdmin(admin);
-        questsAndSlots.clear();
 
         return slotListRendering(quests, date, model);
     }
 
     public String slotListRendering(List<Quest> quests, LocalDate date, Model model) {
+
+        questsAndSlots.clear();
+        useStatuses.clear();
 
         for (Quest quest : quests) {
             if (quest.getSlotList() == null) continue;
