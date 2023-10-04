@@ -1,7 +1,7 @@
 package ru.questsfera.questreservation.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.repository.*;
@@ -12,6 +12,7 @@ import java.util.*;
 
 @Service
 public class AdminService {
+
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
     private final QuestRepository questRepository;
@@ -37,12 +38,12 @@ public class AdminService {
 
     //***login
     @Transactional
-    public Admin getAdminById(int id) {
-        Optional<Admin> adminOptional = adminRepository.findById(id);
+    public Admin getAdminByName(String username) {
+        Optional<Admin> adminOptional = adminRepository.findAdminByUsername(username);
         if (adminOptional.isPresent()) {
             return adminOptional.get();
         }
-        throw new RuntimeException("Попытка получить несуществующего админа");
+        throw new UsernameNotFoundException(String.format("Пользователь %s не найден", username));
     }
 
     @Transactional
@@ -61,7 +62,6 @@ public class AdminService {
         return userRepository.existsUserByUsernameAndAdmin(user.getUsername(), user.getAdmin());
     }
 
-    @Modifying
     @Transactional
     public void saveUser(User user) {
         userRepository.save(user);
@@ -80,11 +80,6 @@ public class AdminService {
             return optionalQuest.get();
         }
         throw new RuntimeException("Попытка получить несуществующий квест");
-    }
-
-    @Transactional
-    public List<Quest> getQuestsByAdmin(Admin admin) {
-        return questRepository.findQuestsByAdminOrderByQuestName(admin);
     }
 
     @Transactional
@@ -127,11 +122,6 @@ public class AdminService {
         }
         admin.deleteQuestForAdmin(quest);
         questRepository.delete(quest);
-    }
-
-    @Transactional
-    public Set<Quest> getQuestsByUser(User user) {
-        return user.getQuests();
     }
 
     //***Statuses

@@ -14,7 +14,7 @@
 
     <table>
         <thead>
-        <form th:action="@{/add-user}" method="post">
+        <form th:action="@{/users/add-user}" method="post">
             <h3 class="add-quest">Список ваших пользователей
                 <input type="hidden" name="admin" th:value="${admin.id}">
                 <button type="submit" class="btn btn-outline-primary">+ Добавить пользователя</button>
@@ -27,19 +27,19 @@
                 <h3 class="quest-text" th:text="${user.username}"></h3>
             </td>
             <td>
-                <form class="buttons" th:action="@{/update-user}" method="post">
+                <form class="buttons" th:action="@{/users/update-user}" method="post">
                     <input type="hidden" name="user" th:value="${user.id}">
                     <button type="submit" class="btn btn-light">Редактировать</button>
                 </form>
             </td>
             <td>
-                <form class="buttons" th:action="@{/update-password-user}" method="post">
+                <form class="buttons" th:action="@{/users/update-password-user}" method="post">
                     <input type="hidden" name="user" th:value="${user.id}">
                     <button type="submit" class="btn btn-warning">Обновить пароль</button>
                 </form>
             </td>
             <td>
-                <form class="buttons" th:action="@{/delete-user}" method="post">
+                <form class="buttons" th:action="@{/users/delete-user}" method="post">
                     <input type="hidden" name="user" th:value="${user.id}">
                     <button type="submit" class="btn btn-danger">Удалить пользователя</button>
                 </form>

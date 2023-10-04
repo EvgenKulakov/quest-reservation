@@ -3,6 +3,8 @@ package ru.questsfera.questreservation.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import ru.questsfera.questreservation.dto.Account;
+import ru.questsfera.questreservation.dto.Role;
 import ru.questsfera.questreservation.validator.Patterns;
 
 import java.util.*;
@@ -20,8 +22,8 @@ public class User implements Account {
     private String username;
 
     @Pattern(regexp = Patterns.PASSWORD, message = "*Минимум 8 символов без пробелов")
-    @Column(name = "password_hash")
-    private String passwordHash;
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "first_name")
     private String firstName;
@@ -33,15 +35,19 @@ public class User implements Account {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.ROLE_USER;
+
     @ManyToOne
     @JoinColumn(name = "admin_id")
     private Admin admin;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_quest",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "quest_id"))
-    private Set<Quest> quests = new HashSet<>();
+    private Set<Quest> quests = new TreeSet<>();
 
     public User() {}
 
@@ -69,6 +75,7 @@ public class User implements Account {
         this.id = id;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -78,13 +85,12 @@ public class User implements Account {
     }
 
     @Override
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    @Override
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {
@@ -111,6 +117,16 @@ public class User implements Account {
         this.email = email;
     }
 
+    @Override
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    @Override
     public Set<Quest> getQuests() {
         return quests;
     }

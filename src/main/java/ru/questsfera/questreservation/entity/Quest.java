@@ -10,7 +10,7 @@ import java.util.*;
 @Entity
 @Table(name = "quests", schema = "quest_reservations")
 @JsonIgnoreProperties({"slotList", "autoBlock", "sms", "users", "synchronizedQuests"})
-public class Quest {
+public class Quest implements Comparable<Quest> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -214,6 +214,11 @@ public class Quest {
 
     public void setSms(String sms) {
         this.sms = sms;
+    }
+
+    @Override
+    public int compareTo(Quest o) {
+        return o.getQuestName().compareTo(this.questName);
     }
 
     @Override

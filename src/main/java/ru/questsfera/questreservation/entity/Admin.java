@@ -2,12 +2,14 @@ package ru.questsfera.questreservation.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import ru.questsfera.questreservation.dto.Account;
+import ru.questsfera.questreservation.dto.Role;
 
 import java.util.*;
 
 @Entity
 @Table(name = "admins", schema = "quest_reservations")
-@JsonIgnoreProperties({"username", "mail", "phone", "passwordHash",
+@JsonIgnoreProperties({"username", "mail", "phone", "password",
         "money", "clients", "blackLists", "quests", "users"})
 public class Admin implements Account {
 
@@ -24,11 +26,15 @@ public class Admin implements Account {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "password_hash")
-    private String passwordHash;
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "money")
     private int money;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.ROLE_ADMIN;
 
     @OneToMany(mappedBy = "admin", cascade = CascadeType.REFRESH)
     private Set<Client> clients = new HashSet<>();
@@ -37,7 +43,7 @@ public class Admin implements Account {
     private Set<BlackList> blackLists = new HashSet<>();
 
     @OneToMany(mappedBy = "admin", fetch = FetchType.EAGER)
-    private Set<Quest> quests = new HashSet<>();
+    private Set<Quest> quests = new TreeSet<>();
 
     @OneToMany(mappedBy = "admin",
             cascade = {CascadeType.REMOVE})
@@ -80,6 +86,7 @@ public class Admin implements Account {
         this.users = users;
     }
 
+    @Override
     public Set<Quest> getQuests() {
         return quests;
     }
@@ -112,6 +119,7 @@ public class Admin implements Account {
         this.id = id;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -137,13 +145,12 @@ public class Admin implements Account {
     }
 
     @Override
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    @Override
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public int getMoney() {
@@ -152,6 +159,15 @@ public class Admin implements Account {
 
     public void setMoney(int money) {
         this.money = money;
+    }
+
+    @Override
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override

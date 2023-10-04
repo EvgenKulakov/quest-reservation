@@ -1,7 +1,6 @@
 package ru.questsfera.questreservation.processor;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import ru.questsfera.questreservation.entity.Account;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.security.SecureRandom;
 
@@ -22,10 +21,8 @@ public class PasswordGenerator {
         return password.toString();
     }
 
-    public static void createBCrypt(Account account) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String password = account.getPasswordHash();
-        String passwordHash = encoder.encode(password);
-        account.setPasswordHash(passwordHash);
+    public static String createBCrypt(String password) {
+        String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+        return "{bcrypt}" + passwordHash;
     }
 }

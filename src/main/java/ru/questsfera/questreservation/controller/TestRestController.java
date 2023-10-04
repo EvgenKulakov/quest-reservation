@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.questsfera.questreservation.dto.ReservationForm;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -21,6 +20,11 @@ public class TestRestController {
     @Autowired
     public TestRestController(AdminService adminService) {
         this.adminService = adminService;
+    }
+
+    @GetMapping("/")
+    public String showMainPage() {
+        return "Главная страница";
     }
 
     @GetMapping("/slot/{id}")

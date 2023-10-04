@@ -18,11 +18,11 @@
                 + '<br>' + |они тоже удалятся. Удалить квест?|"></h4>
 
             <div class="mt-3 row d-flex justify-content-center align-items-center">
-                <a class="col-1" th:href="@{/quest-list}">
+                <a class="col-1" th:href="@{/quests/quest-list}">
                     <button type="button" class="btn btn-outline-secondary">Отмена</button>
                 </a>
 
-                <form class="col-1" th:action="@{/delete-quest-final}" method="post">
+                <form class="col-1" th:action="@{/quests/delete-quest-final}" method="post">
                     <input type="hidden" name="quest" th:value="${quest.id}">
                     <button class="btn btn-danger" type="submit">Удалить</button>
                 </form>

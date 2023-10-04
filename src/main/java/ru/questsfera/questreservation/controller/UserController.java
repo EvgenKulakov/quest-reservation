@@ -5,23 +5,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.entity.Admin;
 import ru.questsfera.questreservation.entity.User;
 import ru.questsfera.questreservation.processor.PasswordGenerator;
 import ru.questsfera.questreservation.service.AdminService;
 import ru.questsfera.questreservation.validator.Patterns;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
     private final AdminService adminService;
-    private Admin admin;
 
     @Autowired
     public UserController(AdminService adminService) {
@@ -29,10 +27,9 @@ public class UserController {
     }
 
     @GetMapping("/user-list")
-    public String showUserList(Model model) {
-        /* test admin account */
-        admin = adminService.getAdminById(1);
+    public String showUserList(Principal principal, Model model) {
 
+        Admin admin = adminService.getAdminByName(principal.getName());
         List<User> users = adminService.getUsersByAdmin(admin);
 
         model.addAttribute("admin", admin);
@@ -43,8 +40,9 @@ public class UserController {
 
     @PostMapping("/add-user")
     public String addUser(@RequestParam("admin") Admin admin, Model model) {
+
         User user = new User(admin);
-        user.setPasswordHash(PasswordGenerator.createRandomPassword());
+        user.setPassword(PasswordGenerator.createRandomPassword());
 
         model.addAttribute("user", user);
         return "users/add-user-form";
@@ -69,11 +67,12 @@ public class UserController {
         }
 
         if (user.getId() == null) {
-            PasswordGenerator.createBCrypt(user);
+            String passwordHash = PasswordGenerator.createBCrypt(user.getPassword());
+            user.setPassword(passwordHash);
         }
 
         adminService.saveUser(user);
-        return "redirect:/user-list";
+        return "redirect:/users/user-list";
     }
 
     @PostMapping("/update-user")
@@ -103,14 +102,14 @@ public class UserController {
             return "users/update-password-form";
         }
 
-        PasswordGenerator.createBCrypt(user);
+        user.setPassword(PasswordGenerator.createBCrypt(newPassword));
         adminService.saveUser(user);
-        return "redirect:/user-list";
+        return "redirect:/users/user-list";
     }
 
     @PostMapping("/delete-user")
     public String deleteUser(@RequestParam("user") User user) {
         adminService.deleteUser(user);
-        return "redirect:/user-list";
+        return "redirect:/users/user-list";
     }
 }

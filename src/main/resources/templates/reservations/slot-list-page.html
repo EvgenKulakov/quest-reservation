@@ -14,7 +14,7 @@
 <section>
     <div id="slot-list-section">
         <div class="container-fluid mt-4">
-            <form id="date-form" th:action="@{/slot-list/}" method="get">
+            <form id="date-form" th:action="@{/reservations/slot-list/}" method="get">
                 <div>
                     <h3 id="date">Бронирования по дате
                         <button type="button" class="badge bg-light text-dark" id="date-button">
@@ -56,7 +56,7 @@
         </div>
 
         <div class="container-fluid my-3">
-            <form th:action="@{/slot-list/}" method="get">
+            <form th:action="@{/reservations/slot-list/}" method="get">
                 <button id="backButton" type="submit" class="btn btn-outline-secondary back-forward" name="date"
                         th:value="${date.minusDays(1)}" th:text="'← Назад'"></button>
                 <button id="nextButton" type="submit" class="btn btn-outline-secondary back-forward" name="date"
@@ -87,7 +87,7 @@
                     </div>
                 </div>
 
-                <form class="reserve-form" th:object="${res_form}" th:action="@{/save-reservation}" th:method="post">
+                <form class="reserve-form" th:object="${res_form}" th:action="@{/reservations/save-reservation}" th:method="post">
 
                     <div class="mb-3 row">
                         <label for="selectStatus" class="col-12 col-lg-3 col-form-label">Статус:</label>
@@ -156,10 +156,10 @@
 
                     <div class="row justify-content-end">
                         <button id="unBlockButton" onclick="saveSlot()" class="btn btn-secondary mr-2 col-auto"
-                                type="submit" formaction="/unBlock">Разблокировать
+                                type="submit" formaction="/reservations/unBlock">Разблокировать
                         </button>
                         <button id="blockButton" onclick="saveSlot()" class="btn btn-secondary mr-2 col-3"
-                                type="submit" formaction="/block-slot">Заблокировать
+                                type="submit" formaction="/reservations/block-slot">Заблокировать
                         </button>
                         <button id="saveButton" onclick="saveSlot()" class="btn btn-primary mr-2 col-3"
                                 type="submit">Сохранить</button>

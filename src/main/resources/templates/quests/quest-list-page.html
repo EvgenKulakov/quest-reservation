@@ -14,7 +14,7 @@
 
     <table>
         <thead>
-        <form th:action="@{/add-quest-first-page}" method="post">
+        <form th:action="@{/quests/add-quest-first-page}" method="post">
             <input type="hidden" name="admin" th:value="${admin.id}">
             <h3 class="add-quest">Список ваших квестов
                 <button class="btn btn-outline-primary" type="submit">+ Добавить квест</button>
@@ -27,13 +27,13 @@
                 <h3 class="quest-text" th:text="${quest.questName}"></h3>
             </td>
             <td>
-                <form class="buttons" th:action="@{/quest-info}" method="post">
+                <form class="buttons" th:action="@{/quests/quest-info}" method="post">
                     <input type="hidden" name="quest" th:value="${quest.id}">
                     <button class="btn btn-secondary" type="submit">Подробнее</button>
                 </form>
             </td>
             <td>
-                <form class="buttons" th:action="@{/delete-quest}" method="post">
+                <form class="buttons" th:action="@{/quests/delete-quest}" method="post">
                     <input type="hidden" name="quest" th:value="${quest.id}">
                     <button class="btn btn-danger" type="submit">Удалить</button>
                 </form>

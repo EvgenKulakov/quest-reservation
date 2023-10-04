@@ -18,11 +18,13 @@ import ru.questsfera.questreservation.processor.SlotListFactory;
 import ru.questsfera.questreservation.service.AdminService;
 import ru.questsfera.questreservation.validator.SlotListValidator;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 @Controller
+@RequestMapping("/quests")
 public class QuestController {
 
     private final AdminService adminService;
@@ -34,11 +36,10 @@ public class QuestController {
     }
 
     @GetMapping("/quest-list")
-    public String showQuestList(Model model) {
-        /* admin test account */
-        admin = adminService.getAdminById(1);
+    public String showQuestList(Principal principal, Model model) {
 
-        List<Quest> quests = adminService.getQuestsByAdmin(admin);
+        admin = adminService.getAdminByName(principal.getName());
+        Set<Quest> quests = admin.getQuests();
 
         model.addAttribute("admin" , admin);
         model.addAttribute("quests", quests);
@@ -128,7 +129,7 @@ public class QuestController {
 
         adminService.saveQuest(admin, quest);
 
-        return "redirect:/quest-list";
+        return "redirect:/quests/quest-list";
     }
 
     @PostMapping("/delete-quest")
@@ -139,12 +140,12 @@ public class QuestController {
 
         }
         adminService.deleteQuest(admin, quest);
-        return "redirect:/quest-list";
+        return "redirect:/quests/quest-list";
     }
 
     @PostMapping("/delete-quest-final")
     public String deleteQuestFinal(@RequestParam("quest") Quest quest) {
         adminService.deleteQuest(admin, quest);
-        return "redirect:/quest-list";
+        return "redirect:/quests/quest-list";
     }
 }
