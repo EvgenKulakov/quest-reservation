@@ -54,4 +54,14 @@ public class AccountService implements UserDetailsService {
 
         throw new UsernameNotFoundException(String.format("Пользователь %s не найден", username));
     }
+
+    @Transactional
+    public boolean existAccount(String username) {
+        if (username.isEmpty()) return false;
+
+        boolean existAdmin = adminRepository.existsAdminByUsername(username);
+        boolean existUser = userRepository.existsUserByUsername(username);
+
+        return existAdmin || existUser;
+    }
 }

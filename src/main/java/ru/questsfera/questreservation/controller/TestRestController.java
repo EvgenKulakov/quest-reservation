@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.questsfera.questreservation.dto.Slot;
+import ru.questsfera.questreservation.entity.Admin;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.service.AdminService;
@@ -22,9 +23,10 @@ public class TestRestController {
         this.adminService = adminService;
     }
 
-    @GetMapping("/")
-    public String showMainPage() {
-        return "Главная страница";
+    @GetMapping("/admin/{username}")
+    public Admin showAdminByName(@PathVariable("username") String username) {
+        Admin admin = adminService.getAdminByName(username);
+        return admin;
     }
 
     @GetMapping("/slot/{id}")

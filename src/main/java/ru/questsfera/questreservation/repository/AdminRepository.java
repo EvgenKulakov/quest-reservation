@@ -6,5 +6,8 @@ import ru.questsfera.questreservation.entity.Admin;
 import java.util.Optional;
 
 public interface AdminRepository extends JpaRepository<Admin, Integer> {
+
     Optional<Admin> findAdminByUsername(String username);
+
+    boolean existsAdminByUsername(String username);
 }

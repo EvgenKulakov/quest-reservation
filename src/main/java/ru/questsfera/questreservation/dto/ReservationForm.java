@@ -25,7 +25,7 @@ public class ReservationForm {
     @Size(max = 2, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
     private String phone = "+7";
 
-    @Pattern(regexp = Patterns.EMAIL,
+    @Pattern(regexp = Patterns.EMAIL_OR_EMPTY,
             message = "*Проверьте правильное написание Email", groups = Validator.SaveReserve.class)
     @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
     private String email;

@@ -23,6 +23,6 @@ public class PasswordGenerator {
 
     public static String createBCrypt(String password) {
         String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
-        return "{bcrypt}" + passwordHash;
+        return passwordHash;
     }
 }

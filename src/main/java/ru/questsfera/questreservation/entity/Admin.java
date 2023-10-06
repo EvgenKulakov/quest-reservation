@@ -2,15 +2,17 @@ package ru.questsfera.questreservation.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import ru.questsfera.questreservation.dto.Account;
 import ru.questsfera.questreservation.dto.Role;
+import ru.questsfera.questreservation.validator.Patterns;
 
 import java.util.*;
 
 @Entity
 @Table(name = "admins", schema = "quest_reservations")
 @JsonIgnoreProperties({"username", "mail", "phone", "password",
-        "money", "clients", "blackLists", "quests", "users"})
+        "money", "role", "clients", "blackLists", "quests", "users"})
 public class Admin implements Account {
 
     @Id
@@ -21,12 +23,14 @@ public class Admin implements Account {
     private String username;
 
     @Column(name = "mail")
+    @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание email")
     private String mail;
 
     @Column(name = "phone")
     private String phone;
 
     @Column(name = "password")
+    @Pattern(regexp = Patterns.PASSWORD, message = "*Пароль минимум 8 символов без пробелов")
     private String password;
 
     @Column(name = "money")

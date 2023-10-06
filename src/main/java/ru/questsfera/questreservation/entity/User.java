@@ -31,7 +31,7 @@ public class User implements Account {
     @Column(name = "last_name")
     private String lastName;
 
-    @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание Email")
+    @Pattern(regexp = Patterns.EMAIL_OR_EMPTY, message = "*Проверьте правильное написание Email")
     @Column(name = "email")
     private String email;
 

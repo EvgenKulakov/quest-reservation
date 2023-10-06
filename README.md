@@ -8,7 +8,7 @@
 
 ## Stack:
 ```
-Java 17, MySQL, Spring Boot 3, Spring Data JPA, Spring Security, 
+Java 17, MySQL, Spring Boot 3, Spring Data JPA, Spring Security 6, 
 Spring MVC, Hibernate Validator, Thymeleaf, BootStrap 5, Docker
 ```
 ***
@@ -18,7 +18,7 @@ Spring MVC, Hibernate Validator, Thymeleaf, BootStrap 5, Docker
 
 
 ### В разработке: 
-View, security, refactoring, внешний виджет
+View, refactoring, внешний виджет
 ***
 
 ## Схема Database:
