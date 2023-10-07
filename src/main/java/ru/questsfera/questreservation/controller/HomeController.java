@@ -24,13 +24,13 @@ public class HomeController {
 
     @RequestMapping("/login")
     public String login() {
-        return "login";
+        return "home/login";
     }
 
     @PostMapping("/register")
     public String register(Model model) {
         model.addAttribute("admin", new Admin());
-        return "register";
+        return "home/register";
     }
 
     @PostMapping("/register/save-new-account")
@@ -43,19 +43,19 @@ public class HomeController {
             bindingResult.rejectValue("mail", "errorCode",
                     "Такой пользователь уже зарегистрирован");
             model.addAttribute("admin", admin);
-            return "register";
+            return "home/register";
         }
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("admin", admin);
-            return "register";
+            return "home/register";
         }
 
         if (!admin.getPassword().equals(duplicatePass)) {
             bindingResult.rejectValue("password", "errorCode",
-                    "*Повторный пароль не совпадает");
+                    "Повторный пароль не совпадает");
             model.addAttribute("admin", admin);
-            return "register";
+            return "home/register";
         }
 
         admin.setUsername(admin.getMail());

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Регистрация</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/home/login-style.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <form class="form" th:object="${admin}" th:action="@{/register/save-new-account}" method="post">
+        <h4>Регистрация</h4>
+        <div class="mb-3"><input type="submit" class="btn btn-link btn-sm back"
+                                 formaction="/" value="← Войти"/></div>
+        <div><p> Email:<input type="text" maxlength="50" placeholder="email - логин для входа"
+                              class="form-control" th:field="*{mail}"/></div>
+        <div><p> Пароль:<input type="password" maxlength="50" placeholder="минимум 8 символов"
+                               class="form-control" th:field="*{password}"/></p></div>
+        <div><p> Повторите пароль:<input type="password" maxlength="50"
+                                         class="form-control" name="duplicate-pass"/></p></div>
+
+        <div class="message error" th:if="${#fields.hasErrors('mail')}" th:errors="*{mail}"></div>
+        <div class="message error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        <div class="mt-4"><input type="submit" class="btn btn-success button" value="Зарегистрироваться"/></div>
+    </form>
+</div>
+</body>
+</html>

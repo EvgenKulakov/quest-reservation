@@ -23,6 +23,13 @@
     padding: 0px;
 }
 
+.add-quest {
+    margin-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid black;
+    width: fit-content;
+}
+
 #status-info {
     align-items: center;
     padding-left: 11px;

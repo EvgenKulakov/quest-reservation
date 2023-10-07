@@ -16,6 +16,7 @@ import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.entity.User;
 import ru.questsfera.questreservation.processor.SlotListFactory;
 import ru.questsfera.questreservation.service.AdminService;
+import ru.questsfera.questreservation.service.UserService;
 import ru.questsfera.questreservation.validator.SlotListValidator;
 
 import java.security.Principal;
@@ -28,11 +29,13 @@ import java.util.TreeSet;
 public class QuestController {
 
     private final AdminService adminService;
+    private final UserService userService;
     private Admin admin;
 
     @Autowired
-    public QuestController(AdminService adminService) {
+    public QuestController(AdminService adminService, UserService userService) {
         this.adminService = adminService;
+        this.userService = userService;
     }
 
     @GetMapping("/quest-list")
@@ -68,7 +71,7 @@ public class QuestController {
     @PostMapping("/add-quest-first-page")
     public String addQuest(@RequestParam("admin") Admin admin, Model model) {
         Quest quest = new Quest(admin);
-        List<User> allUsers = adminService.getUsersByAdmin(admin);
+        List<User> allUsers = userService.getUsersByAdmin(admin);
 
         model.addAttribute("quest", quest);
         model.addAttribute("all_users", allUsers);
@@ -88,7 +91,7 @@ public class QuestController {
 
         if (binding.hasErrors() || quest.getMinPersons() > quest.getMaxPersons() || existQuestName) {
             model.addAttribute("user_statuses", Status.getUserStatuses());
-            model.addAttribute("all_users", adminService.getUsersByAdmin(admin));
+            model.addAttribute("all_users", userService.getUsersByAdmin(admin));
 
             if (quest.getMinPersons() != null
                     && quest.getMaxPersons() != null

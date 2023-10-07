@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    boolean existsUserByUsernameAndAdmin(String username, Admin admin);
+    boolean existsUserByIdAndAdmin(Integer id, Admin admin);
 
     boolean existsUserByUsername(String username);
 

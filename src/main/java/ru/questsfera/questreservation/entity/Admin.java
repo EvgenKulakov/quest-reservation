@@ -23,14 +23,14 @@ public class Admin implements Account {
     private String username;
 
     @Column(name = "mail")
-    @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание email")
+    @Pattern(regexp = Patterns.EMAIL, message = "Проверьте правильное написание email")
     private String mail;
 
     @Column(name = "phone")
     private String phone;
 
     @Column(name = "password")
-    @Pattern(regexp = Patterns.PASSWORD, message = "*Пароль минимум 8 символов без пробелов")
+    @Pattern(regexp = Patterns.PASSWORD, message = "Пароль минимум 8 символов без пробелов")
     private String password;
 
     @Column(name = "money")

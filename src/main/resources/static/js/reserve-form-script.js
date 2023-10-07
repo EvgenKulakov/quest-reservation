@@ -91,7 +91,7 @@ function showBlockSlot() {
     selectStatus.appendChild(newOption);
 
     allInput.forEach(el => {
-        if (el.type !== 'hidden') {
+        if (el.type !== 'hidden' && el.type !== 'submit') {
             el.disabled = true
         }
         if (el.name === 'phone') el.value = null
@@ -111,7 +111,7 @@ function closeSlot() {
     reserveContent.style.opacity = '0'
 
     allInput.forEach(el => {
-        if (el.type !== 'hidden') {
+        if (el.type !== 'hidden' && el.type !== 'submit') {
             el.value = null
             el.disabled = false
         }

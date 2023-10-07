@@ -11,11 +11,11 @@
 <div class="container">
     <form class="form" th:action="@{/login}" method="post">
         <h4 class="mb-4">Вход | Регистрация</h4>
-        <div th:if="${param.error}" class="my-3 message error"><span>Неправильный логин или пароль</span></div>
-        <div th:if="${param.logout}" class="my-3 message logout"><span>Вы вышли из учётной записи</span></div>
+        <div th:if="${param.error}" class="my-3 message login error"><span>Неправильный логин или пароль</span></div>
+        <div th:if="${param.logout}" class="my-3 message login logout"><span>Вы вышли из учётной записи</span></div>
         <div th:if="${param.new_account}" class="my-3 message logout"><span>Учётная запись создана. Войдите:</span></div>
-        <div><p> Логин: <input type="text" class="form-control" name="username"/></p></div>
-        <div><p> Пароль: <input type="password" class="form-control" name="password"/></p></div>
+        <div><p> Логин: <input type="text" maxlength="50" class="form-control" name="username"/></p></div>
+        <div><p> Пароль: <input type="password" maxlength="50" class="form-control" name="password"/></p></div>
         <div class="mt-4" ><input type="submit"  class="btn btn-primary button" value="Войти"/></div>
         <div ><input type="submit" class="btn btn-link btn-sm button" formaction="/register" value="Регистрация"/></div>
     </form>

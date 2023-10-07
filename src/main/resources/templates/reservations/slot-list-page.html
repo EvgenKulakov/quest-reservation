@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <title>Бронирования по дате</title>
@@ -12,58 +13,75 @@
 <header th:insert="~{header-fragment :: head}"></header>
 
 <section>
-    <div id="slot-list-section">
-        <div class="container-fluid mt-4">
-            <form id="date-form" th:action="@{/reservations/slot-list/}" method="get">
-                <div>
-                    <h3 id="date">Бронирования по дате
-                        <button type="button" class="badge bg-light text-dark" id="date-button">
-                            <span th:text="${#temporals.format(date, 'dd-MM-yyyy (EEEE)')}"></span>
-                            <img src="/icons/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
-                            <input class="form-control" type="text" id="input-date" name="date" readonly>
+    <th:block th:switch="${#maps.isEmpty(quests_and_slots)}">
+
+        <div th:case="${true}" class="container-fluid mt-4">
+            <div sec:authorize="hasRole('ADMIN')">
+                <form th:action="@{/quests/quest-list}" method="get">
+                    <h6 class="add-quest">Перейдите во вкладку Квесты, чтобы добавить квест
+                        <button class="btn btn-outline-primary" type="submit">Редактировать квесты →
                         </button>
+                    </h6>
+                </form>
+            </div>
+            <div sec:authorize="hasRole('USER')">
+                <h4 class="add-quest">Администратор ещё не предоставил вам доступ к квестам</h4>
+            </div>
+        </div>
+
+        <div th:case="${false}" id="slot-list-section">
+            <div class="container-fluid mt-4">
+                <form id="date-form" th:action="@{/reservations/slot-list/}" method="get">
+                    <div>
+                        <h3 id="date">Бронирования по дате
+                            <button type="button" class="badge bg-light text-dark" id="date-button">
+                                <span th:text="${#temporals.format(date, 'dd-MM-yyyy (EEEE)')}"></span>
+                                <img src="/icons/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
+                                <input class="form-control" type="text" id="input-date" name="date" readonly>
+                            </button>
+                        </h3>
+                    </div>
+                </form>
+
+                <div class="row row-cols-auto" id="status-info">
+                    <h6>Статусы</h6>
+                    <th:block th:each="status_type : ${use_statuses}">
+                        <div class="slot-button custom-status col-auto" th:text="${status_type.name}"
+                             th:attr="data-status=${status_type}"></div>
+                    </th:block>
+                </div>
+            </div>
+
+            <div th:each="one_quest_with_slots : ${quests_and_slots}" class="container-fluid" id="block-reserves">
+                <div class="row-cols-auto d-flex align-items-center quest-name">
+                    <h3>
+                        <td th:text="${one_quest_with_slots.key}"></td>
                     </h3>
                 </div>
-            </form>
+                <div class="row-cols-auto d-flex flex-wrap">
+                    <td th:each="slot, index : ${one_quest_with_slots.value}">
+                        <form>
+                            <button class="slot-button custom-button"
+                                    th:value="${slot.getJSON()}"
+                                    onclick="clickSlot(this.value)"
+                                    th:attr="data-status=${slot.statusType}" type="button"
+                                    th:utext="${slot.time} + '<br/>₽' + ${slot.price}">
+                            </button>
+                        </form>
+                    </td>
+                </div>
+            </div>
 
-            <div class="row row-cols-auto" id="status-info">
-                <h6>Статусы</h6>
-                <th:block th:each="status_type : ${use_statuses}">
-                    <div class="slot-button custom-status col-auto" th:text="${status_type.name}"
-                         th:attr="data-status=${status_type}"></div>
-                </th:block>
+            <div class="container-fluid my-3">
+                <form th:action="@{/reservations/slot-list/}" method="get">
+                    <button id="backButton" type="submit" class="btn btn-outline-secondary back-forward" name="date"
+                            th:value="${date.minusDays(1)}" th:text="'← Назад'"></button>
+                    <button id="nextButton" type="submit" class="btn btn-outline-secondary back-forward" name="date"
+                            th:value="${date.plusDays(1)}" th:text="'Вперёд →'"></button>
+                </form>
             </div>
         </div>
-
-        <div th:each="one_quest_with_slots : ${quests_and_slots}" class="container-fluid" id="block-reserves">
-            <div class="row-cols-auto d-flex align-items-center quest-name">
-                <h3>
-                    <td th:text="${one_quest_with_slots.key}"></td>
-                </h3>
-            </div>
-            <div class="row-cols-auto d-flex flex-wrap">
-                <td th:each="slot, index : ${one_quest_with_slots.value}">
-                    <form>
-                        <button class="slot-button custom-button"
-                                th:value="${slot.getJSON()}"
-                                onclick="clickSlot(this.value)"
-                                th:attr="data-status=${slot.statusType}" type="button"
-                                th:utext="${slot.time} + '<br/>₽' + ${slot.price}">
-                        </button>
-                    </form>
-                </td>
-            </div>
-        </div>
-
-        <div class="container-fluid my-3">
-            <form th:action="@{/reservations/slot-list/}" method="get">
-                <button id="backButton" type="submit" class="btn btn-outline-secondary back-forward" name="date"
-                        th:value="${date.minusDays(1)}" th:text="'← Назад'"></button>
-                <button id="nextButton" type="submit" class="btn btn-outline-secondary back-forward" name="date"
-                        th:value="${date.plusDays(1)}" th:text="'Вперёд →'"></button>
-            </form>
-        </div>
-    </div>
+    </th:block>
 
 
     <!--    **********************************RESERVATION FORM WINDOW************************************************-->
@@ -87,7 +105,8 @@
                     </div>
                 </div>
 
-                <form class="reserve-form" th:object="${res_form}" th:action="@{/reservations/save-reservation}" th:method="post">
+                <form class="reserve-form" th:object="${res_form}" th:action="@{/reservations/save-reservation}"
+                      th:method="post">
 
                     <div class="mb-3 row">
                         <label for="selectStatus" class="col-12 col-lg-3 col-form-label">Статус:</label>
@@ -162,17 +181,16 @@
                                 type="submit" formaction="/reservations/block-slot">Заблокировать
                         </button>
                         <button id="saveButton" onclick="saveSlot()" class="btn btn-primary mr-2 col-3"
-                                type="submit">Сохранить</button>
+                                type="submit">Сохранить
+                        </button>
                     </div>
 
                 </form>
             </div>
         </div>
     </div>
-
 </section>
 
-<script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/air-datepicker.js"></script>
 <script src="/js/calendar-script.js"></script>
 <script src="/js/reserve-form-script.js"></script>

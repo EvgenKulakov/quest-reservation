@@ -14,7 +14,6 @@ import java.util.*;
 public class AdminService {
 
     private final AdminRepository adminRepository;
-    private final UserRepository userRepository;
     private final QuestRepository questRepository;
     private final StatusRepository statusRepository;
     private final ReservationRepository reservationRepository;
@@ -22,13 +21,13 @@ public class AdminService {
     private final BlackListRepository blackListRepository;
 
     @Autowired
-    public AdminService(AdminRepository adminRepository, UserRepository userRepository,
-                        QuestRepository questRepository, StatusRepository statusRepository,
+    public AdminService(AdminRepository adminRepository,
+                        QuestRepository questRepository,
+                        StatusRepository statusRepository,
                         ReservationRepository reservationRepository,
                         ClientRepository clientRepository,
                         BlackListRepository blackListRepository) {
         this.adminRepository = adminRepository;
-        this.userRepository = userRepository;
         this.questRepository = questRepository;
         this.statusRepository = statusRepository;
         this.reservationRepository = reservationRepository;
@@ -36,7 +35,7 @@ public class AdminService {
         this.blackListRepository = blackListRepository;
     }
 
-    //***login
+    //***AdminService
     @Transactional
     public Admin getAdminByName(String username) {
         Optional<Admin> adminOptional = adminRepository.findAdminByUsername(username);
@@ -49,27 +48,6 @@ public class AdminService {
     @Transactional
     public void saveAdmin(Admin admin) {
         adminRepository.save(admin);
-    }
-
-    //***Users
-    @Transactional
-    public List<User> getUsersByAdmin(Admin admin) {
-        return userRepository.findAllByAdminOrderByUsername(admin);
-    }
-
-    @Transactional
-    public boolean existsUsername(User user) {
-        return userRepository.existsUserByUsernameAndAdmin(user.getUsername(), user.getAdmin());
-    }
-
-    @Transactional
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
-
-    @Transactional
-    public void deleteUser(User user) {
-        userRepository.delete(user);
     }
 
     //***Quests

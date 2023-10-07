@@ -16,7 +16,6 @@
         <thead>
         <form th:action="@{/users/add-user}" method="post">
             <h3 class="add-quest">Список ваших пользователей
-                <input type="hidden" name="admin" th:value="${admin.id}">
                 <button type="submit" class="btn btn-outline-primary">+ Добавить пользователя</button>
             </h3>
         </form>
@@ -50,6 +49,5 @@
 
 </section>
 
-<script src="/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
