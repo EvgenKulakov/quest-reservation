@@ -22,9 +22,9 @@ public class Admin implements Account {
     @Column(name = "username")
     private String username;
 
-    @Column(name = "mail")
+    @Column(name = "email")
     @Pattern(regexp = Patterns.EMAIL, message = "Проверьте правильное написание email")
-    private String mail;
+    private String email;
 
     @Column(name = "phone")
     private String phone;
@@ -57,17 +57,6 @@ public class Admin implements Account {
     private Set<Reservation> reservations = new HashSet<>();
 
     public Admin() {}
-
-    public void addQuestForAdmin(Quest quest) {
-        if (quest.getAdmin() != null) {
-            if(!quest.getAdmin().equals(this)) {
-                throw  new RuntimeException("Квесту " + quest.getId()
-                        + " уже установлен админ id: " + quest.getAdmin().getId());
-            } else return;
-        }
-        quest.setAdmin(this);
-        this.quests.add(quest);
-    }
 
     public void deleteQuestForAdmin(Quest quest) {
         this.quests.remove(quest);
@@ -132,12 +121,12 @@ public class Admin implements Account {
         this.username = username;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhone() {

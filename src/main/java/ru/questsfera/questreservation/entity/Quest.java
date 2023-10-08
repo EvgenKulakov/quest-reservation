@@ -71,12 +71,8 @@ public class Quest implements Comparable<Quest> {
     }
 
     public void addStatusForQuest(Status status) {
-        status.getQuests().add(this);
-        statuses.add(status);
-    }
-
-    public void deleteStatusForQuest(Status status) {
-        status.getQuests().remove(this);
+        status.getQuests().add(this); // убрать это добавление?
+        this.statuses.add(status);
     }
 
     public void saveUsers() {

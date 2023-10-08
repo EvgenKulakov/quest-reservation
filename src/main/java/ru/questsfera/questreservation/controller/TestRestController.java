@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.entity.Admin;
-import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.service.AdminService;
 
@@ -40,12 +39,6 @@ public class TestRestController {
             slot = new Slot();
         }
         return slot;
-    }
-
-    @GetMapping("/quest/{id}")
-    public Quest getQuest(@PathVariable("id") Integer id) {
-        Quest quest = adminService.getQuestById(id);
-        return quest;
     }
 
     @GetMapping("/reservation/{id}")

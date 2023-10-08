@@ -18,8 +18,8 @@ public class Status {
     @Enumerated(value = EnumType.STRING)
     private StatusType type;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "text")
+    private String text;
 
     @ManyToMany(mappedBy = "statuses")
     @JsonIgnore
@@ -28,7 +28,7 @@ public class Status {
     public Status(StatusType statusType) {
         this.id = statusType.getId();
         this.type = statusType;
-        this.name = statusType.getName();
+        this.text = statusType.getText();
     }
 
     public Status() {}
@@ -48,6 +48,10 @@ public class Status {
         defaultStatuses.add(new Status(StatusType.NEW_RESERVE));
         defaultStatuses.add(new Status(StatusType.CANCEL));
         return defaultStatuses;
+    }
+
+    public void deleteQuestForStatus(Quest quest) {
+        this.quests.remove(quest);
     }
 
     public Set<Quest> getQuests() {
@@ -74,12 +78,12 @@ public class Status {
         this.type = type;
     }
 
-    public String getName() {
-        return name;
+    public String getText() {
+        return text;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override
@@ -92,13 +96,5 @@ public class Status {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Status{" +
-                "id=" + id +
-                ", type=" + type +
-                '}';
     }
 }

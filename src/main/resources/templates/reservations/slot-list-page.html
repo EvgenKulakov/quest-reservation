@@ -46,7 +46,7 @@
                 <div class="row row-cols-auto" id="status-info">
                     <h6>Статусы</h6>
                     <th:block th:each="status_type : ${use_statuses}">
-                        <div class="slot-button custom-status col-auto" th:text="${status_type.name}"
+                        <div class="slot-button custom-status col-auto" th:text="${status_type.text}"
                              th:attr="data-status=${status_type}"></div>
                     </th:block>
                 </div>

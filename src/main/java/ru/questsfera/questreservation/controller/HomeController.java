@@ -39,8 +39,8 @@ public class HomeController {
                                  @RequestParam("duplicate-pass") String duplicatePass,
                                  Model model) {
 
-        if (accountService.existAccount(admin.getMail())) {
-            bindingResult.rejectValue("mail", "errorCode",
+        if (accountService.existAccount(admin.getEmail())) {
+            bindingResult.rejectValue("email", "errorCode",
                     "Такой пользователь уже зарегистрирован");
             model.addAttribute("admin", admin);
             return "home/register";
@@ -58,7 +58,7 @@ public class HomeController {
             return "home/register";
         }
 
-        admin.setUsername(admin.getMail());
+        admin.setUsername(admin.getEmail());
         String passwordHash = PasswordGenerator.createBCrypt(admin.getPassword());
         admin.setPassword(passwordHash);
 

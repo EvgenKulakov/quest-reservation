@@ -11,15 +11,15 @@ public enum StatusType {
     MODIFIED(7, "Изменён слот");
 
     private Integer id;
-    private String name;
+    private String text;
 
-    StatusType(Integer id, String name) {
+    StatusType(Integer id, String text) {
         this.id = id;
-        this.name = name;
+        this.text = text;
     }
 
-    public String getName() {
-        return name;
+    public String getText() {
+        return text;
     }
 
     public Integer getId() {

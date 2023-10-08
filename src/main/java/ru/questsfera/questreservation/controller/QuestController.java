@@ -16,6 +16,7 @@ import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.entity.User;
 import ru.questsfera.questreservation.processor.SlotListFactory;
 import ru.questsfera.questreservation.service.AdminService;
+import ru.questsfera.questreservation.service.QuestService;
 import ru.questsfera.questreservation.service.UserService;
 import ru.questsfera.questreservation.validator.SlotListValidator;
 
@@ -29,47 +30,30 @@ import java.util.TreeSet;
 public class QuestController {
 
     private final AdminService adminService;
+    private final QuestService questService;
     private final UserService userService;
-    private Admin admin;
 
     @Autowired
-    public QuestController(AdminService adminService, UserService userService) {
+    public QuestController(AdminService adminService, QuestService questService, UserService userService) {
         this.adminService = adminService;
+        this.questService = questService;
         this.userService = userService;
     }
 
     @GetMapping("/quest-list")
     public String showQuestList(Principal principal, Model model) {
 
-        admin = adminService.getAdminByName(principal.getName());
-        Set<Quest> quests = admin.getQuests();
+        Admin admin = adminService.getAdminByName(principal.getName());
+        List<Quest> quests = questService.getQuestsByAdmin(admin); // убрать EAGER у admin.getQuests()
 
-        model.addAttribute("admin" , admin);
         model.addAttribute("quests", quests);
-
         return "quests/quest-list-page";
     }
 
-    @PostMapping("/quest-info")
-    public String showQuest(@RequestParam("quest") Quest quest, Model model) {
-        Set<User> users = new TreeSet<>((u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername()));
-        users.addAll(quest.getUsers());
-
-        List<List<TimePrice>> allDays = null;
-        if (quest.getSlotList() != null) {
-            SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
-            allDays = slotList.getAllDays();
-        }
-
-        model.addAttribute("quest", quest);
-        model.addAttribute("users", users);
-        model.addAttribute("all_slot_list", allDays);
-
-        return "quests/quest-info-page";
-    }
-
     @PostMapping("/add-quest-first-page")
-    public String addQuest(@RequestParam("admin") Admin admin, Model model) {
+    public String addQuest(Principal principal, Model model) {
+
+        Admin admin = adminService.getAdminByName(principal.getName());
         Quest quest = new Quest(admin);
         List<User> allUsers = userService.getUsersByAdmin(admin);
 
@@ -83,11 +67,16 @@ public class QuestController {
     @PostMapping("/add-slotlist-every-day")
     public String addQuestEveryDay(@Valid @ModelAttribute("quest") Quest quest,
                                    BindingResult binding,
+                                   Principal principal,
                                    Model model) {
+
+        Admin admin = adminService.getAdminByName(principal.getName());
+        userService.checkSecurityForUsers(quest.getUsers(), admin);
+
         quest.setQuestName(quest.getQuestName().trim());
         model.addAttribute("quest", quest);
 
-        boolean existQuestName = adminService.existQuestName(quest) && quest.getId() == null;
+        boolean existQuestName = questService.existQuestNameByAdmin(quest.getQuestName(), admin);
 
         if (binding.hasErrors() || quest.getMinPersons() > quest.getMaxPersons() || existQuestName) {
             model.addAttribute("user_statuses", Status.getUserStatuses());
@@ -107,16 +96,45 @@ public class QuestController {
             return "quests/add-quest-first-form";
         }
 
-        adminService.saveQuest(admin, quest);
+        quest.setAdmin(admin);
+        questService.saveQuest(quest);
+
         model.addAttribute("slot_list", new SlotList());
         return "quests/add-slotlist-every-day-form";
+    }
+
+    @PostMapping("/quest-info")
+    public String showQuest(@RequestParam("quest") Quest quest,
+                            Principal principal, Model model) {
+
+        Admin admin = adminService.getAdminByName(principal.getName());
+        questService.checkSecurityForQuest(quest, admin);
+
+        Set<User> users = new TreeSet<>((u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername()));
+        users.addAll(quest.getUsers());
+
+        List<List<TimePrice>> allDays = null;
+        if (quest.getSlotList() != null) { // убрать проверку после добавления JS для сохранения
+            SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
+            allDays = slotList.getAllDays();
+        }
+
+        model.addAttribute("quest", quest);
+        model.addAttribute("users", users);
+        model.addAttribute("all_slot_list", allDays);
+
+        return "quests/quest-info-page";
     }
 
     @PostMapping("/save-quest")
     public String saveQuest(@Valid @ModelAttribute("slot_list") SlotList slotList,
                             BindingResult binding,
                             @RequestParam("quest") Quest quest,
+                            Principal principal,
                             Model model) {
+
+        Admin admin = adminService.getAdminByName(principal.getName());
+        questService.checkSecurityForQuest(quest, admin);
 
         String errorMessage = SlotListValidator.checkOneDay(slotList.getMonday());
         if (!errorMessage.isEmpty()) {
@@ -130,25 +148,31 @@ public class QuestController {
         String jsonSlotList = SlotListMapper.createJSONSlotList(slotList);
         quest.setSlotList(jsonSlotList);
 
-        adminService.saveQuest(admin, quest);
+        questService.saveQuest(quest);
 
         return "redirect:/quests/quest-list";
     }
 
     @PostMapping("/delete-quest")
-    public String deleteQuest(@RequestParam("quest") Quest quest, Model model) {
-        if (adminService.hasReservations(quest)) {
+    public String deleteQuest(@RequestParam("quest") Quest quest,
+                              Principal principal, Model model) {
+
+        Admin admin = adminService.getAdminByName(principal.getName());
+
+        if (questService.hasReservations(quest)) {
+            questService.checkSecurityForQuest(quest, admin);
             model.addAttribute("quest", quest);
             return "quests/question-delete-quest";
-
         }
-        adminService.deleteQuest(admin, quest);
+
+        questService.deleteQuest(quest, admin);
         return "redirect:/quests/quest-list";
     }
 
     @PostMapping("/delete-quest-final")
-    public String deleteQuestFinal(@RequestParam("quest") Quest quest) {
-        adminService.deleteQuest(admin, quest);
+    public String deleteQuestFinal(@RequestParam("quest") Quest quest, Principal principal) {
+        Admin admin = adminService.getAdminByName(principal.getName());
+        questService.deleteQuest(quest, admin);
         return "redirect:/quests/quest-list";
     }
 }

@@ -14,7 +14,6 @@ import java.util.*;
 public class AdminService {
 
     private final AdminRepository adminRepository;
-    private final QuestRepository questRepository;
     private final StatusRepository statusRepository;
     private final ReservationRepository reservationRepository;
     private final ClientRepository clientRepository;
@@ -22,13 +21,11 @@ public class AdminService {
 
     @Autowired
     public AdminService(AdminRepository adminRepository,
-                        QuestRepository questRepository,
                         StatusRepository statusRepository,
                         ReservationRepository reservationRepository,
                         ClientRepository clientRepository,
                         BlackListRepository blackListRepository) {
         this.adminRepository = adminRepository;
-        this.questRepository = questRepository;
         this.statusRepository = statusRepository;
         this.reservationRepository = reservationRepository;
         this.clientRepository = clientRepository;
@@ -50,58 +47,6 @@ public class AdminService {
         adminRepository.save(admin);
     }
 
-    //***Quests
-    @Transactional
-    public Quest getQuestById(int id) {
-        Optional<Quest> optionalQuest = questRepository.findById(id);
-        if (optionalQuest.isPresent()) {
-            return optionalQuest.get();
-        }
-        throw new RuntimeException("Попытка получить несуществующий квест");
-    }
-
-    @Transactional
-    public boolean existQuestName(Quest quest) {
-        return questRepository.existsQuestByQuestNameAndAdmin(quest.getQuestName(), quest.getAdmin());
-    }
-
-    @Transactional
-    public void saveQuest(Admin admin, Quest quest) {
-        admin.addQuestForAdmin(quest);
-        quest.saveUsers();
-        questRepository.save(quest);
-    }
-
-    @Transactional
-    public boolean hasReservations(Quest quest) {
-        return reservationRepository.existsByQuest(quest);
-    }
-
-    @Transactional
-    public void deleteQuest(Admin admin, Quest quest) {
-        if (!quest.getAdmin().equals(admin)) {
-            throw new RuntimeException("Попытка удалить квест админом, у которого нет доступа");
-        }
-
-        reservationRepository.deleteByQuest(quest);
-
-        for (User user : quest.getUsers()) {
-            user.deleteQuestForUser(quest);
-        }
-
-        for (Status status : quest.getStatuses()) {
-            quest.deleteStatusForQuest(status);
-        }
-
-        if (!quest.getSynchronizedQuests().isEmpty()) {
-            dontSynchronizeQuests(quest);
-            System.out.println("Синхронизация по квесту id:" + quest.getId()
-                    + " и всем связаным квестам отменена");
-        }
-        admin.deleteQuestForAdmin(quest);
-        questRepository.delete(quest);
-    }
-
     //***Statuses
     @Transactional
     public void saveStatus(Quest quest, Status status) {
@@ -111,28 +56,12 @@ public class AdminService {
 
     @Transactional
     public void deleteStatusForQuest(Quest quest, Status status) {
-        quest.deleteStatusForQuest(status);
+        status.deleteQuestForStatus(quest);
     }
 
     @Transactional
     public Set<Status> getStatusesByQuest(Quest quest) {
         return quest.getStatuses();
-    }
-
-    //***SynchronizeQuests
-    @Transactional
-    public void synchronizeQuests(Quest... quests) {
-        Quest.synchronizeQuests(quests);
-    }
-
-    @Transactional
-    public Set<Quest> getSynchronizedQuests(Quest quest) {
-        return quest.getSynchronizedQuests();
-    }
-
-    @Transactional
-    public void dontSynchronizeQuests(Quest quest) {
-        Quest.dontSynchronizeQuests(quest);
     }
 
     //***BlackList

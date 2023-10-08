@@ -8,7 +8,10 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
+
     LinkedList<Reservation> findAllByQuestAndDateReserveOrderByTimeReserve(Quest quest, LocalDate date);
+
     boolean existsByQuest(Quest quest);
+
     void deleteByQuest(Quest quest);
 }

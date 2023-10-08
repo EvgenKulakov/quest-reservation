@@ -57,7 +57,7 @@ function showReservation(slot, quest) {
     for (let i = 0; i < statuses.length; i++) {
         const newOption = document.createElement("option")
         newOption.value = statuses[i].type
-        newOption.textContent = statuses[i].name
+        newOption.textContent = statuses[i].text
         selectStatus.appendChild(newOption);
     }
 

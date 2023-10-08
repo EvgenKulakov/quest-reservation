@@ -7,7 +7,9 @@ import ru.questsfera.questreservation.entity.Admin;
 import ru.questsfera.questreservation.entity.User;
 import ru.questsfera.questreservation.repository.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -44,6 +46,14 @@ public class UserService {
         boolean existUserByAdmin = existUserByAdmin(user, admin);
         if (!existUserByAdmin) {
             throw new SecurityException("Нет доступа для изменения данного пользователя");
+        }
+    }
+
+    @Transactional
+    public void checkSecurityForUsers(Set<User> users, Admin admin) {
+        List<User> usersByAdmin = getUsersByAdmin(admin);
+        if (!new HashSet<>(usersByAdmin).containsAll(users)) {
+            throw new SecurityException("Нет доступа для изменения данных пользователей");
         }
     }
 }

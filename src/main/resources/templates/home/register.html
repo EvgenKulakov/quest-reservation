@@ -13,13 +13,13 @@
         <div class="mb-3"><input type="submit" class="btn btn-link btn-sm back"
                                  formaction="/" value="← Войти"/></div>
         <div><p> Email:<input type="text" maxlength="50" placeholder="email - логин для входа"
-                              class="form-control" th:field="*{mail}"/></div>
+                              class="form-control" th:field="*{email}"/></div>
         <div><p> Пароль:<input type="password" maxlength="50" placeholder="минимум 8 символов"
                                class="form-control" th:field="*{password}"/></p></div>
         <div><p> Повторите пароль:<input type="password" maxlength="50"
                                          class="form-control" name="duplicate-pass"/></p></div>
 
-        <div class="message error" th:if="${#fields.hasErrors('mail')}" th:errors="*{mail}"></div>
+        <div class="message error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
         <div class="message error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
         <div class="mt-4"><input type="submit" class="btn btn-success button" value="Зарегистрироваться"/></div>
     </form>

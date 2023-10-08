@@ -56,8 +56,9 @@ body {
     margin-top: .5rem;
 }
 
-.btn-link:active {
-    box-shadow: none;
+.btn-link {
+    box-shadow: none!important;
+    border: none!important;
 }
 
 .back {

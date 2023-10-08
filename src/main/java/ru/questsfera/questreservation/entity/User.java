@@ -1,7 +1,6 @@
 package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import ru.questsfera.questreservation.dto.Account;
 import ru.questsfera.questreservation.dto.Role;
@@ -55,7 +54,7 @@ public class User implements Account {
     }
 
     public void deleteQuestForUser(Quest quest) {
-        quests.remove(quest);
+        this.quests.remove(quest);
     }
 
     public Admin getAdmin() {
