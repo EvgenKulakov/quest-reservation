@@ -8,6 +8,7 @@ import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.entity.Admin;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.service.AdminService;
+import ru.questsfera.questreservation.service.ReservationService;
 
 import java.time.LocalTime;
 
@@ -16,10 +17,12 @@ import java.time.LocalTime;
 public class TestRestController {
 
     private final AdminService adminService;
+    private final ReservationService reservationService;
 
     @Autowired
-    public TestRestController(AdminService adminService) {
+    public TestRestController(AdminService adminService, ReservationService reservationService) {
         this.adminService = adminService;
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/admin/{username}")
@@ -30,7 +33,7 @@ public class TestRestController {
 
     @GetMapping("/slot/{id}")
     public Slot getSlot(@PathVariable("id") Integer id) {
-        Reservation reservation = adminService.getReserveById(id);
+        Reservation reservation = reservationService.getReserveById(id);
         Slot slot = null;
         if (reservation != null) {
             slot = new Slot(reservation.getQuest(), reservation.getStatusType(), reservation,
@@ -43,7 +46,7 @@ public class TestRestController {
 
     @GetMapping("/reservation/{id}")
     public Reservation getReservation(@PathVariable("id") Integer id) {
-        Reservation reservation = adminService.getReserveById(id);
+        Reservation reservation = reservationService.getReserveById(id);
         return reservation;
     }
 }

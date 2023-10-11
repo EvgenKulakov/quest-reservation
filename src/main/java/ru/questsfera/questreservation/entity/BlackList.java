@@ -1,11 +1,13 @@
 package ru.questsfera.questreservation.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "blacklist", schema = "quest_reservations")
+@JsonIgnoreProperties({"admin"})
 public class BlackList {
 
     @Id

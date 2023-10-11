@@ -57,6 +57,7 @@ public class User implements Account {
         this.quests.remove(quest);
     }
 
+    @Override
     public Admin getAdmin() {
         return admin;
     }

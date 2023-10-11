@@ -71,37 +71,9 @@ public class Admin implements Account {
         this.blackLists.remove(blackList);
     }
 
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
     @Override
-    public Set<Quest> getQuests() {
-        return quests;
-    }
-
-    public void setQuests(Set<Quest> quests) {
-        this.quests = quests;
-    }
-
-    public Set<BlackList> getBlackLists() {
-        return blackLists;
-    }
-
-    public void setBlackLists(Set<BlackList> blackLists) {
-        this.blackLists = blackLists;
-    }
-
-    public Set<Client> getClients() {
-        return clients;
-    }
-
-    public void setClients(Set<Client> clients) {
-        this.clients = clients;
+    public Admin getAdmin() {
+        return this;
     }
 
     public Integer getId() {
@@ -161,6 +133,39 @@ public class Admin implements Account {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Set<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(Set<Client> clients) {
+        this.clients = clients;
+    }
+
+    public Set<BlackList> getBlackLists() {
+        return blackLists;
+    }
+
+    public void setBlackLists(Set<BlackList> blackLists) {
+        this.blackLists = blackLists;
+    }
+
+    @Override
+    public Set<Quest> getQuests() {
+        return quests;
+    }
+
+    public void setQuests(Set<Quest> quests) {
+        this.quests = quests;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     @Override

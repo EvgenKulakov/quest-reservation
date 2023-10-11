@@ -9,7 +9,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "quests", schema = "quest_reservations")
-@JsonIgnoreProperties({"slotList", "autoBlock", "sms", "users", "synchronizedQuests"})
+@JsonIgnoreProperties({"slotList", "autoBlock", "sms", "users", "admin", "synchronizedQuests"})
 public class Quest implements Comparable<Quest> {
 
     @Id
@@ -71,7 +71,7 @@ public class Quest implements Comparable<Quest> {
     }
 
     public void addStatusForQuest(Status status) {
-        status.getQuests().add(this); // убрать это добавление?
+        status.getQuests().add(this);
         this.statuses.add(status);
     }
 

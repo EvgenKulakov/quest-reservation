@@ -1,9 +1,8 @@
 package ru.questsfera.questreservation.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
-import ru.questsfera.questreservation.dto.ReservationForm;
-import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.StatusType;
 
 import java.time.LocalDate;
@@ -13,6 +12,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "reservations", schema = "quest_reservations")
+@JsonIgnoreProperties({"quest", "admin"})
 public class Reservation {
 
     @Id
@@ -69,49 +69,10 @@ public class Reservation {
     @JoinColumn(name = "admin_id")
     private Admin admin;
 
-    public Reservation(ReservationForm resForm, Slot slot) {
-        this.dateReserve = slot.getDate();
-        this.timeReserve = slot.getTime();
-        this.dateAndTimeCreated = LocalDateTime.now();
-        this.quest = slot.getQuest();
-        this.statusType = resForm.getStatusType();
-        this.countPersons = resForm.getCountPersons();
-        this.adminComment = resForm.getAdminComment();
-        this.clientComment = resForm.getClientComment();
-        this.admin = slot.getQuest().getAdmin();
-    }
-
     public Reservation() {}
-
-    public static Reservation createBlockReservation(Slot slot) {
-        Reservation reservation = new Reservation();
-        reservation.dateReserve = slot.getDate();
-        reservation.timeReserve = slot.getTime();
-        reservation.dateAndTimeCreated = LocalDateTime.now();
-        reservation.quest = slot.getQuest();
-        reservation.statusType = StatusType.BLOCK;
-        reservation.admin = slot.getQuest().getAdmin();
-        return reservation;
-    }
 
     public void addClient(Client client) {
         client.getReservations().add(this);
-        this.client = client;
-    }
-
-    public StatusType getStatusType() {
-        return statusType;
-    }
-
-    public void setStatusType(StatusType statusType) {
-        this.statusType = statusType;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
         this.client = client;
     }
 
@@ -171,6 +132,14 @@ public class Reservation {
         this.quest = quest;
     }
 
+    public StatusType getStatusType() {
+        return statusType;
+    }
+
+    public void setStatusType(StatusType statusType) {
+        this.statusType = statusType;
+    }
+
     public String getSourceReserve() {
         return sourceReserve;
     }
@@ -185,6 +154,14 @@ public class Reservation {
 
     public void setChangedPrice(Integer changedPrice) {
         this.changedPrice = changedPrice;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public int getCountPersons() {

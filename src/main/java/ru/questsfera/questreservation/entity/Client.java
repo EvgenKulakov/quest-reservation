@@ -1,6 +1,7 @@
 package ru.questsfera.questreservation.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import ru.questsfera.questreservation.dto.ReservationForm;
 import ru.questsfera.questreservation.dto.Slot;
@@ -9,15 +10,12 @@ import java.util.*;
 
 @Entity
 @Table(name = "clients", schema = "quest_reservations")
+@JsonIgnoreProperties({"admin"})
 public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
 
     @Column(name = "first_name")
     private String firstName;
@@ -35,16 +33,20 @@ public class Client {
     @JoinColumn(name = "blacklist_id")
     private BlackList blackList;
 
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private Admin admin;
+
     @OneToMany(mappedBy = "client")
     @JsonIgnore
     private List<Reservation> reservations = new ArrayList<>();
 
-    public Client(ReservationForm resForm, Slot slot) {
-        this.admin = slot.getQuest().getAdmin();
+    public Client(ReservationForm resForm, Admin admin) {
         this.firstName = resForm.getFirstName();
         this.lastName = resForm.getLastName();
         this.phone = resForm.getPhone();
         this.email = resForm.getEmail();
+        this.admin = admin;
     }
 
     public Client() {}

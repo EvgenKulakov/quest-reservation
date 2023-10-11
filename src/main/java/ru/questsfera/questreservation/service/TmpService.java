@@ -3,48 +3,99 @@ package ru.questsfera.questreservation.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.repository.*;
 import ru.questsfera.questreservation.entity.*;
+import ru.questsfera.questreservation.repository.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
-public class ModeratorService {
+public class TmpService {
 
-    private final AdminRepository adminRepository;
-    private final UserRepository userRepository;
-    private final QuestRepository questRepository;
     private final StatusRepository statusRepository;
-    private final ClientRepository clientRepository;
-    private final ReservationRepository reservationRepository;
     private final BlackListRepository blackListRepository;
+    private final ClientRepository clientRepository;
+    private final QuestRepository questRepository;
+    private final ReservationRepository reservationRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ModeratorService(AdminRepository adminRepository, UserRepository userRepository,
-                            QuestRepository questRepository, StatusRepository statusRepository,
-                            ClientRepository clientRepository, ReservationRepository reservationRepository, BlackListRepository blackListRepository) {
-        this.adminRepository = adminRepository;
-        this.userRepository = userRepository;
-        this.questRepository = questRepository;
+    public TmpService(StatusRepository statusRepository,
+                      BlackListRepository blackListRepository,
+                      ClientRepository clientRepository,
+                      QuestRepository questRepository,
+                      ReservationRepository reservationRepository,
+                      UserRepository userRepository) {
         this.statusRepository = statusRepository;
-        this.clientRepository = clientRepository;
-        this.reservationRepository = reservationRepository;
         this.blackListRepository = blackListRepository;
+        this.clientRepository = clientRepository;
+        this.questRepository = questRepository;
+        this.reservationRepository = reservationRepository;
+        this.userRepository = userRepository;
     }
 
-    /*
-    getAllAdmins
-    getAdmin
-    deleteAdmin
-    getAllQuests
-    deleteQuestWithReservations
-    deleteEntryFromBlacklist
-    addBlackListEntry
-    getAllStatuses
-    deleteClient
-    deleteReservation
-     */
+    //***Statuses
+    @Transactional
+    public void saveStatus(Quest quest, Status status) {
+        quest.addStatusForQuest(status);
+        statusRepository.save(status);
+    }
 
+    @Transactional
+    public void deleteStatusForQuest(Quest quest, Status status) {
+        status.deleteQuestForStatus(quest);
+    }
+
+    @Transactional
+    public Set<Status> getStatusesByQuest(Quest quest) {
+        return quest.getStatuses();
+    }
+
+    //***BlackList
+    @Transactional
+    public List<BlackList> getAllBlackLists() {
+        return blackListRepository.findAll();
+    }
+
+    @Transactional
+    public Set<BlackList> getBlackListsByAdmin(Admin admin) {
+        return admin.getBlackLists();
+    }
+
+    @Transactional
+    public void saveBlackList(Admin admin, Client client, BlackList blackList) {
+        if (!client.getAdmin().equals(admin)) {
+            throw new RuntimeException("Попытка создать запись в ЧС для клиента "
+                    + "привязанного к другому админу");
+        }
+        admin.addBlackListForAdmin(blackList);
+        client.setBlackList(blackList);
+        clientRepository.save(client);
+    }
+
+    @Transactional
+    public void deleteBlackList(Admin admin, Client client) {
+        if (!client.getAdmin().equals(admin)) {
+            throw new RuntimeException("Попытка удалить запись ЧС админом, "
+                    + "у которого нет доступа к клиенту");
+        }
+        blackListRepository.delete(client.getBlackList());
+        client.deleteBlackListForClient();
+    }
+
+    //***Clients
+    @Transactional
+    public Set<Client> getClientsByAdmin(Admin admin) {
+        return admin.getClients();
+    }
+
+    @Transactional
+    public Client getClientByReserve(Reservation reservation) {
+        return reservation.getClient();
+    }
+
+    //***Moderator
     @Transactional
     public User getUserById(int id) {
         Optional<User> optionalUser = userRepository.findById(id);
@@ -117,5 +168,17 @@ public class ModeratorService {
         }
         throw new RuntimeException("Попытка получить несуществующую запись в ЧС");
     }
-}
 
+    /*
+    getAllAdmins
+    getAdmin
+    deleteAdmin
+    getAllQuests
+    deleteQuestWithReservations
+    deleteEntryFromBlacklist
+    addBlackListEntry
+    getAllStatuses
+    deleteClient
+    deleteReservation
+     */
+}
