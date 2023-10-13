@@ -63,7 +63,7 @@ public class ReservationController {
         useStatuses.clear();
 
         for (Quest quest : quests) {
-            if (quest.getSlotList() == null) continue; // Убрать после добавления JavaScript в add-quest-page
+            if (quest.getSlotList() == null) continue;
             LinkedList<Reservation> reservations = reservationService.getReservationsByDate(quest, date);
             SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
             SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
@@ -112,6 +112,7 @@ public class ReservationController {
 
         if (slot.getReservation() == null) {
             reservation = ReservationFactory.createReservation(resForm, slot, account.getAdmin());
+            reservationService.doubleCheck(reservation);
             Client client = new Client(resForm, account.getAdmin());
             reservation.addClient(client);
             reservation.setSourceReserve("default");
@@ -143,6 +144,7 @@ public class ReservationController {
         Account account = accountService.getAccountByName(principal.getName());
         Slot slot = SlotMapper.createSlotObject(slotJSON);
         Reservation reservation = ReservationFactory.createBlockReservation(slot, account.getAdmin());
+        reservationService.doubleCheck(reservation);
 
         reservation.setSourceReserve("default");
         reservation.setHistoryMessages("default");

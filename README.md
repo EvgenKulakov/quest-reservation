@@ -31,6 +31,6 @@ View, refactoring, внешний виджет
 MySQL и Spring Boot в двух отдельных Docker контейнерах на общей сети network
 > 
 >__Ссылка на сервер:__ 
-> <a href="http://31.129.99.231:8080/" target="_blank">quest-reservations</a>
+> <a href="http://195.80.51.184" target="_blank">quest-reservations</a>
 > 
 >__Логин/пароль от тестового аккаунта:__ _admin_

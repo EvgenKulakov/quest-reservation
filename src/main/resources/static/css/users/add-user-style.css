@@ -1,3 +1,25 @@
+body {
+    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/so-white.png');
+    background-repeat: repeat;
+}
+
+.form {
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 0.4rem;
+    padding: 1.5em!important;
+    margin-top: 2.5rem;
+    width: 35rem!important;
+}
+
+.row, #title {
+    padding: 0.75em;
+}
+
+#title {
+    padding-top: 0.5rem!important;
+}
+
 .error-message {
     font-size: 14px;
     color: red;

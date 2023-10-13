@@ -10,6 +10,7 @@ import ru.questsfera.questreservation.repository.ReservationRepository;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -52,6 +53,20 @@ public class ReservationService {
     public void checkSecurityForReserve(Reservation reservation, Account account) {
         if (!account.getQuests().contains(reservation.getQuest())) {
             throw new SecurityException("Нет доступа для редактирования данного бронирования");
+        }
+    }
+
+    @Transactional
+    public void doubleCheck(Reservation reservation) {
+
+        boolean existsReservation = reservationRepository.existsByQuestAndDateReserveAndTimeReserve(
+                reservation.getQuest(),
+                reservation.getDateReserve(),
+                reservation.getTimeReserve()
+        );
+
+        if (existsReservation) {
+            throw new RuntimeException("Два бронирования на одно и тоже время");
         }
     }
 }

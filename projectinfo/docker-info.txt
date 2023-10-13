@@ -9,12 +9,14 @@ docker run -p 3306:3306 --name db -e TZ=Europe/Moscow -v .:/app -e MYSQL_ROOT_PA
 
 latest:
 ========================================================================================================================
+scp Dump11.sql root@195.80.51.184:/root (из дирректории dumbs)
+--------------------------------------------------
 docker network create db-spring-net
 --------------------------------------------------
-docker run --name db --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v .:/app -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=quest_reservations -d mysql:8.0.33
+docker run --name db --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v .:/app -e MYSQL_ROOT_PASSWORD=MySQL54535251 -e MYSQL_DATABASE=quest_reservations -d mysql:8.0.33
 docker exec -it db sh
 mysql -u root -p quest_reservations < /app/Dump11.sql
 --------------------------------------------------
-docker build -t evgeniydockerman/questreservations:git50 .
-docker run -d --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro --name spring-cont -p 8080:8080 evgeniydockerman/questreservations:git50
+docker build -t evgeniydockerman/questreservations:git51 .
+docker run -d --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro --name spring-cont -p 80:8080 evgeniydockerman/questreservations:git51
 ========================================================================================================================
