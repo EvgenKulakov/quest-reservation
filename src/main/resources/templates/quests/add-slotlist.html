@@ -5,7 +5,7 @@
     <title>Добавить квест</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/quests/add-slotlist-every-day-style.css}" rel="stylesheet">
+    <link th:href="@{/css/add-slotlist.css}" rel="stylesheet">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
@@ -32,7 +32,7 @@
 
         <input type="hidden" name="quest" th:value="${quest.id}">
 
-        <div class="mt-4 error-message row col-5" th:if="${#fields.hasErrors('global')}"
+        <div class="mt-4 error-message-block row col-5" th:if="${#fields.hasErrors('global')}"
              th:each="err : ${#fields.errors('global')}" th:text="${err}">
         </div>
 

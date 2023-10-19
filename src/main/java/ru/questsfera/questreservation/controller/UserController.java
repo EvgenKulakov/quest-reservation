@@ -32,14 +32,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user-list")
+    @GetMapping("/users-list")
     public String showUserList(Principal principal, Model model) {
 
         Admin admin = adminService.getAdminByName(principal.getName());
         List<User> users = userService.getUsersByAdmin(admin);
 
         model.addAttribute("users", users);
-        return "users/user-list-page";
+        return "users/users-list";
     }
 
     @PostMapping("/add-user")
@@ -50,7 +50,7 @@ public class UserController {
         user.setPassword(PasswordGenerator.createRandomPassword());
 
         model.addAttribute("user", user);
-        return "users/add-update-user-form";
+        return "users/user-form";
     }
 
     @PostMapping("/update-user")
@@ -60,7 +60,7 @@ public class UserController {
         userService.checkSecurityForUser(user, admin);
 
         model.addAttribute("user", user);
-        return "users/add-update-user-form";
+        return "users/user-form";
     }
 
     @PostMapping("/save-user")
@@ -83,7 +83,7 @@ public class UserController {
             }
 
             model.addAttribute("user", user);
-            return "users/add-update-user-form";
+            return "users/user-form";
         }
 
         if (user.getId() == null) {
@@ -93,7 +93,7 @@ public class UserController {
 
         user.setUsername(user.getEmail());
         userService.saveUser(user);
-        return "redirect:/users/user-list";
+        return "redirect:/users/users-list";
     }
 
     @PostMapping("/update-password-user")
@@ -105,7 +105,7 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("new_password", "");
         model.addAttribute("error_password", false);
-        return "users/update-password-form";
+        return "users/password-form";
     }
 
     @PostMapping("/save-new-password")
@@ -120,18 +120,18 @@ public class UserController {
             model.addAttribute("user", user);
             model.addAttribute("new_password", newPassword);
             model.addAttribute("error_password", true);
-            return "users/update-password-form";
+            return "users/password-form";
         }
 
         user.setPassword(PasswordGenerator.createBCrypt(newPassword));
         userService.saveUser(user);
-        return "redirect:/users/user-list";
+        return "redirect:/users/users-list";
     }
 
     @PostMapping("/delete-user")
     public String deleteUser(@RequestParam("user") User user, Principal principal) {
         Admin admin = adminService.getAdminByName(principal.getName());
         userService.deleteUser(user, admin);
-        return "redirect:/users/user-list";
+        return "redirect:/users/users-list";
     }
 }

@@ -40,17 +40,17 @@ public class QuestController {
         this.userService = userService;
     }
 
-    @GetMapping("/quest-list")
+    @GetMapping("/quests-list")
     public String showQuestList(Principal principal, Model model) {
 
         Admin admin = adminService.getAdminByName(principal.getName());
         List<Quest> quests = questService.getQuestsByAdmin(admin); // убрать EAGER у admin.getQuests()
 
         model.addAttribute("quests", quests);
-        return "quests/quest-list-page";
+        return "quests/quests-list";
     }
 
-    @PostMapping("/add-quest-first-page")
+    @PostMapping("/add-quest")
     public String addQuest(Principal principal, Model model) {
 
         Admin admin = adminService.getAdminByName(principal.getName());
@@ -61,10 +61,10 @@ public class QuestController {
         model.addAttribute("all_users", allUsers);
         model.addAttribute("user_statuses", Status.getUserStatuses());
 
-        return "quests/add-quest-first-form";
+        return "quests/add-quest";
     }
 
-    @PostMapping("/add-slotlist-every-day")
+    @PostMapping("/add-slotlist")
     public String addQuestEveryDay(@Valid @ModelAttribute("quest") Quest quest,
                                    BindingResult binding,
                                    Principal principal,
@@ -93,14 +93,14 @@ public class QuestController {
                 binding.rejectValue("questName", "errorCode",
                         String.format("У вас уже есть квест с названием \"%s\"", quest.getQuestName()));
             }
-            return "quests/add-quest-first-form";
+            return "quests/add-quest";
         }
 
         quest.setAdmin(admin);
         questService.saveQuest(quest);
 
         model.addAttribute("slot_list", new SlotList());
-        return "quests/add-slotlist-every-day-form";
+        return "quests/add-slotlist";
     }
 
     @PostMapping("/quest-info")
@@ -123,7 +123,7 @@ public class QuestController {
         model.addAttribute("users", users);
         model.addAttribute("all_slot_list", allDays);
 
-        return "quests/quest-info-page";
+        return "quests/quest-info";
     }
 
     @PostMapping("/save-quest")
@@ -141,7 +141,7 @@ public class QuestController {
             binding.addError(new ObjectError("global", errorMessage));
             model.addAttribute("quest" , quest);
             model.addAttribute("slot_list", slotList);
-            return "quests/add-slotlist-every-day-form";
+            return "quests/add-slotlist";
         }
 
         SlotListFactory.makeSlotListEveryDay(slotList);
@@ -150,7 +150,7 @@ public class QuestController {
 
         questService.saveQuest(quest);
 
-        return "redirect:/quests/quest-list";
+        return "redirect:/quests/quests-list";
     }
 
     @PostMapping("/delete-quest")
@@ -166,13 +166,13 @@ public class QuestController {
         }
 
         questService.deleteQuest(quest, admin);
-        return "redirect:/quests/quest-list";
+        return "redirect:/quests/quests-list";
     }
 
     @PostMapping("/delete-quest-final")
     public String deleteQuestFinal(@RequestParam("quest") Quest quest, Principal principal) {
         Admin admin = adminService.getAdminByName(principal.getName());
         questService.deleteQuest(quest, admin);
-        return "redirect:/quests/quest-list";
+        return "redirect:/quests/quests-list";
     }
 }

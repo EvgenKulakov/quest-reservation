@@ -8,19 +8,37 @@ body {
     border: 1px solid black;
     border-radius: 0.4rem;
     padding: 1.5em!important;
-    margin-top: 2.5rem;
+    margin: 1rem;
     width: 35rem!important;
 }
 
-.row, #title {
+.row {
     padding: 0.75em;
 }
 
 #title {
-    padding-top: 0.5rem!important;
+    padding-left: 0.75em;
+}
+
+.monospace {
+    font-family: monospace;
+}
+
+.col-2and5 {
+    flex: 0 0 auto;
+    width: 20.8333333333%!important;
+}
+
+.check-default {
+    pointer-events: none;
 }
 
 .error-message {
     font-size: 14px;
+    color: red;
+}
+
+.error-message-peoples {
+    font-size: 12px;
     color: red;
 }

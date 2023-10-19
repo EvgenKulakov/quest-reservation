@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/css/air-datepicker.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/reservations/slot-list-style.css}">
+    <link rel="stylesheet" th:href="@{/css/slot-list.css}">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
@@ -17,7 +17,7 @@
 
         <div th:case="${true}" class="container-fluid mt-4">
             <div sec:authorize="hasRole('ADMIN')">
-                <form th:action="@{/quests/quest-list}" method="get">
+                <form th:action="@{/quests/quests-list}" method="get">
                     <h6 class="add-quest">Перейдите во вкладку Квесты, чтобы добавить квест
                         <button class="btn btn-outline-primary" type="submit">Редактировать квесты →
                         </button>
@@ -36,7 +36,7 @@
                         <h3 id="date">Бронирования по дате
                             <button type="button" class="badge bg-light text-dark" id="date-button">
                                 <span th:text="${#temporals.format(date, 'dd-MM-yyyy (EEEE)')}"></span>
-                                <img src="/icons/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
+                                <img src="/images/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
                                 <input class="form-control" type="text" id="input-date" name="date" readonly>
                             </button>
                         </h3>
@@ -192,7 +192,7 @@
 </section>
 
 <script src="/js/air-datepicker.js"></script>
-<script src="/js/calendar-script.js"></script>
-<script src="/js/reserve-form-script.js"></script>
+<script src="/js/calendar.js"></script>
+<script src="/js/reserve-form.js"></script>
 </body>
 </html>

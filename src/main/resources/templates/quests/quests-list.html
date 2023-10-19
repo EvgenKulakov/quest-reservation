@@ -5,7 +5,7 @@
     <title>Список ваших квестов</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/quests/quest-list-style.css}" rel="stylesheet">
+    <link th:href="@{/css/list-quests-users.css}" rel="stylesheet">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
@@ -14,7 +14,7 @@
 
     <table>
         <thead>
-        <form th:action="@{/quests/add-quest-first-page}" method="post">
+        <form th:action="@{/quests/add-quest}" method="post">
             <h3 class="add-quest">Список ваших квестов
                 <button class="btn btn-outline-primary" type="submit">+ Добавить квест</button>
             </h3>

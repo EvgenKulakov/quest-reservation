@@ -77,7 +77,7 @@ public class ReservationController {
         model.addAttribute("date", date);
         model.addAttribute("res_form", new ReservationForm());
 
-        return "reservations/slot-list-page";
+        return "reservations/slot-list";
     }
 
     public String errorSlotListRendering(LocalDate date, String errorSlotJson, ReservationForm resForm, Model model) {
@@ -90,7 +90,7 @@ public class ReservationController {
         model.addAttribute("change_status", resForm.getStatusType());
         model.addAttribute("change_count_persons", resForm.getCountPersons());
 
-        return "reservations/slot-list-page";
+        return "reservations/slot-list";
     }
 
     @PostMapping("/save-reservation")
