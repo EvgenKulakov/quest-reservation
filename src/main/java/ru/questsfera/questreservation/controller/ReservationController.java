@@ -63,9 +63,8 @@ public class ReservationController {
         useStatuses.clear();
 
         for (Quest quest : quests) {
-            if (quest.getSlotList() == null) continue;
             LinkedList<Reservation> reservations = reservationService.getReservationsByDate(quest, date);
-            SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
+            SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
             SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
             List<Slot> slots = slotFactory.getActualSlots();
             useStatuses.addAll(slots.stream().map(Slot::getStatusType).toList());

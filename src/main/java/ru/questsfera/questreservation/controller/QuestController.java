@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import ru.questsfera.questreservation.dto.QuestForm;
 import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.TimePrice;
 import ru.questsfera.questreservation.entity.Admin;
@@ -14,7 +15,7 @@ import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.entity.User;
-import ru.questsfera.questreservation.processor.SlotListFactory;
+import ru.questsfera.questreservation.processor.SlotListMaker;
 import ru.questsfera.questreservation.service.AdminService;
 import ru.questsfera.questreservation.service.QuestService;
 import ru.questsfera.questreservation.service.UserService;
@@ -54,53 +55,61 @@ public class QuestController {
     public String addQuest(Principal principal, Model model) {
 
         Admin admin = adminService.getAdminByName(principal.getName());
-        Quest quest = new Quest(admin);
         List<User> allUsers = userService.getUsersByAdmin(admin);
+        QuestForm questForm = new QuestForm();
+        SlotListMaker.addDefaultValues(questForm.getSlotList());
 
-        model.addAttribute("quest", quest);
+        model.addAttribute("quest_form", questForm);
         model.addAttribute("all_users", allUsers);
         model.addAttribute("user_statuses", Status.getUserStatuses());
 
         return "quests/add-quest";
     }
 
-    @PostMapping("/add-slotlist")
-    public String addQuestEveryDay(@Valid @ModelAttribute("quest") Quest quest,
-                                   BindingResult binding,
-                                   Principal principal,
-                                   Model model) {
+    @PostMapping("/save-quest")
+    public String saveQuest(@Valid @ModelAttribute("quest_form") QuestForm questForm,
+                            BindingResult binding,
+                            Principal principal,
+                            Model model) {
 
         Admin admin = adminService.getAdminByName(principal.getName());
-        userService.checkSecurityForUsers(quest.getUsers(), admin);
 
-        quest.setQuestName(quest.getQuestName().trim());
-        model.addAttribute("quest", quest);
+        userService.checkSecurityForUsers(questForm.getUsers(), admin);
 
-        boolean existQuestName = questService.existQuestNameByAdmin(quest.getQuestName(), admin);
+        boolean existQuestName = questService.existQuestNameByAdmin(questForm.getQuestName(), admin);
+        String errorSlotlist = SlotListValidator.checkOneDay(questForm.getSlotList().getMonday());
 
-        if (binding.hasErrors() || quest.getMinPersons() > quest.getMaxPersons() || existQuestName) {
-            model.addAttribute("user_statuses", Status.getUserStatuses());
-            model.addAttribute("all_users", userService.getUsersByAdmin(admin));
+        if (binding.hasErrors() || questForm.getMinPersons() > questForm.getMaxPersons()
+                || existQuestName || !errorSlotlist.isEmpty()) {
 
-            if (quest.getMinPersons() != null
-                    && quest.getMaxPersons() != null
-                    && quest.getMinPersons() > quest.getMaxPersons()) {
-                binding.addError(new ObjectError("global",
-                        "*Значение \"От\" не может быть больше значения \"До\""));
+            if (questForm.getMinPersons() != null
+                    && questForm.getMaxPersons() != null
+                    && questForm.getMinPersons() > questForm.getMaxPersons()) {
+                binding.rejectValue("errorCountPersons", "errorCode",
+                        "*Значение \"От\" не может быть больше значения \"До\"");
             }
 
             if (existQuestName) {
                 binding.rejectValue("questName", "errorCode",
-                        String.format("У вас уже есть квест с названием \"%s\"", quest.getQuestName()));
+                        String.format("У вас уже есть квест с названием \"%s\"", questForm.getQuestName()));
             }
+
+            if (!errorSlotlist.isEmpty()) {
+                binding.addError(new ObjectError("global", errorSlotlist));
+            }
+
+            model.addAttribute("quest_form", questForm);
+            model.addAttribute("user_statuses", Status.getUserStatuses());
+            model.addAttribute("all_users", userService.getUsersByAdmin(admin));
+
             return "quests/add-quest";
         }
 
-        quest.setAdmin(admin);
+        SlotListMaker.makeEqualDays(questForm.getSlotList());
+        Quest quest = new Quest(questForm, admin);
         questService.saveQuest(quest);
 
-        model.addAttribute("slot_list", new SlotList());
-        return "quests/add-slotlist";
+        return "redirect:/quests/quests-list";
     }
 
     @PostMapping("/quest-info")
@@ -113,44 +122,14 @@ public class QuestController {
         Set<User> users = new TreeSet<>((u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername()));
         users.addAll(quest.getUsers());
 
-        List<List<TimePrice>> allDays = null;
-        if (quest.getSlotList() != null) { // убрать проверку после добавления JS для сохранения
-            SlotList slotList = SlotListMapper.createSlotListObject(quest.getSlotList());
-            allDays = slotList.getAllDays();
-        }
+        SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
+        List<List<TimePrice>> allDays = slotList.getAllDays();
 
         model.addAttribute("quest", quest);
         model.addAttribute("users", users);
         model.addAttribute("all_slot_list", allDays);
 
         return "quests/quest-info";
-    }
-
-    @PostMapping("/save-quest")
-    public String saveQuest(@Valid @ModelAttribute("slot_list") SlotList slotList,
-                            BindingResult binding,
-                            @RequestParam("quest") Quest quest,
-                            Principal principal,
-                            Model model) {
-
-        Admin admin = adminService.getAdminByName(principal.getName());
-        questService.checkSecurityForQuest(quest, admin);
-
-        String errorMessage = SlotListValidator.checkOneDay(slotList.getMonday());
-        if (!errorMessage.isEmpty()) {
-            binding.addError(new ObjectError("global", errorMessage));
-            model.addAttribute("quest" , quest);
-            model.addAttribute("slot_list", slotList);
-            return "quests/add-slotlist";
-        }
-
-        SlotListFactory.makeSlotListEveryDay(slotList);
-        String jsonSlotList = SlotListMapper.createJSONSlotList(slotList);
-        quest.setSlotList(jsonSlotList);
-
-        questService.saveQuest(quest);
-
-        return "redirect:/quests/quests-list";
     }
 
     @PostMapping("/delete-quest")

@@ -2,46 +2,38 @@ package ru.questsfera.questreservation.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import ru.questsfera.questreservation.converter.SlotListMapper;
+import ru.questsfera.questreservation.dto.QuestForm;
 
 import java.time.LocalTime;
 import java.util.*;
 
 @Entity
 @Table(name = "quests", schema = "quest_reservations")
-@JsonIgnoreProperties({"slotList", "autoBlock", "sms", "users", "admin", "synchronizedQuests"})
+@JsonIgnoreProperties({"autoBlock", "sms", "users", "slotList", "admin", "synchronizedQuests"})
 public class Quest implements Comparable<Quest> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "*Обязательное поле")
     @Column(name = "quest_name")
     private String questName;
 
-    /* JSON for SlotList object */
-    @Column(name = "slot_list")
-    private String slotList;
-
-    @Min(value = 1, message = "*Минимум 1")
-    @Max(value = 100, message = "*Максимум 100")
-    @NotNull(message = "*Обязательное поле")
     @Column(name = "min_persons")
     private Integer minPersons;
 
-    @Min(value = 1, message = "*Минимум 1")
-    @Max(value = 100, message = "*Максимум 100")
-    @NotNull(message = "*Обязательное поле")
     @Column(name = "max_persons")
     private Integer maxPersons;
 
-    @NotNull(message = "*Обязательное поле")
     @Column(name = "auto_block")
     private LocalTime autoBlock;
 
     @Column(name = "sms")
     private String sms;
+
+    @Column(name = "slot_list")
+    private String slotList;
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
@@ -64,10 +56,15 @@ public class Quest implements Comparable<Quest> {
 
     public Quest() {}
 
-    public Quest(Admin admin) {
+    public Quest(QuestForm questForm, Admin admin) {
+        this.questName = questForm.getQuestName();
+        this.minPersons = questForm.getMinPersons();
+        this.maxPersons = questForm.getMaxPersons();
+        this.autoBlock = questForm.getAutoBlock();
+        this.slotList = SlotListMapper.createJSON(questForm.getSlotList());
+        this.users = questForm.getUsers();
+        this.statuses = questForm.getStatuses();
         this.admin = admin;
-        this.autoBlock = LocalTime.MIN;
-        statuses = Status.getDefaultStatuses();
     }
 
     public void addStatusForQuest(Status status) {
@@ -124,38 +121,6 @@ public class Quest implements Comparable<Quest> {
         quest.getSynchronizedQuests().clear();
     }
 
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    public Set<Quest> getSynchronizedQuests() {
-        return synchronizedQuests;
-    }
-
-    public void setSynchronizedQuests(Set<Quest> synchronizedQuests) {
-        this.synchronizedQuests = synchronizedQuests;
-    }
-
-    public Set<Status> getStatuses() {
-        return statuses;
-    }
-
-    public void setStatuses(Set<Status> statuses) {
-        this.statuses = statuses;
-    }
-
-    public Admin getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -170,14 +135,6 @@ public class Quest implements Comparable<Quest> {
 
     public void setQuestName(String questName) {
         this.questName = questName;
-    }
-
-    public String getSlotList() {
-        return slotList;
-    }
-
-    public void setSlotList(String slotList) {
-        this.slotList = slotList;
     }
 
     public Integer getMinPersons() {
@@ -210,6 +167,46 @@ public class Quest implements Comparable<Quest> {
 
     public void setSms(String sms) {
         this.sms = sms;
+    }
+
+    public String getSlotList() {
+        return slotList;
+    }
+
+    public void setSlotList(String slotList) {
+        this.slotList = slotList;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public Set<Status> getStatuses() {
+        return statuses;
+    }
+
+    public void setStatuses(Set<Status> statuses) {
+        this.statuses = statuses;
+    }
+
+    public Set<Quest> getSynchronizedQuests() {
+        return synchronizedQuests;
+    }
+
+    public void setSynchronizedQuests(Set<Quest> synchronizedQuests) {
+        this.synchronizedQuests = synchronizedQuests;
     }
 
     @Override

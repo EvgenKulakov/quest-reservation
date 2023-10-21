@@ -10,14 +10,13 @@
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
 
-<section class="container form">
-    <div id="title">
-        <h2>Добавить квест</h2>
-        <h6 class="monospace">Шаг 1 из 2-х</h6>
-    </div>
+<form th:object="${quest_form}" th:action="@{/quests/save-quest}" method="post">
 
-
-    <form th:object="${quest}" th:action="@{/quests/add-slotlist}" method="post">
+    <div class="container form" id="firstPage">
+        <div class="title-form">
+            <h2>Добавить квест</h2>
+            <h6 class="monospace">Шаг 1 из 2-х</h6>
+        </div>
 
         <div class="row">
             <label for="inputName" class="col-5 col-form-label">Название:</label>
@@ -31,14 +30,16 @@
             <label class="col-5 col-form-label">Кол-во человек: (от-до)</label>
             <div class="col-2and5">
                 <input class="form-control" type="number" max="999" min="-999" th:field="*{minPersons}">
-                <div class="error-message-peoples" th:if="${#fields.hasErrors('minPersons')}" th:errors="*{minPersons}"></div>
+                <div class="error-message-peoples" th:if="${#fields.hasErrors('minPersons')}"
+                     th:errors="*{minPersons}"></div>
             </div>
             <div class="col-2and5">
                 <input class="form-control" type="number" max="999" min="-999" th:field="*{maxPersons}">
-                <div class="error-message-peoples" th:if="${#fields.hasErrors('maxPersons')}" th:errors="*{maxPersons}"></div>
+                <div class="error-message-peoples" th:if="${#fields.hasErrors('maxPersons')}"
+                     th:errors="*{maxPersons}"></div>
             </div>
-            <div th:if="${#fields.hasErrors('global')}">
-                <div class="error-message" th:each="err : ${#fields.errors('global')}" th:text="${err}"></div>
+            <div th:if="${#fields.hasErrors('errorCountPersons')}">
+                <div class="error-message" th:errors="*{errorCountPersons}"></div>
             </div>
         </div>
 
@@ -49,8 +50,8 @@
                     <div class="form-check">
                         <input th:type="checkbox"
                                th:class="${status.id <= 2}
-                               ? 'form-check-input check-default'
-                               : 'form-check-input'"
+                           ? 'form-check-input check-default'
+                           : 'form-check-input'"
                                th:field="*{statuses}" th:value="${status.id}">
                         <label th:text="${status.type.text}"></label>
                     </div>
@@ -77,9 +78,61 @@
             </div>
         </div>
 
-        <button class="btn btn-primary col-12" type="submit">Далее → Шаг 2</button>
+        <button class="btn btn-primary col-12" type="button" onclick="onward()">Далее → Шаг 2</button>
+    </div>
 
-    </form>
-</section>
+    <!--    ********************************************SLOTLIST WINDOW***************************************-->
+
+    <div class="container form" id="secondPage">
+        <div class="title-form">
+            <h2>Сетка квеста</h2>
+            <h6 class="monospace">Шаг 2 из 2-х</h6>
+            <label for="radio-slotlist">Выберете шаблон сетки квестов</label>
+            <div id="radio-slotlist">
+                <input type="radio" id="equal-days" name="slotlist" value="equal-days" checked>
+                <label for="equal-days">Одинаковые дни</label>
+                <input type="radio" id="weekdays-weekends" name="slotlist" value="weekdays-weekends">
+                <label for="weekdays-weekends">Будние-выходные</label>
+                <input type="radio" id="different-days" name="slotlist" value="different-days">
+                <label for="different-days">Разные дни</label>
+            </div>
+            <h4 class="text">Все дни недели</h4>
+        </div>
+
+        <div id="slotlistForm">
+            <div class="row" th:each="slot, i : ${quest_form.slotList.monday}">
+                <label for="input-time" class="col-2 col-form-label">Время:</label>
+                <div class="col-3">
+                    <input type="time" class="form-control" id="input-time"
+                           th:field="*{slotList.monday[__${i.index}__].time}">
+                </div>
+                <label for="input-price" class="col-2and5 col-form-label">Стоимость:</label>
+                <div class="col-2and5">
+                    <input type="number" min="0" max="100000" class="form-control" id="input-price"
+                           th:field="*{slotList.monday[__${i.index}__].price}">
+                </div>
+
+                <div class="col-1">
+                    <img class="plus-icon" src="/images/Pictogrammers-Material-Playlist-plus.48.png" width="24" height="24">
+                </div>
+                <div class="col-1">
+                    <img class="del-icon" src="/images/Pictogrammers-Material-Delete-alert.48.png" width="24" height="24">
+                </div>
+            </div>
+        </div>
+
+        <div class="error-message-block row col-12" th:if="${#fields.hasErrors('global')}"
+             th:each="err : ${#fields.errors('global')}" th:text="${err}">
+        </div>
+
+        <div class="row">
+            <button class="btn btn-outline-secondary col-6" onclick="back()" type="button">Назад → Шаг 1</button>
+            <button class="btn btn-primary row col-6" type="submit">Сохранить</button>
+        </div>
+
+    </div>
+</form>
+
+<script src="/js/add-quest.js"></script>
 </body>
 </html>

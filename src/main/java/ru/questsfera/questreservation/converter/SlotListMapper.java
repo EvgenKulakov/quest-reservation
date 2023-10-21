@@ -12,7 +12,7 @@ public class SlotListMapper {
         mapper.registerModule(new JavaTimeModule());
     }
 
-    public static SlotList createSlotListObject(String jsonSlotList) {
+    public static SlotList createObject(String jsonSlotList) {
 
         SlotList slotList = null;
         try {
@@ -24,7 +24,7 @@ public class SlotListMapper {
         return slotList;
     }
 
-    public static String createJSONSlotList(SlotList slotList) {
+    public static String createJSON(SlotList slotList) {
 
         String JSONSlotList = null;
         try {
