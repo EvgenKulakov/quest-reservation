@@ -1,5 +1,7 @@
 package ru.questsfera.questreservation.validator;
 
+import ru.questsfera.questreservation.dto.SlotList;
+import ru.questsfera.questreservation.dto.SlotListTypeBuilder;
 import ru.questsfera.questreservation.dto.TimePrice;
 
 import java.util.Collections;
@@ -7,31 +9,72 @@ import java.util.List;
 
 public class SlotListValidator {
 
-    public static String checkOneDay(List<TimePrice> oneDay) {
-        String errorMessage = hasNull(oneDay);
-        return errorMessage.isEmpty() ? hasDuplicate(oneDay) : errorMessage;
+    private static boolean hasNull;
+    private static boolean hasDuplicate;
+    private final static String errorHasNull = "*Все поля должны быть заполнены";
+    private final static String errorHasDuplicate = "*Все слоты должны быть на разное время";
+
+    public static String checkByType(SlotList slotList, SlotListTypeBuilder typeBuilder) {
+        hasNull = false;
+        hasDuplicate = false;
+
+        return switch (typeBuilder) {
+            case EQUAL_DAYS -> checkEqualDays(slotList);
+            case WEEKDAYS_WEEKENDS -> checkWeekdaysWeekends(slotList);
+            default -> checkDifferentDays(slotList);
+        };
     }
 
-    private static String hasNull(List<TimePrice> oneDay) {
-        String errorMessage = "";
+    public static String checkEqualDays(SlotList slotList) {
+        checkOneDay(slotList.getMonday());
+        return switchErrorText();
+    }
+
+    public static String checkWeekdaysWeekends(SlotList slotList) {
+        checkOneDay(slotList.getMonday());
+        checkOneDay(slotList.getSaturday());
+        return switchErrorText();
+    }
+
+    public static String checkDifferentDays(SlotList slotList) {
+        checkOneDay(slotList.getMonday());
+        checkOneDay(slotList.getTuesday());
+        checkOneDay(slotList.getWednesday());
+        checkOneDay(slotList.getThursday());
+        checkOneDay(slotList.getFriday());
+        checkOneDay(slotList.getSaturday());
+        checkOneDay(slotList.getSunday());
+        return switchErrorText();
+    }
+
+    public static void checkOneDay(List<TimePrice> oneDay) {
+        boolean thisHasNull = hasNull(oneDay);
+        if (!thisHasNull) hasDuplicate(oneDay);
+    }
+
+    private static boolean hasNull(List<TimePrice> oneDay) {
         for (TimePrice timePrice : oneDay) {
             if (timePrice.getTime() == null || timePrice.getPrice() == null) {
-                errorMessage = "*Все поля должны быть заполнены";
-                return errorMessage;
+                hasNull = true;
+                return true;
             }
         }
-        return errorMessage;
+        return false;
     }
 
-    private static String hasDuplicate(List<TimePrice> oneDay) {
-        String errorMessage = "";
+    private static void hasDuplicate(List<TimePrice> oneDay) {
         Collections.sort(oneDay);
         for (int i = 1; i < oneDay.size(); i++) {
             if (oneDay.get(i).equals(oneDay.get(i - 1))) {
-                errorMessage = "*Все слоты должны быть на разное время";
-                return errorMessage;
+                hasDuplicate = true;
+                return;
             }
         }
-        return errorMessage;
+    }
+
+    private static String switchErrorText() {
+        if (hasNull) return errorHasNull;
+        if (hasDuplicate) return errorHasDuplicate;
+        return "";
     }
 }

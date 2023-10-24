@@ -9,6 +9,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.dto.QuestForm;
 import ru.questsfera.questreservation.dto.SlotList;
+import ru.questsfera.questreservation.dto.SlotListTypeBuilder;
 import ru.questsfera.questreservation.dto.TimePrice;
 import ru.questsfera.questreservation.entity.Admin;
 import ru.questsfera.questreservation.entity.Quest;
@@ -58,8 +59,11 @@ public class QuestController {
         List<User> allUsers = userService.getUsersByAdmin(admin);
         QuestForm questForm = new QuestForm();
         SlotListMaker.addDefaultValues(questForm.getSlotList());
+        String slotListJSON = SlotListMapper.createJSON(questForm.getSlotList());
 
         model.addAttribute("quest_form", questForm);
+        model.addAttribute("type_builders", SlotListTypeBuilder.values());
+        model.addAttribute("slotlist_json", slotListJSON);
         model.addAttribute("all_users", allUsers);
         model.addAttribute("user_statuses", Status.getUserStatuses());
 
@@ -77,10 +81,10 @@ public class QuestController {
         userService.checkSecurityForUsers(questForm.getUsers(), admin);
 
         boolean existQuestName = questService.existQuestNameByAdmin(questForm.getQuestName(), admin);
-        String errorSlotlist = SlotListValidator.checkOneDay(questForm.getSlotList().getMonday());
+        String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuilder());
 
         if (binding.hasErrors() || questForm.getMinPersons() > questForm.getMaxPersons()
-                || existQuestName || !errorSlotlist.isEmpty()) {
+                || existQuestName || !globalErrorMessage.isEmpty()) {
 
             if (questForm.getMinPersons() != null
                     && questForm.getMaxPersons() != null
@@ -94,18 +98,23 @@ public class QuestController {
                         String.format("У вас уже есть квест с названием \"%s\"", questForm.getQuestName()));
             }
 
-            if (!errorSlotlist.isEmpty()) {
-                binding.addError(new ObjectError("global", errorSlotlist));
+            if (!globalErrorMessage.isEmpty()) {
+                questForm.setOnlySecondPageError(!binding.hasFieldErrors());
+                binding.addError(new ObjectError("global", globalErrorMessage));
             }
 
+            String slotListJSON = SlotListMapper.createJSON(questForm.getSlotList());
+
             model.addAttribute("quest_form", questForm);
+            model.addAttribute("type_builders", SlotListTypeBuilder.values());
+            model.addAttribute("slotlist_json", slotListJSON);
             model.addAttribute("user_statuses", Status.getUserStatuses());
             model.addAttribute("all_users", userService.getUsersByAdmin(admin));
 
             return "quests/add-quest";
         }
 
-        SlotListMaker.makeEqualDays(questForm.getSlotList());
+        SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuilder());
         Quest quest = new Quest(questForm, admin);
         questService.saveQuest(quest);
 

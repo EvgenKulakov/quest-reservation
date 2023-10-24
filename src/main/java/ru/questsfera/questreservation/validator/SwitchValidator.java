@@ -1,6 +1,6 @@
 package ru.questsfera.questreservation.validator;
 
-public interface Validator {
+public interface SwitchValidator {
 
     interface SaveReserve {}
 

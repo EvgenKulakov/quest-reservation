@@ -25,6 +25,8 @@ public class QuestForm {
 
     private Boolean errorCountPersons;
 
+    private Boolean onlySecondPageError;
+
     private Set<Status> statuses = Status.getDefaultStatuses();
 
     @NotNull(message = "*Обязательное поле")
@@ -34,8 +36,9 @@ public class QuestForm {
 
     private SlotList slotList = new SlotList();
 
-    public QuestForm() {
-    }
+    private SlotListTypeBuilder typeBuilder = SlotListTypeBuilder.EQUAL_DAYS;
+
+    public QuestForm() {}
 
     public String getQuestName() {
         return questName;
@@ -69,6 +72,14 @@ public class QuestForm {
         this.errorCountPersons = errorCountPersons;
     }
 
+    public Boolean getOnlySecondPageError() {
+        return onlySecondPageError;
+    }
+
+    public void setOnlySecondPageError(Boolean onlySecondPageError) {
+        this.onlySecondPageError = onlySecondPageError;
+    }
+
     public Set<Status> getStatuses() {
         return statuses;
     }
@@ -99,5 +110,13 @@ public class QuestForm {
 
     public void setSlotList(SlotList slotList) {
         this.slotList = slotList;
+    }
+
+    public SlotListTypeBuilder getTypeBuilder() {
+        return typeBuilder;
+    }
+
+    public void setTypeBuilder(SlotListTypeBuilder typeBuilder) {
+        this.typeBuilder = typeBuilder;
     }
 }

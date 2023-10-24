@@ -14,7 +14,7 @@ import ru.questsfera.questreservation.processor.SlotFactory;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.service.AccountService;
 import ru.questsfera.questreservation.service.ReservationService;
-import ru.questsfera.questreservation.validator.Validator;
+import ru.questsfera.questreservation.validator.SwitchValidator;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -93,7 +93,7 @@ public class ReservationController {
     }
 
     @PostMapping("/save-reservation")
-    public String saveReservation(@Validated(Validator.SaveReserve.class)
+    public String saveReservation(@Validated(SwitchValidator.SaveReserve.class)
                                   @ModelAttribute("res_form") ReservationForm resForm,
                                   BindingResult bindingResult,
                                   @RequestParam("slot") String slotJSON,
@@ -128,7 +128,7 @@ public class ReservationController {
     }
 
     @PostMapping("/block-slot")
-    public String blockSlot(@Validated(Validator.BlockSlot.class)
+    public String blockSlot(@Validated(SwitchValidator.BlockSlot.class)
                             @ModelAttribute("res_form") ReservationForm resForm,
                             BindingResult bindingResult,
                             @RequestParam("slot") String slotJSON,

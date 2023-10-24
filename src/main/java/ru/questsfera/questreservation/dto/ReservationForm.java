@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import ru.questsfera.questreservation.validator.Patterns;
-import ru.questsfera.questreservation.validator.Validator;
+import ru.questsfera.questreservation.validator.SwitchValidator;
 
 public class ReservationForm {
 
@@ -12,27 +12,27 @@ public class ReservationForm {
 
     private StatusType statusType;
 
-    @NotBlank(message = "*Обязательное поле", groups = Validator.SaveReserve.class)
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
+    @NotBlank(message = "*Обязательное поле", groups = SwitchValidator.SaveReserve.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = SwitchValidator.BlockSlot.class)
     private String firstName;
 
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = SwitchValidator.BlockSlot.class)
     private String lastName;
 
     @Pattern(regexp = Patterns.PHONE,
             message = "*Введите номер телефона в формате +7хххххххххх",
-            groups = Validator.SaveReserve.class)
-    @Size(max = 2, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
+            groups = SwitchValidator.SaveReserve.class)
+    @Size(max = 2, message = ERROR_BLOCK_MESSAGE, groups = SwitchValidator.BlockSlot.class)
     private String phone = "+7";
 
     @Pattern(regexp = Patterns.EMAIL_OR_EMPTY,
-            message = "*Проверьте правильное написание Email", groups = Validator.SaveReserve.class)
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
+            message = "*Проверьте правильное написание Email", groups = SwitchValidator.SaveReserve.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = SwitchValidator.BlockSlot.class)
     private String email;
 
     private Integer countPersons;
 
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = Validator.BlockSlot.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = SwitchValidator.BlockSlot.class)
     private String adminComment;
 
     private String clientComment;

@@ -1,5 +1,5 @@
 body {
-    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/so-white.png');
+    background-image: url("../images/so-white.png");
     background-repeat: repeat;
 }
 
@@ -24,7 +24,7 @@ body {
     font-family: monospace;
 }
 
-.col-2and5 {
+.col-2-5 {
     flex: 0 0 auto;
     width: 20.8333333333%!important;
 }
