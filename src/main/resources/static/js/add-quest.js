@@ -3,64 +3,108 @@ const secondPage = document.querySelector('#secondPage')
 const onlySecondPageError = document.querySelector('#onlySecondPageError')
 
 const slotlistForm = document.querySelector('#slotlistForm')
-const slotlistEl = document.querySelector('#slotlistJson')
-const slotlist = JSON.parse(slotlistEl.value)
+const oneDay = document.querySelector('.oneDay')
+const titleDay = document.querySelector('.titleDay')
+const oneSlotlist = document.querySelector('.oneSlotlist')
+const oneRow = document.querySelector('.oneRow')
+const slotlist = JSON.parse(document.querySelector('#slotlistJson').value)
 
-const radioButtons = document.querySelectorAll('input[type=radio]');
+const radioButtons = document.querySelectorAll('#radio-slotlist input');
 const onward = document.querySelector('#onward')
 const back = document.querySelector('#back')
+
+let copyBuffer = null
+
+
+const copyPasteFunctional = (titleDay, titleText) => {
+    const buttonCopy = titleDay.querySelector('.button-copy')
+    const buttonPaste = titleDay.querySelector('.button-paste')
+
+    let caseForTitleText = titleText.toLowerCase()
+    if (titleText === 'Среда' || titleText === 'Пятница' || titleText === 'Суббота') {
+        caseForTitleText = caseForTitleText.substring(0, caseForTitleText.length - 1) + 'у'
+    }
+
+    buttonCopy.addEventListener('click', function (event) {
+        buttonCopy.innerText = 'Скопировано'
+        const oneDay = event.target.closest('.oneDay')
+        const oneSlotlist = oneDay.querySelector('.oneSlotlist')
+        copyBuffer = oneSlotlist.cloneNode(true)
+
+        const allButtonsPaste = document.querySelectorAll('.button-paste')
+        allButtonsPaste.forEach(button => {
+            button.innerText = `Вставить ${caseForTitleText}`
+            button.style.visibility = 'visible'
+        })
+    })
+
+    buttonPaste.addEventListener('click', function (event) {
+        const oneDay = event.target.closest('.oneDay')
+
+        const currentSlotlist = oneDay.querySelector('.oneSlotlist')
+        const textInName = currentSlotlist.querySelector('#input-time').name
+        const currentDay = textInName.substring(textInName.indexOf('.') + 1, textInName.indexOf('['))
+        currentSlotlist.remove()
+
+        const copySlotlist = copyBuffer.cloneNode(true)
+        const copyAllRows = copySlotlist.querySelectorAll('.oneRow')
+
+        copyAllRows.forEach(copyRow => {
+
+            const inputTime = copyRow.querySelector('#input-time')
+            const inputPrice = copyRow.querySelector('#input-price')
+
+            inputTime.name = inputTime.name.replace(/\.(.*?)\[/, `.${currentDay}[`)
+            inputPrice.name = inputPrice.name.replace(/\.(.*?)\[/, `.${currentDay}[`)
+
+            copyRow.querySelector('.plus-icon').addEventListener('click', addRow)
+            copyRow.querySelector('.del-icon').addEventListener('click', delRow)
+        })
+
+        oneDay.appendChild(copySlotlist)
+    })
+}
 
 const renderRow = (day, index, time, price) => {
     time = time ? time : ''
     price = price ? price : ''
 
-    return `<label for="input-time" class="col-2 col-form-label">Время:</label>
-                <div class="col-3">
-                    <input type="time" class="form-control" id="input-time" 
-                        name="slotList.${day}[${index}].time" value="${time}">
-                </div>
-                
-                <label for="input-price" class="col-2-5 col-form-label">Стоимость:</label>
-                <div class="col-2-5">
-                    <input type="number" min="0" max="100000" class="form-control" id="input-price" 
-                        name="slotList.${day}[${index}].price" value="${price}">
-                </div>
-                
-                <div class="col-1">
-                    <img class="plus-icon" src="/images/Pictogrammers-Material-Playlist-plus.48.png" 
-                        width="24" height="24">
-                </div>
-                
-                <div class="col-1">
-                    <img class="del-icon" src="/images/Pictogrammers-Material-Delete-alert.48.png" 
-                        width="24" height="24">
-                </div>`
+    const timeName = `slotList.${day}[${index}].time`
+    const priceName = `slotList.${day}[${index}].price`
+
+    const newRow = oneRow.cloneNode(true)
+
+    newRow.querySelector('#input-time').name = timeName
+    newRow.querySelector('#input-time').value = time
+    newRow.querySelector('#input-price').name = priceName
+    newRow.querySelector('#input-price').value = price
+
+    return newRow
 }
 
 const renderOneDay = (titleText, dayList, dayText) => {
 
-    const title = document.createElement('div')
-    title.innerHTML = `<h4 class="title-form">${titleText}</h4>`
-    slotlistForm.appendChild(title)
+    const newTitleDay = titleDay.cloneNode(true)
+    newTitleDay.querySelector('.title-text').innerText = titleText
 
-    const oneDayForm = document.createElement('div')
-    oneDayForm.id = 'oneDayForm'
-
+    const newOneSlotlist = oneSlotlist.cloneNode()
     if (dayList) {
         for (let i = 0; i < dayList.length; i++) {
-            const row = document.createElement('div')
-            row.className = 'row'
-            row.innerHTML = renderRow(`${dayText}`, i, dayList[i].time, dayList[i].price)
-            oneDayForm.appendChild(row)
+            const newRow = renderRow(`${dayText}`, i, dayList[i].time, dayList[i].price)
+            newOneSlotlist.appendChild(newRow)
         }
     } else {
-        const row = document.createElement('div')
-        row.className = 'row'
-        row.innerHTML = renderRow(`${dayText}`, 0, null, null)
-        oneDayForm.appendChild(row)
+        const newRow = renderRow(`${dayText}`, 0, null, null)
+        newOneSlotlist.appendChild(newRow)
     }
 
-    slotlistForm.appendChild(oneDayForm)
+    const newOneDay = oneDay.cloneNode()
+    newOneDay.appendChild(newTitleDay)
+    newOneDay.appendChild(newOneSlotlist)
+
+    slotlistForm.appendChild(newOneDay)
+
+    copyPasteFunctional(newTitleDay, titleText)
 }
 
 const renderEqualDays = () => {
@@ -85,57 +129,48 @@ const renderDifferentDays = () => {
     renderOneDay('Воскресенье', slotlist.sunday, 'sunday')
 }
 
-const addOrDelRow = () => {
+const delRow = (event) => {
+    const row = event.target.closest('.oneRow');
+    const parent = event.target.closest('.oneSlotlist')
+
+    if (parent.children.length < 2) return
+
+    row.remove()
+
+    for (let i = 0; i < parent.children.length; i++) {
+        const inputTime = parent.children[i].querySelector('#input-time')
+        const inputPrice = parent.children[i].querySelector('#input-price')
+
+        inputTime.name = inputTime.name.replace(/\[(\d+)]/, `[${i}]`)
+        inputPrice.name = inputPrice.name.replace(/\[(\d+)]/, `[${i}]`)
+    }
+}
+
+const addRow = (event) => {
+    const thisRow = event.target.closest('.oneRow');
+    const parent = event.target.closest('.oneSlotlist')
+    const countRow = parent.children.length
+
+    if (countRow > 27) return
+
+    const textInName = thisRow.querySelector('#input-time').name
+    const day = textInName.substring(textInName.indexOf('.') + 1, textInName.indexOf('['))
+
+    const newRow = renderRow(day, countRow, null, null)
+
+    newRow.querySelector('.plus-icon').addEventListener('click', addRow)
+    newRow.querySelector('.del-icon').addEventListener('click', delRow)
+
+    parent.insertBefore(newRow, thisRow.nextSibling);
+}
+
+const listenersForAddDeleteRow = () => {
     const delIcons = document.querySelectorAll('.del-icon')
     const plusIcons = document.querySelectorAll('.plus-icon')
-
-    const delRow = (event) => {
-        const row = event.target.closest('.row');
-        const parent = event.target.closest('#oneDayForm')
-
-        if (parent.children.length < 2) return
-
-        row.remove()
-
-        for (let i = 0; i < parent.children.length; i++) {
-            const inputTime = parent.children[i].querySelector('#input-time')
-            const inputPrice = parent.children[i].querySelector('#input-price')
-
-            inputTime.name = inputTime.name.replace(/\[(\d+)]/, `[${i}]`)
-            inputPrice.name = inputPrice.name.replace(/\[(\d+)]/, `[${i}]`)
-        }
-    }
 
     delIcons.forEach(function (delIcon) {
         delIcon.addEventListener('click', delRow)
     })
-
-    const addRow = (event) => {
-        const row = event.target.closest('.row');
-        const parent = event.target.closest('#oneDayForm')
-        const countRow = parent.children.length
-
-        if (countRow > 27) return
-
-        const newRow = document.createElement('div');
-        newRow.className = 'row'
-        newRow.innerHTML = row.innerHTML
-
-        const inputTime = newRow.querySelector('#input-time')
-        const inputPrice = newRow.querySelector('#input-price')
-
-        inputTime.name = inputTime.name.replace(/\[(\d+)]/, `[${countRow}]`);
-        inputPrice.name = inputPrice.name.replace(/\[(\d+)]/, `[${countRow}]`)
-        inputTime.value = ''
-        inputPrice.value = ''
-
-        const plusIcon = newRow.querySelector('.plus-icon')
-        const delIcon = newRow.querySelector('.del-icon')
-        plusIcon.addEventListener('click', addRow)
-        delIcon.addEventListener('click', delRow)
-
-        parent.insertBefore(newRow, row.nextSibling);
-    }
 
     plusIcons.forEach(function (plusIcon) {
         plusIcon.addEventListener('click', addRow)
@@ -155,7 +190,7 @@ const switchSlotlist = (radioButton) => {
                 renderDifferentDays()
                 break
         }
-        addOrDelRow()
+        listenersForAddDeleteRow()
     }
 }
 

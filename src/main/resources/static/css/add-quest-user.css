@@ -12,16 +12,36 @@ body {
     width: 35rem!important;
 }
 
-.row {
-    padding: 0.75em;
+.title-text {
+    border-bottom: 1px solid black;
 }
 
-.title-form {
-    padding-left: 0.75em;
+.container-for-buttons {
+    display: flex;
+    align-items: center;
+    padding-top: 1.5em;
+    padding-bottom: 0.3em;
+    margin-left: 0.5em;
+}
+
+.button-group {
+    margin-left: 1em;
+}
+
+#title {
+    margin: 0 0.75em 1em 0.75em;
+}
+
+.button-paste {
+    visibility: hidden;
 }
 
 .monospace {
     font-family: monospace;
+}
+
+.row {
+    padding: 0.75em;
 }
 
 .col-2-5 {
