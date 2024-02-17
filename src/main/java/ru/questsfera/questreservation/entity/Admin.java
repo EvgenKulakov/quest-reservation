@@ -10,7 +10,7 @@ import ru.questsfera.questreservation.validator.Patterns;
 import java.util.*;
 
 @Entity
-@Table(name = "admins", schema = "quest_reservations")
+@Table(name = "admins", schema = "quest_reservations_db")
 @JsonIgnoreProperties({"username", "mail", "phone", "password",
         "money", "role", "clients", "blackLists", "quests", "users"})
 public class Admin implements Account {

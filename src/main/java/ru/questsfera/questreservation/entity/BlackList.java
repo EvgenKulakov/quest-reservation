@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "blacklist", schema = "quest_reservations")
+@Table(name = "blacklist", schema = "quest_reservations_db")
 @JsonIgnoreProperties({"admin"})
 public class BlackList {
 

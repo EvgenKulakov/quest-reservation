@@ -9,7 +9,7 @@ import ru.questsfera.questreservation.validator.Patterns;
 import java.util.*;
 
 @Entity
-@Table(name = "users", schema = "quest_reservations")
+@Table(name = "users", schema = "quest_reservations_db")
 public class User implements Account {
 
     @Id

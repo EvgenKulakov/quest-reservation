@@ -7,7 +7,7 @@ import ru.questsfera.questreservation.dto.StatusType;
 import java.util.*;
 
 @Entity
-@Table(name = "statuses", schema = "quest_reservations")
+@Table(name = "statuses", schema = "quest_reservations_db")
 public class Status {
 
     @Id

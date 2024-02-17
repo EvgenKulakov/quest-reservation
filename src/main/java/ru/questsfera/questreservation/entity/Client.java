@@ -9,7 +9,7 @@ import ru.questsfera.questreservation.dto.Slot;
 import java.util.*;
 
 @Entity
-@Table(name = "clients", schema = "quest_reservations")
+@Table(name = "clients", schema = "quest_reservations_db")
 @JsonIgnoreProperties({"admin"})
 public class Client {
 

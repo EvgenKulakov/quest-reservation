@@ -11,7 +11,7 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "reservations", schema = "quest_reservations")
+@Table(name = "reservations", schema = "quest_reservations_db")
 @JsonIgnoreProperties({"quest", "admin"})
 public class Reservation {
 

@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 @Entity
-@Table(name = "quests", schema = "quest_reservations")
+@Table(name = "quests", schema = "quest_reservations_db")
 @JsonIgnoreProperties({"autoBlock", "sms", "users", "slotList", "admin", "synchronizedQuests"})
 public class Quest implements Comparable<Quest> {
 

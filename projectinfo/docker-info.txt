@@ -11,12 +11,16 @@ latest:
 ========================================================================================================================
 scp projectinfo/dumps/Dump13.sql root@195.80.51.184:/root
 --------------------------------------------------
-docker network create db-spring-net
+docker network create quest_reservations_net
 --------------------------------------------------
-docker run --name db --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v .:/app -e MYSQL_ROOT_PASSWORD=MySQL54535251 -e MYSQL_DATABASE=quest_reservations -d mysql:8.0.33
+docker run --name db --network quest_reservations_net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v .:/app -e MYSQL_ROOT_PASSWORD=MySQL54535251 -e MYSQL_DATABASE=quest_reservations_db -d mysql:8.0.33
 docker exec -it db sh
 mysql -u root -p quest_reservations < /app/Dump13.sql
 --------------------------------------------------
 docker build -t evgeniydockerman/questreservations:git54 .
-docker run -d --network db-spring-net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro --name spring-cont -p 80:8080 evgeniydockerman/questreservations:git54
+docker run -d --network quest_reservations_net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro --name spring-cont -p 80:8080 evgeniydockerman/questreservations:git54
 ========================================================================================================================
+
+--------------------------------------------------
+local db in docker:
+docker run --name db --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v .:/app -e MYSQL_ROOT_PASSWORD=MySQL54535251 -e MYSQL_DATABASE=quest_reservations_db -p 3306:3306 -d mysql:8.0.33
