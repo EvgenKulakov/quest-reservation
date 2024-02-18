@@ -3,6 +3,10 @@ package ru.questsfera.questreservation.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.questsfera.questreservation.converter.SlotMapper;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -11,6 +15,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties({"autoBlock"})
 public class Slot {
     private Quest quest;
@@ -23,78 +31,9 @@ public class Slot {
     private Integer price;
     private LocalTime autoBlock;
 
-    public Slot(Quest quest, StatusType statusType, Reservation reservation,
-                LocalDate date, LocalTime time, Integer price, LocalTime autoBlock) {
-        this.quest = quest;
-        this.statusType = statusType;
-        this.reservation = reservation;
-        this.date = date;
-        this.time = time;
-        this.price = price;
-        this.autoBlock = autoBlock;
-    }
-
-    public Slot() {}
-
     @JsonIgnore
     public String getJSON() {
         return SlotMapper.createJSONSlot(this);
-    }
-
-    public Quest getQuest() {
-        return quest;
-    }
-
-    public void setQuest(Quest quest) {
-        this.quest = quest;
-    }
-
-    public StatusType getStatusType() {
-        return statusType;
-    }
-
-    public void setStatusType(StatusType statusType) {
-        this.statusType = statusType;
-    }
-
-    public Reservation getReservation() {
-        return reservation;
-    }
-
-    public void setReservation(Reservation reservation) {
-        this.reservation = reservation;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
-    public LocalTime getAutoBlock() {
-        return autoBlock;
-    }
-
-    public void setAutoBlock(LocalTime autoBlock) {
-        this.autoBlock = autoBlock;
     }
 
     @Override

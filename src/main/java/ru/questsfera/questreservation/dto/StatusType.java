@@ -1,5 +1,10 @@
 package ru.questsfera.questreservation.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum StatusType {
     EMPTY(0, "Свободно"),
     NEW_RESERVE(1, "Новый"),
@@ -10,19 +15,6 @@ public enum StatusType {
     BLOCK(6, "Заблокирован"),
     MODIFIED(7, "Изменён слот");
 
-    private Integer id;
-    private String text;
-
-    StatusType(Integer id, String text) {
-        this.id = id;
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public Integer getId() {
-        return id;
-    }
+    private final Integer id;
+    private final String text;
 }

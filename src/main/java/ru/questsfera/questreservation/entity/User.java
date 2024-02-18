@@ -2,12 +2,18 @@ package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.questsfera.questreservation.dto.Account;
 import ru.questsfera.questreservation.dto.Role;
 import ru.questsfera.questreservation.validator.Patterns;
 
 import java.util.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "users", schema = "quest_reservations_db")
 public class User implements Account {
@@ -47,91 +53,12 @@ public class User implements Account {
             inverseJoinColumns = @JoinColumn(name = "quest_id"))
     private Set<Quest> quests = new TreeSet<>();
 
-    public User() {}
-
     public User(Admin admin) {
         this.admin = admin;
     }
 
     public void deleteQuestForUser(Quest quest) {
         this.quests.remove(quest);
-    }
-
-    @Override
-    public Admin getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    @Override
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    @Override
-    public Set<Quest> getQuests() {
-        return quests;
-    }
-
-    public void setQuests(Set<Quest> quests) {
-        this.quests = quests;
     }
 
     @Override

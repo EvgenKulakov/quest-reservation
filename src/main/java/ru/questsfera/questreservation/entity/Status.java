@@ -2,10 +2,16 @@ package ru.questsfera.questreservation.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.questsfera.questreservation.dto.StatusType;
 
 import java.util.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "statuses", schema = "quest_reservations_db")
 public class Status {
@@ -31,8 +37,6 @@ public class Status {
         this.text = statusType.getText();
     }
 
-    public Status() {}
-
     public static List<Status> getUserStatuses() {
         List<Status> userStatuses = new ArrayList<>();
         userStatuses.add(new Status(StatusType.NEW_RESERVE));
@@ -52,38 +56,6 @@ public class Status {
 
     public void deleteQuestForStatus(Quest quest) {
         this.quests.remove(quest);
-    }
-
-    public Set<Quest> getQuests() {
-        return quests;
-    }
-
-    public void setQuests(Set<Quest> quests) {
-        this.quests = quests;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public StatusType getType() {
-        return type;
-    }
-
-    public void setType(StatusType type) {
-        this.type = type;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     @Override

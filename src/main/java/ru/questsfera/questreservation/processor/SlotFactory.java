@@ -1,5 +1,6 @@
 package ru.questsfera.questreservation.processor;
 
+import lombok.AllArgsConstructor;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.StatusType;
@@ -11,19 +12,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
+@AllArgsConstructor
 public class SlotFactory {
     private Quest quest;
     private LocalDate date;
     private SlotList slotList;
     private LinkedList<Reservation> reservations;
-
-    public SlotFactory(Quest quest, LocalDate date, SlotList slotList,
-                       LinkedList<Reservation> reservations) {
-        this.quest = quest;
-        this.date = date;
-        this.slotList = slotList;
-        this.reservations = reservations;
-    }
 
     public List<Slot> getActualSlots() {
         checkReservations();

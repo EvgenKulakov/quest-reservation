@@ -3,12 +3,18 @@ package ru.questsfera.questreservation.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.questsfera.questreservation.dto.Account;
 import ru.questsfera.questreservation.dto.Role;
 import ru.questsfera.questreservation.validator.Patterns;
 
 import java.util.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "admins", schema = "quest_reservations_db")
 @JsonIgnoreProperties({"username", "mail", "phone", "password",
@@ -56,8 +62,6 @@ public class Admin implements Account {
     @OneToMany(mappedBy = "admin")
     private Set<Reservation> reservations = new HashSet<>();
 
-    public Admin() {}
-
     public void deleteQuestForAdmin(Quest quest) {
         this.quests.remove(quest);
     }
@@ -74,98 +78,6 @@ public class Admin implements Account {
     @Override
     public Admin getAdmin() {
         return this;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getMoney() {
-        return money;
-    }
-
-    public void setMoney(int money) {
-        this.money = money;
-    }
-
-    @Override
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public Set<Client> getClients() {
-        return clients;
-    }
-
-    public void setClients(Set<Client> clients) {
-        this.clients = clients;
-    }
-
-    public Set<BlackList> getBlackLists() {
-        return blackLists;
-    }
-
-    public void setBlackLists(Set<BlackList> blackLists) {
-        this.blackLists = blackLists;
-    }
-
-    @Override
-    public Set<Quest> getQuests() {
-        return quests;
-    }
-
-    public void setQuests(Set<Quest> quests) {
-        this.quests = quests;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 
     @Override

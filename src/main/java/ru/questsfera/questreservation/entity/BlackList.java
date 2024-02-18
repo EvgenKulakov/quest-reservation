@@ -2,9 +2,17 @@ package ru.questsfera.questreservation.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "blacklist", schema = "quest_reservations_db")
 @JsonIgnoreProperties({"admin"})
@@ -23,45 +31,6 @@ public class BlackList {
     @ManyToOne
     @JoinColumn(name = "admin_id")
     private Admin admin;
-
-    public BlackList() {}
-
-    public BlackList(String phone, String messages) {
-        this.phone = phone;
-        this.messages = messages;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getMessages() {
-        return messages;
-    }
-
-    public void setMessages(String messages) {
-        this.messages = messages;
-    }
-
-    public Admin getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
-    }
 
     @Override
     public boolean equals(Object o) {

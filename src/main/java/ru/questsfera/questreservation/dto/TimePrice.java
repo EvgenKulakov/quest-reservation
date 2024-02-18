@@ -1,33 +1,21 @@
 package ru.questsfera.questreservation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalTime;
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class TimePrice implements Comparable<TimePrice> {
 
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
     private Integer price;
-
-    public TimePrice() {}
-
-    public LocalTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
 
     @Override
     public boolean equals(Object o) {

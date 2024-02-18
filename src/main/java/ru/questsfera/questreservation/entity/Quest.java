@@ -2,12 +2,18 @@ package ru.questsfera.questreservation.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.dto.QuestForm;
 
 import java.time.LocalTime;
 import java.util.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "quests", schema = "quest_reservations_db")
 @JsonIgnoreProperties({"autoBlock", "sms", "users", "slotList", "admin", "synchronizedQuests"})
@@ -54,8 +60,6 @@ public class Quest implements Comparable<Quest> {
             inverseJoinColumns = @JoinColumn(name = "id_second_quest"))
     private Set<Quest> synchronizedQuests = new HashSet<>();
 
-    public Quest() {}
-
     public Quest(QuestForm questForm, Admin admin) {
         this.questName = questForm.getQuestName();
         this.minPersons = questForm.getMinPersons();
@@ -81,7 +85,7 @@ public class Quest implements Comparable<Quest> {
 
         if (!validatorToSynchronize(questSet)) return;
 
-        // написать валидатор по структуре слотов
+        //TODO: написать валидатор по структуре слотов
 
         for (Quest quest : questSet) {
             quest.getSynchronizedQuests().addAll(questSet);
@@ -119,94 +123,6 @@ public class Quest implements Comparable<Quest> {
             syncQuest.getSynchronizedQuests().clear();
         }
         quest.getSynchronizedQuests().clear();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getQuestName() {
-        return questName;
-    }
-
-    public void setQuestName(String questName) {
-        this.questName = questName;
-    }
-
-    public Integer getMinPersons() {
-        return minPersons;
-    }
-
-    public void setMinPersons(Integer minPersons) {
-        this.minPersons = minPersons;
-    }
-
-    public Integer getMaxPersons() {
-        return maxPersons;
-    }
-
-    public void setMaxPersons(Integer maxPersons) {
-        this.maxPersons = maxPersons;
-    }
-
-    public LocalTime getAutoBlock() {
-        return autoBlock;
-    }
-
-    public void setAutoBlock(LocalTime autoBlock) {
-        this.autoBlock = autoBlock;
-    }
-
-    public String getSms() {
-        return sms;
-    }
-
-    public void setSms(String sms) {
-        this.sms = sms;
-    }
-
-    public String getSlotList() {
-        return slotList;
-    }
-
-    public void setSlotList(String slotList) {
-        this.slotList = slotList;
-    }
-
-    public Admin getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    public Set<Status> getStatuses() {
-        return statuses;
-    }
-
-    public void setStatuses(Set<Status> statuses) {
-        this.statuses = statuses;
-    }
-
-    public Set<Quest> getSynchronizedQuests() {
-        return synchronizedQuests;
-    }
-
-    public void setSynchronizedQuests(Set<Quest> synchronizedQuests) {
-        this.synchronizedQuests = synchronizedQuests;
     }
 
     @Override

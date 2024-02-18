@@ -69,7 +69,7 @@ public class QuestService {
         if (!quest.getSynchronizedQuests().isEmpty()) {
             dontSynchronizeQuests(quest);
             System.out.println("Синхронизация по квесту id:" + quest.getId()
-                    + " и всем связаным квестам отменена"); // вывести сообщение на страницу
+                    + " и всем связаным квестам отменена"); //TODO: вывести сообщение на страницу
         }
         admin.deleteQuestForAdmin(quest);
         questRepository.delete(quest);

@@ -58,6 +58,7 @@ public class QuestController {
         Admin admin = adminService.getAdminByName(principal.getName());
         List<User> allUsers = userService.getUsersByAdmin(admin);
         QuestForm questForm = new QuestForm();
+        questForm.setStartValues();
         SlotListMaker.addDefaultValues(questForm.getSlotList());
         String slotListJSON = SlotListMapper.createJSON(questForm.getSlotList());
 
