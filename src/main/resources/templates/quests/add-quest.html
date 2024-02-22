@@ -5,7 +5,7 @@
     <title>Добавить квест</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/add-quest-user.css}" rel="stylesheet">
+    <link th:href="@{/css/add-quest-account.css}" rel="stylesheet">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
@@ -70,13 +70,16 @@
             </div>
         </div>
 
-        <div class="row" th:if="${not #lists.isEmpty(all_users)}">
+        <div class="row" th:if="${not #lists.isEmpty(all_accounts)}">
             <label class="col-5 col-form-label">Добавить пользователей</label>
             <div class="col">
-                <div class="form-check" th:each="user : ${all_users}">
-                    <input class="form-check-input" type="checkbox"
-                           th:field="*{users}" th:value="${user.id}">
-                    <label th:text="${user.username}"></label>
+                <div class="form-check" th:each="account : ${all_accounts}">
+                    <input th:type="checkbox"
+                           th:class="${account.role.name() == 'ROLE_ADMIN' or account.role.name() == 'ROLE_OWNER'}
+                                   ? 'form-check-input check-default'
+                                   : 'form-check-input'"
+                           th:field="*{accounts}" th:value="${account.id}">
+                    <label th:text="${account.firstName} + ' ' + ${account.lastName}"></label>
                 </div>
             </div>
         </div>

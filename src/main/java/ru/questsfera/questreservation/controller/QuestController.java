@@ -11,18 +11,17 @@ import ru.questsfera.questreservation.dto.QuestForm;
 import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.SlotListTypeBuilder;
 import ru.questsfera.questreservation.dto.TimePrice;
-import ru.questsfera.questreservation.entity.Admin;
+import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.converter.SlotListMapper;
-import ru.questsfera.questreservation.entity.User;
 import ru.questsfera.questreservation.processor.SlotListMaker;
-import ru.questsfera.questreservation.service.AdminService;
+import ru.questsfera.questreservation.service.AccountService;
 import ru.questsfera.questreservation.service.QuestService;
-import ru.questsfera.questreservation.service.UserService;
 import ru.questsfera.questreservation.validator.SlotListValidator;
 
 import java.security.Principal;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,22 +30,17 @@ import java.util.TreeSet;
 @RequestMapping("/quests")
 public class QuestController {
 
-    private final AdminService adminService;
-    private final QuestService questService;
-    private final UserService userService;
-
     @Autowired
-    public QuestController(AdminService adminService, QuestService questService, UserService userService) {
-        this.adminService = adminService;
-        this.questService = questService;
-        this.userService = userService;
-    }
+    private QuestService questService;
+    @Autowired
+    private AccountService accountService;
+
 
     @GetMapping("/quests-list")
     public String showQuestList(Principal principal, Model model) {
 
-        Admin admin = adminService.getAdminByName(principal.getName());
-        List<Quest> quests = questService.getQuestsByAdmin(admin); // убрать EAGER у admin.getQuests()
+        Account account = accountService.getAccountByLogin(principal.getName());
+        List<Quest> quests = questService.getQuestsByCompany(account.getCompany()); //TODO: account.getQuests() ?
 
         model.addAttribute("quests", quests);
         return "quests/quests-list";
@@ -55,17 +49,21 @@ public class QuestController {
     @PostMapping("/add-quest")
     public String addQuest(Principal principal, Model model) {
 
-        Admin admin = adminService.getAdminByName(principal.getName());
-        List<User> allUsers = userService.getUsersByAdmin(admin);
+        Account account = accountService.getAccountByLogin(principal.getName());
+        List<Account> allAccounts = accountService.getAccountsByCompany(account.getCompany());
+
         QuestForm questForm = new QuestForm();
-        questForm.setStartValues();
+        questForm.setStatuses(Status.getDefaultStatuses());
+        questForm.setAutoBlock(LocalTime.MIN);
+        questForm.setTypeBuilder(SlotListTypeBuilder.EQUAL_DAYS);
+
         SlotListMaker.addDefaultValues(questForm.getSlotList());
         String slotListJSON = SlotListMapper.createJSON(questForm.getSlotList());
 
         model.addAttribute("quest_form", questForm);
         model.addAttribute("type_builders", SlotListTypeBuilder.values());
         model.addAttribute("slotlist_json", slotListJSON);
-        model.addAttribute("all_users", allUsers);
+        model.addAttribute("all_accounts", allAccounts);
         model.addAttribute("user_statuses", Status.getUserStatuses());
 
         return "quests/add-quest";
@@ -77,11 +75,11 @@ public class QuestController {
                             Principal principal,
                             Model model) {
 
-        Admin admin = adminService.getAdminByName(principal.getName());
+        Account account = accountService.getAccountByLogin(principal.getName());
 
-        userService.checkSecurityForUsers(questForm.getUsers(), admin);
+//        userService.checkSecurityForUsers(questForm.getUsers(), admin);
 
-        boolean existQuestName = questService.existQuestNameByAdmin(questForm.getQuestName(), admin);
+        boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompany());
         String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuilder());
 
         if (binding.hasErrors() || questForm.getMinPersons() > questForm.getMaxPersons()
@@ -110,13 +108,13 @@ public class QuestController {
             model.addAttribute("type_builders", SlotListTypeBuilder.values());
             model.addAttribute("slotlist_json", slotListJSON);
             model.addAttribute("user_statuses", Status.getUserStatuses());
-            model.addAttribute("all_users", userService.getUsersByAdmin(admin));
+            model.addAttribute("all_accounts", accountService.getAccountsByCompany(account.getCompany()));
 
             return "quests/add-quest";
         }
 
         SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuilder());
-        Quest quest = new Quest(questForm, admin);
+        Quest quest = new Quest(questForm, account.getCompany());
         questService.saveQuest(quest);
 
         return "redirect:/quests/quests-list";
@@ -126,17 +124,17 @@ public class QuestController {
     public String showQuest(@RequestParam("quest") Quest quest,
                             Principal principal, Model model) {
 
-        Admin admin = adminService.getAdminByName(principal.getName());
-        questService.checkSecurityForQuest(quest, admin);
+//        Account account = accountService.getAccountByLogin(principal.getName());
+//        questService.checkSecurityForQuest(quest, admin);
 
-        Set<User> users = new TreeSet<>((u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername()));
-        users.addAll(quest.getUsers());
+        Set<Account> accounts = new TreeSet<>((u1, u2) -> u1.getEmailLogin().compareToIgnoreCase(u2.getEmailLogin()));
+        accounts.addAll(accountService.getAccountsByQuest(quest));
 
         SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
         List<List<TimePrice>> allDays = slotList.getAllDays();
 
         model.addAttribute("quest", quest);
-        model.addAttribute("users", users);
+        model.addAttribute("accounts", accounts);
         model.addAttribute("all_slot_list", allDays);
 
         return "quests/quest-info";
@@ -146,22 +144,22 @@ public class QuestController {
     public String deleteQuest(@RequestParam("quest") Quest quest,
                               Principal principal, Model model) {
 
-        Admin admin = adminService.getAdminByName(principal.getName());
+        Account account = accountService.getAccountByLogin(principal.getName());
 
-        if (questService.hasReservations(quest)) {
-            questService.checkSecurityForQuest(quest, admin);
+        if (questService.hasReservationsByQuest(quest)) {
+//            questService.checkSecurityForQuest(quest, admin);
             model.addAttribute("quest", quest);
             return "quests/question-delete-quest";
         }
 
-        questService.deleteQuest(quest, admin);
+        questService.deleteQuest(quest, account.getCompany());
         return "redirect:/quests/quests-list";
     }
 
     @PostMapping("/delete-quest-final")
     public String deleteQuestFinal(@RequestParam("quest") Quest quest, Principal principal) {
-        Admin admin = adminService.getAdminByName(principal.getName());
-        questService.deleteQuest(quest, admin);
+        Account account = accountService.getAccountByLogin(principal.getName());
+        questService.deleteQuest(quest, account.getCompany());
         return "redirect:/quests/quests-list";
     }
 }

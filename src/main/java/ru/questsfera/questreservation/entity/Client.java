@@ -15,9 +15,8 @@ import java.util.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "clients", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"admin"})
+@JsonIgnoreProperties({"company"})
 public class Client {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -28,34 +27,31 @@ public class Client {
     @Column(name = "last_name")
     private String lastName;
 
+    //TODO: phones and emails
     @Column(name = "phone")
-    private String phone;
+    private String phones;
 
     @Column(name = "email")
-    private String email;
+    private String emails;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToOne
     @JoinColumn(name = "blacklist_id")
     private BlackList blackList;
 
     @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @OneToMany(mappedBy = "client")
     @JsonIgnore
     private List<Reservation> reservations = new ArrayList<>();
 
-    public Client(ReservationForm resForm, Admin admin) {
+    public Client(ReservationForm resForm, Company company) {
         this.firstName = resForm.getFirstName();
         this.lastName = resForm.getLastName();
-        this.phone = resForm.getPhone();
-        this.email = resForm.getEmail();
-        this.admin = admin;
-    }
-
-    public void deleteBlackListForClient() {
-        this.blackList = null;
+        this.phones = resForm.getPhone();
+        this.emails = resForm.getEmail();
+        this.company = company;
     }
 
     @Override

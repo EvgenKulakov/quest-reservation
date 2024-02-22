@@ -15,22 +15,22 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "blacklist", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"admin"})
+@JsonIgnoreProperties({"company"})
 public class BlackList {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "phone")
-    private String phone;
+    @OneToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 
     @Column(name = "messages")
     private String messages;
 
     @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @Override
     public boolean equals(Object o) {

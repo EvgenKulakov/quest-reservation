@@ -13,38 +13,29 @@ import java.util.Set;
 @Service
 public class TmpService {
 
-    private final StatusRepository statusRepository;
-    private final BlackListRepository blackListRepository;
-    private final ClientRepository clientRepository;
-    private final QuestRepository questRepository;
-    private final ReservationRepository reservationRepository;
-    private final UserRepository userRepository;
-
     @Autowired
-    public TmpService(StatusRepository statusRepository,
-                      BlackListRepository blackListRepository,
-                      ClientRepository clientRepository,
-                      QuestRepository questRepository,
-                      ReservationRepository reservationRepository,
-                      UserRepository userRepository) {
-        this.statusRepository = statusRepository;
-        this.blackListRepository = blackListRepository;
-        this.clientRepository = clientRepository;
-        this.questRepository = questRepository;
-        this.reservationRepository = reservationRepository;
-        this.userRepository = userRepository;
-    }
+    private StatusRepository statusRepository;
+    @Autowired
+    private BlackListRepository blackListRepository;
+    @Autowired
+    private ClientRepository clientRepository;
+    @Autowired
+    private QuestRepository questRepository;
+    @Autowired
+    private ReservationRepository reservationRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
     //***Statuses
     @Transactional
     public void saveStatus(Quest quest, Status status) {
-        quest.addStatusForQuest(status);
+//        quest.addStatusForQuest(status);
         statusRepository.save(status);
     }
 
     @Transactional
     public void deleteStatusForQuest(Quest quest, Status status) {
-        status.deleteQuestForStatus(quest);
+//        status.deleteQuestForStatus(quest);
     }
 
     @Transactional
@@ -59,35 +50,35 @@ public class TmpService {
     }
 
     @Transactional
-    public Set<BlackList> getBlackListsByAdmin(Admin admin) {
-        return admin.getBlackLists();
+    public Set<BlackList> getBlackListsByCompany(Company company) {
+        return company.getBlackLists();
     }
 
     @Transactional
-    public void saveBlackList(Admin admin, Client client, BlackList blackList) {
-        if (!client.getAdmin().equals(admin)) {
+    public void saveBlackList(Company company, Client client, BlackList blackList) {
+        if (!client.getCompany().equals(company)) {
             throw new RuntimeException("Попытка создать запись в ЧС для клиента "
-                    + "привязанного к другому админу");
+                    + "привязанного к другой компании");
         }
-        admin.addBlackListForAdmin(blackList);
+//        company.addBlackListForAdmin(blackList);
         client.setBlackList(blackList);
         clientRepository.save(client);
     }
 
     @Transactional
-    public void deleteBlackList(Admin admin, Client client) {
-        if (!client.getAdmin().equals(admin)) {
+    public void deleteBlackList(Company company, Client client) {
+        if (!client.getCompany().equals(company)) {
             throw new RuntimeException("Попытка удалить запись ЧС админом, "
                     + "у которого нет доступа к клиенту");
         }
         blackListRepository.delete(client.getBlackList());
-        client.deleteBlackListForClient();
+//        client.deleteBlackListForClient();
     }
 
     //***Clients
     @Transactional
-    public Set<Client> getClientsByAdmin(Admin admin) {
-        return admin.getClients();
+    public Set<Client> getClientsByCompany(Company company) {
+        return company.getClients();
     }
 
     @Transactional
@@ -97,12 +88,12 @@ public class TmpService {
 
     //***Moderator
     @Transactional
-    public User getUserById(int id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
+    public Account getUserById(int id) {
+        Optional<Account> optionalAccount = accountRepository.findById(id);
+        if (optionalAccount.isPresent()) {
+            return optionalAccount.get();
         }
-        throw new RuntimeException("Попытка получить несуществующего юзера");
+        throw new RuntimeException("Попытка получить несуществующий аккаунт");
     }
 
     @Transactional

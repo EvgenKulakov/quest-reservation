@@ -13,6 +13,7 @@ import ru.questsfera.questreservation.processor.ReservationFactory;
 import ru.questsfera.questreservation.processor.SlotFactory;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.service.AccountService;
+import ru.questsfera.questreservation.service.QuestService;
 import ru.questsfera.questreservation.service.ReservationService;
 import ru.questsfera.questreservation.validator.SwitchValidator;
 
@@ -25,23 +26,21 @@ import java.util.*;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    private final AccountService accountService;
-    private final ReservationService reservationService;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private ReservationService reservationService;
+    @Autowired
+    private QuestService questService;
 
     private Map<String, List<Slot>> questsAndSlots = new LinkedHashMap<>();
     private Set<StatusType> useStatuses = new TreeSet<>();
 
-    @Autowired
-    public ReservationController(AccountService accountService, ReservationService reservationService) {
-        this.accountService = accountService;
-        this.reservationService = reservationService;
-    }
-
     @GetMapping("/slot-list")
     public String showSlotList(Principal principal, Model model) {
-        Account account = accountService.getAccountByName(principal.getName());
+        Account account = accountService.getAccountByLogin(principal.getName());
 
-        Set<Quest> quests = account.getQuests();
+        Set<Quest> quests = new TreeSet<>(questService.getQuestsByAccount(account));
         LocalDate date = LocalDate.now();
 
         return slotListRendering(quests, date, model);
@@ -51,8 +50,8 @@ public class ReservationController {
     public String showSlotListWithDate(@RequestParam("date") LocalDate date,
                                        Principal principal, Model model) {
 
-        Account account = accountService.getAccountByName(principal.getName());
-        Set<Quest> quests = account.getQuests();
+        Account account = accountService.getAccountByLogin(principal.getName());
+        Set<Quest> quests = new TreeSet<>(questService.getQuestsByAccount(account));
 
         return slotListRendering(quests, date, model);
     }
@@ -105,24 +104,24 @@ public class ReservationController {
             return errorSlotListRendering(date, slotJSON, resForm, model);
         }
 
-        Account account = accountService.getAccountByName(principal.getName());
+        Account account = accountService.getAccountByLogin(principal.getName());
         Slot slot = SlotMapper.createSlotObject(slotJSON);
         Reservation reservation = null;
 
         if (slot.getReservation() == null) {
-            reservation = ReservationFactory.createReservation(resForm, slot, account.getAdmin());
+            reservation = ReservationFactory.createReservation(resForm, slot);
             reservationService.doubleCheck(reservation);
-            Client client = new Client(resForm, account.getAdmin());
-            reservation.addClient(client);
-            reservation.setSourceReserve("default");
+            Client client = new Client(resForm, account.getCompany());
+            reservation.setClient(client);
+            reservation.setSourceReserve("default"); //TODO: source reserve
         } else {
             reservation = reservationService.getReserveById(slot.getReservation().getId());
             Editor.editReservation(reservation, resForm);
         }
 
         reservation.setTimeLastChange(LocalDateTime.now());
-        reservation.setHistoryMessages("default");
-        reservationService.saveReservation(reservation, account);
+        reservation.setHistoryMessages("default"); //TODO: history message
+        reservationService.saveReservation(reservation);
 
         return "redirect:/reservations/slot-list/?date=" + date;
     }
@@ -133,21 +132,19 @@ public class ReservationController {
                             BindingResult bindingResult,
                             @RequestParam("slot") String slotJSON,
                             @RequestParam("date") LocalDate date,
-                            Principal principal,
                             Model model) {
 
         if (bindingResult.hasErrors()) {
             return errorSlotListRendering(date, slotJSON, resForm, model);
         }
 
-        Account account = accountService.getAccountByName(principal.getName());
         Slot slot = SlotMapper.createSlotObject(slotJSON);
-        Reservation reservation = ReservationFactory.createBlockReservation(slot, account.getAdmin());
+        Reservation reservation = ReservationFactory.createBlockReservation(slot);
         reservationService.doubleCheck(reservation);
 
-        reservation.setSourceReserve("default");
-        reservation.setHistoryMessages("default");
-        reservationService.saveReservation(reservation, account);
+        reservation.setSourceReserve("default"); //TODO: source reserve
+        reservation.setHistoryMessages("default"); //TODO: history message
+        reservationService.saveReservation(reservation);
 
         return "redirect:/reservations/slot-list/?date=" + date;
     }
@@ -157,9 +154,8 @@ public class ReservationController {
 
         Slot slot = SlotMapper.createSlotObject(slotJSON);
         Reservation reservation = reservationService.getReserveById(slot.getReservation().getId());
-        Account account = accountService.getAccountByName(principal.getName());
 
-        reservationService.deleteBlockedReservation(reservation, account);
+        reservationService.deleteBlockedReservation(reservation);
         return "redirect:/reservations/slot-list/?date=" + slot.getDate();
     }
 }

@@ -5,7 +5,7 @@
     <title>Список ваших пользователей</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/list-quests-users.css}" rel="stylesheet">
+    <link th:href="@{/css/list-quests-accounts.css}" rel="stylesheet">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
@@ -14,33 +14,33 @@
 
     <table>
         <thead>
-        <form th:action="@{/users/add-user}" method="post">
+        <form th:action="@{/accounts/add-account}" method="post">
             <h3 class="add-quest">Список ваших пользователей
                 <button type="submit" class="btn btn-outline-primary">+ Добавить пользователя</button>
             </h3>
         </form>
         </thead>
         <tbody>
-        <tr class="quest-functions" th:each="user : ${users}">
+        <tr class="quest-functions" th:each="account : ${accounts}">
             <td>
-                <h3 class="quest-text" th:text="${user.username}"></h3>
+                <h3 class="quest-text" th:text="${account.firstName} + ' ' + ${account.lastName}"></h3>
             </td>
             <td>
-                <form class="buttons" th:action="@{/users/update-user}" method="post">
-                    <input type="hidden" name="user" th:value="${user.id}">
+                <form class="buttons" th:action="@{/accounts/update-account}" method="post">
+                    <input type="hidden" name="account" th:value="${account.id}">
                     <button type="submit" class="btn btn-light">Редактировать</button>
                 </form>
             </td>
             <td>
-                <form class="buttons" th:action="@{/users/update-password-user}" method="post">
-                    <input type="hidden" name="user" th:value="${user.id}">
+                <form class="buttons" th:action="@{/accounts/update-password-account}" method="post">
+                    <input type="hidden" name="user" th:value="${account.id}">
                     <button type="submit" class="btn btn-warning">Обновить пароль</button>
                 </form>
             </td>
             <td>
-                <form class="buttons" th:action="@{/users/delete-user}" method="post">
-                    <input type="hidden" name="user" th:value="${user.id}">
-                    <button type="submit" class="btn btn-danger">Удалить пользователя</button>
+                <form class="buttons" th:action="@{/accounts/delete-account}" method="post">
+                    <input type="hidden" name="user" th:value="${account.id}">
+                    <button type="submit" class="btn btn-danger">Удалить аккаунт</button>
                 </form>
             </td>
         </tr>

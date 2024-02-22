@@ -4,8 +4,8 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Status;
-import ru.questsfera.questreservation.entity.User;
 
 import java.time.LocalTime;
 import java.util.HashSet;
@@ -38,15 +38,9 @@ public class QuestForm {
     @NotNull(message = "*Обязательное поле")
     private LocalTime autoBlock;
 
-    private Set<User> users = new HashSet<>();
+    private Set<Account> accounts = new HashSet<>();
 
     private SlotList slotList = new SlotList();
 
     private SlotListTypeBuilder typeBuilder;
-
-    public void setStartValues() {
-        this.statuses = Status.getDefaultStatuses();
-        this.autoBlock = LocalTime.MIN;
-        this.typeBuilder = SlotListTypeBuilder.EQUAL_DAYS;
-    }
 }

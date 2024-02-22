@@ -16,9 +16,8 @@ import java.util.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "quests", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"autoBlock", "sms", "users", "slotList", "admin", "synchronizedQuests"})
+@JsonIgnoreProperties({"autoBlock", "sms", "accounts", "slotList", "company", "reservations", "synchronizedQuests"})
 public class Quest implements Comparable<Quest> {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -42,42 +41,36 @@ public class Quest implements Comparable<Quest> {
     private String slotList;
 
     @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
+    @JoinColumn(name = "company_id")
+    private Company company;
 
-    @ManyToMany(mappedBy = "quests")
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "company")
+    private Set<Reservation> reservations = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "accounts")
+    private Set<Account> accounts = new HashSet<>();
+
+    @ManyToMany
     @JoinTable(name = "status_quest",
             joinColumns = @JoinColumn(name = "quest_id"),
             inverseJoinColumns = @JoinColumn(name = "status_id"))
     private Set<Status> statuses = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "synchronized_quests",
             joinColumns = @JoinColumn(name = "id_first_quest"),
             inverseJoinColumns = @JoinColumn(name = "id_second_quest"))
     private Set<Quest> synchronizedQuests = new HashSet<>();
 
-    public Quest(QuestForm questForm, Admin admin) {
+    public Quest(QuestForm questForm, Company company) {
         this.questName = questForm.getQuestName();
         this.minPersons = questForm.getMinPersons();
         this.maxPersons = questForm.getMaxPersons();
         this.autoBlock = questForm.getAutoBlock();
         this.slotList = SlotListMapper.createJSON(questForm.getSlotList());
-        this.users = questForm.getUsers();
+        this.accounts = questForm.getAccounts();
         this.statuses = questForm.getStatuses();
-        this.admin = admin;
-    }
-
-    public void addStatusForQuest(Status status) {
-        status.getQuests().add(this);
-        this.statuses.add(status);
-    }
-
-    public void saveUsers() {
-        users.forEach(user -> user.getQuests().add(this));
+        this.company = company;
     }
 
     public static void synchronizeQuests(Quest... quests) {
@@ -94,16 +87,16 @@ public class Quest implements Comparable<Quest> {
 
     private static boolean validatorToSynchronize(Set<Quest> questSet) {
         boolean check = true;
-        Admin validAdmin = questSet.iterator().next().getAdmin();
+        Company validCompany = questSet.iterator().next().getCompany();
 
         if (questSet.size() < 2) {
             throw new RuntimeException("Попытка синхронизировать меньше двух квестов");
         }
 
         for (Quest quest : questSet) {
-            if (!quest.getAdmin().equals(validAdmin)) {
+            if (!quest.getCompany().equals(validCompany)) {
                 throw new RuntimeException("Попытка синхронизировать " +
-                        "квесты у разных админов");
+                        "квесты у разных компаний");
             }
             if (!quest.getSynchronizedQuests().isEmpty() || !check) {
                 check = false;

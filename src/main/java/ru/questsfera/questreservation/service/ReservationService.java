@@ -3,28 +3,26 @@ package ru.questsfera.questreservation.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.dto.Account;
+import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
+import ru.questsfera.questreservation.repository.ClientRepository;
 import ru.questsfera.questreservation.repository.ReservationRepository;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ReservationService {
 
-    private final ReservationRepository reservationRepository;
-
     @Autowired
-    public ReservationService(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
-    }
+    private ReservationRepository reservationRepository;
+    @Autowired
+    private ClientRepository clientRepository;
 
     @Transactional
-    public Reservation getReserveById(int id) {
+    public Reservation getReserveById(Long id) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(id);
         if (optionalReservation.isPresent()) {
             return optionalReservation.get();
@@ -38,20 +36,21 @@ public class ReservationService {
     }
 
     @Transactional
-    public void saveReservation(Reservation reservation, Account account) {
-        checkSecurityForReserve(reservation, account);
+    public void saveReservation(Reservation reservation) {
+//        checkSecurityForReserve(reservation, account);
+        clientRepository.save(reservation.getClient());
         reservationRepository.save(reservation);
     }
 
     @Transactional
-    public void deleteBlockedReservation(Reservation reservation, Account account) {
-        checkSecurityForReserve(reservation, account);
+    public void deleteBlockedReservation(Reservation reservation) {
+//        checkSecurityForReserve(reservation, account);
         reservationRepository.delete(reservation);
     }
 
     @Transactional
-    public void checkSecurityForReserve(Reservation reservation, Account account) {
-        if (!account.getQuests().contains(reservation.getQuest())) {
+    public void checkSecurityForReserve(Reservation reservation, Company company) {
+        if (!company.getQuests().contains(reservation.getQuest())) {
             throw new SecurityException("Нет доступа для редактирования данного бронирования");
         }
     }

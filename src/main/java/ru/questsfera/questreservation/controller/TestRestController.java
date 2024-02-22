@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.questsfera.questreservation.dto.Slot;
-import ru.questsfera.questreservation.entity.Admin;
+import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Reservation;
-import ru.questsfera.questreservation.service.AdminService;
+import ru.questsfera.questreservation.service.AccountService;
 import ru.questsfera.questreservation.service.ReservationService;
 
 import java.time.LocalTime;
@@ -16,23 +16,19 @@ import java.time.LocalTime;
 @RequestMapping("/api")
 public class TestRestController {
 
-    private final AdminService adminService;
-    private final ReservationService reservationService;
-
     @Autowired
-    public TestRestController(AdminService adminService, ReservationService reservationService) {
-        this.adminService = adminService;
-        this.reservationService = reservationService;
-    }
+    private ReservationService reservationService;
+    @Autowired
+    private AccountService accountService;
 
-    @GetMapping("/admin/{username}")
-    public Admin showAdminByName(@PathVariable("username") String username) {
-        Admin admin = adminService.getAdminByName(username);
-        return admin;
+    @GetMapping("/account/{username}")
+    public Account showAdminByName(@PathVariable("username") String username) {
+        Account account = accountService.getAccountByLogin(username);
+        return account;
     }
 
     @GetMapping("/slot/{id}")
-    public Slot getSlot(@PathVariable("id") Integer id) {
+    public Slot getSlot(@PathVariable("id") Long id) {
         Reservation reservation = reservationService.getReserveById(id);
         Slot slot = null;
         if (reservation != null) {
@@ -45,7 +41,7 @@ public class TestRestController {
     }
 
     @GetMapping("/reservation/{id}")
-    public Reservation getReservation(@PathVariable("id") Integer id) {
+    public Reservation getReservation(@PathVariable("id") Long id) {
         Reservation reservation = reservationService.getReserveById(id);
         return reservation;
     }

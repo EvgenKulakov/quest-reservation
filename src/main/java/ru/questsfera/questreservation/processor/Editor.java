@@ -4,6 +4,8 @@ import ru.questsfera.questreservation.dto.ReservationForm;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
 
+import java.util.Collections;
+
 public class Editor {
 
     public static void editReservation(Reservation reservation, ReservationForm resForm) {
@@ -16,7 +18,7 @@ public class Editor {
 
         client.setFirstName(resForm.getFirstName());
         client.setLastName(resForm.getLastName());
-        client.setPhone(resForm.getPhone());
-        client.setEmail(resForm.getEmail());
+        client.setPhones(resForm.getPhone());
+        client.setEmails(resForm.getEmail());
     }
 }

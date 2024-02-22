@@ -54,10 +54,6 @@ public class Status {
         return defaultStatuses;
     }
 
-    public void deleteQuestForStatus(Quest quest) {
-        this.quests.remove(quest);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

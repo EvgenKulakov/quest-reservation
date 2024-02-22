@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `quests`
+CREATE TABLE IF NOT EXISTS quests
 (
     id          int                                                          NOT NULL AUTO_INCREMENT,
     quest_name  varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,

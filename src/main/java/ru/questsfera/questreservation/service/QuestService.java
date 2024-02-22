@@ -3,12 +3,14 @@ package ru.questsfera.questreservation.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.entity.Admin;
+import ru.questsfera.questreservation.entity.Account;
+import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
-import ru.questsfera.questreservation.entity.User;
+import ru.questsfera.questreservation.repository.AccountRepository;
 import ru.questsfera.questreservation.repository.QuestRepository;
 import ru.questsfera.questreservation.repository.ReservationRepository;
+import ru.questsfera.questreservation.repository.StatusRepository;
 
 import java.util.List;
 import java.util.Set;
@@ -16,54 +18,65 @@ import java.util.Set;
 @Service
 public class QuestService {
 
-    private final QuestRepository questRepository;
-    private final ReservationRepository reservationRepository;
-
     @Autowired
-    public QuestService(QuestRepository questRepository, ReservationRepository reservationRepository) {
-        this.questRepository = questRepository;
-        this.reservationRepository = reservationRepository;
+    private QuestRepository questRepository;
+    @Autowired
+    private ReservationRepository reservationRepository;
+    @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
+    private StatusRepository statusRepository;
+
+    @Transactional
+    public List<Quest> getQuestsByCompany(Company company) {
+        return questRepository.findAllByCompanyOrderByQuestName(company);
     }
 
     @Transactional
-    public List<Quest> getQuestsByAdmin(Admin admin) {
-        return questRepository.findAllByAdminOrderByQuestName(admin);
+    public List<Quest> getQuestsByAccount(Account account) {
+        return questRepository.findAllByAccountId(account.getId());
     }
 
     @Transactional
-    public boolean existQuestNameByAdmin(String questName, Admin admin) {
-        return questRepository.existsQuestByQuestNameAndAdmin(questName, admin);
+    public boolean existQuestNameByCompany(String questName, Company company) {
+        return questRepository.existsQuestByQuestNameAndCompany(questName, company);
     }
 
     @Transactional
-    public boolean existQuestByAdmin(Quest quest, Admin admin) {
-        return questRepository.existsQuestByIdAndAdmin(quest.getId(), admin);
+    public boolean existQuestByCompany(Quest quest, Company company) {
+        return questRepository.existsQuestByIdAndCompany(quest.getId(), company);
     }
 
+    //TODO: migration in reservationService
     @Transactional
-    public boolean hasReservations(Quest quest) {
+    public boolean hasReservationsByQuest(Quest quest) {
         return reservationRepository.existsByQuest(quest);
     }
 
     @Transactional
     public void saveQuest(Quest quest) {
-        quest.saveUsers();
+        for (Account account : accountRepository.findAllByQuestId(quest.getId())) {
+            account.getQuests().add(quest);
+            accountRepository.save(account);
+        }
         questRepository.save(quest);
     }
 
     @Transactional
-    public void deleteQuest(Quest quest, Admin admin) {
+    public void deleteQuest(Quest quest, Company company) {
 
-        checkSecurityForQuest(quest, admin);
+        checkSecurityForQuest(quest, company);
 
         reservationRepository.deleteByQuest(quest);
 
-        for (User user : quest.getUsers()) {
-            user.deleteQuestForUser(quest);
+        for (Account account : accountRepository.findAllByQuestId(quest.getId())) {
+            account.getQuests().remove(quest);
+            accountRepository.save(account);
         }
 
-        for (Status status : quest.getStatuses()) {
-            status.deleteQuestForStatus(quest);
+        for (Status status : statusRepository.findAllByQuestId(quest.getId())) {
+            status.getQuests().remove(quest);
+            statusRepository.save(status);
         }
 
         if (!quest.getSynchronizedQuests().isEmpty()) {
@@ -71,14 +84,13 @@ public class QuestService {
             System.out.println("Синхронизация по квесту id:" + quest.getId()
                     + " и всем связаным квестам отменена"); //TODO: вывести сообщение на страницу
         }
-        admin.deleteQuestForAdmin(quest);
         questRepository.delete(quest);
     }
 
     @Transactional
-    public void checkSecurityForQuest(Quest quest, Admin admin) {
-        boolean existQuestByAdmin = existQuestByAdmin(quest, admin);
-        if (!existQuestByAdmin) {
+    public void checkSecurityForQuest(Quest quest, Company company) {
+        boolean existQuestByCompany = existQuestByCompany(quest, company);
+        if (!existQuestByCompany) {
             throw new SecurityException("Нет доступа для изменения данного квеста");
         }
     }

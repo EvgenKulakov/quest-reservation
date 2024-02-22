@@ -70,13 +70,10 @@ public class SlotFactory {
     private Slot createSlotWithReserve(LocalTime time, Integer price, Reservation reserve) {
         StatusType status = reserve.getStatusType();
         LocalTime autoBlock = quest.getAutoBlock();
-        Slot slot = new Slot(quest, status, reserve, date, time, price, autoBlock);
-        return slot;
+        return new Slot(quest, status, reserve, date, time, price, autoBlock);
     }
 
     private Slot createEmptySlot(LocalTime time, Integer price) {
-        Slot slot = new Slot(quest, StatusType.EMPTY,
-                null, date, time, price, null);
-        return slot;
+        return new Slot(quest, StatusType.EMPTY, null, date, time, price, null);
     }
 }

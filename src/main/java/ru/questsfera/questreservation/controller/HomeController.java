@@ -6,21 +6,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.questsfera.questreservation.entity.Admin;
+import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.processor.PasswordGenerator;
 import ru.questsfera.questreservation.service.AccountService;
-import ru.questsfera.questreservation.service.AdminService;
+import ru.questsfera.questreservation.service.CompanyService;
 
 @Controller
 public class HomeController {
-    private final AccountService accountService;
-    private final AdminService adminService;
 
     @Autowired
-    public HomeController(AccountService accountService, AdminService adminService) {
-        this.accountService = accountService;
-        this.adminService = adminService;
-    }
+    private AccountService accountService;
+    @Autowired
+    private CompanyService companyService;
 
     @RequestMapping("/login")
     public String login() {
@@ -29,40 +26,43 @@ public class HomeController {
 
     @PostMapping("/register")
     public String register(Model model) {
-        model.addAttribute("admin", new Admin());
+        model.addAttribute("account", new Account());
         return "home/register";
     }
 
     @PostMapping("/register/save-new-account")
-    public String saveNewAccount(@Valid @ModelAttribute("admin") Admin admin,
+    public String saveNewAccount(@Valid @ModelAttribute("account") Account account,
                                  BindingResult bindingResult,
                                  @RequestParam("duplicate-pass") String duplicatePass,
                                  Model model) {
 
-        if (accountService.existAccount(admin.getEmail())) {
+        if (accountService.existAccountByLogin(account.getEmailLogin())) {
             bindingResult.rejectValue("email", "errorCode",
                     "Такой пользователь уже зарегистрирован");
-            model.addAttribute("admin", admin);
+            model.addAttribute("account", account);
             return "home/register";
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("admin", admin);
+            model.addAttribute("account", account);
             return "home/register";
         }
 
-        if (!admin.getPassword().equals(duplicatePass)) {
+        if (!account.getPassword().equals(duplicatePass)) {
             bindingResult.rejectValue("password", "errorCode",
                     "Повторный пароль не совпадает");
-            model.addAttribute("admin", admin);
+            model.addAttribute("account", account);
             return "home/register";
         }
 
-        admin.setUsername(admin.getEmail());
-        String passwordHash = PasswordGenerator.createBCrypt(admin.getPassword());
-        admin.setPassword(passwordHash);
+        String passwordHash = PasswordGenerator.createBCrypt(account.getPassword());
 
-        adminService.saveAdmin(admin);
+        account.setPassword(passwordHash);
+        account.setRole(Account.Role.ROLE_OWNER);
+        account.getCompany().setOwnerId(account.getId());
+
+        companyService.saveCompany(account.getCompany());
+        accountService.saveAccount(account);
 
         return "redirect:/login?new_account";
     }

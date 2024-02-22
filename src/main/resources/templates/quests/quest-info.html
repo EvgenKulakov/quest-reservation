@@ -36,8 +36,8 @@
             <td th:switch="${#lists.isEmpty(users)}">
                 <p th:case="${true}">Нет назначенных пользователей</p>
                 <table th:case="${false}">
-                    <tr th:each="user : ${users}">
-                        <td th:text="${user.username}"></td>
+                    <tr th:each="account : ${accounts}">
+                        <td th:text="${account.firstName} + ' ' + ${account.lastName}"></td>
                     </tr>
                 </table>
             </td>

@@ -16,7 +16,7 @@
     <th:block th:switch="${#maps.isEmpty(quests_and_slots)}">
 
         <div th:case="${true}" class="container-fluid mt-4">
-            <div sec:authorize="hasRole('ADMIN')">
+            <div sec:authorize="hasAnyRole('ADMIN', 'OWNER')">
                 <form th:action="@{/quests/quests-list}" method="get">
                     <h6 class="add-quest">Перейдите во вкладку Квесты, чтобы добавить квест
                         <button class="btn btn-outline-primary" type="submit">Редактировать квесты →

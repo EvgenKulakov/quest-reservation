@@ -18,12 +18,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "reservations", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"quest", "admin"})
+@JsonIgnoreProperties({"quest"})
 public class Reservation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "date_reserve")
     private LocalDate dateReserve;
@@ -44,6 +43,7 @@ public class Reservation {
     @JoinColumn(name = "quest_id")
     private Quest quest;
 
+    //TODO: statuses
     @Enumerated(value = EnumType.STRING)
     @JoinColumn(name = "status_type")
     private StatusType statusType;
@@ -54,8 +54,7 @@ public class Reservation {
     @Column(name = "changed_price")
     private Integer changedPrice;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH,
-            CascadeType.MERGE, CascadeType.DETACH})
+    @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
 
@@ -70,15 +69,6 @@ public class Reservation {
 
     @Column(name = "history_messages")
     private String historyMessages;
-
-    @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
-
-    public void addClient(Client client) {
-        client.getReservations().add(this);
-        this.client = client;
-    }
 
     @Override
     public boolean equals(Object o) {
