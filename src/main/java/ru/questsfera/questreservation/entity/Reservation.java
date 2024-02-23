@@ -59,7 +59,7 @@ public class Reservation {
     private Client client;
 
     @Column(name = "count_persons")
-    private int countPersons;
+    private Integer countPersons;
 
     @Column(name = "admin_comment")
     private String adminComment;

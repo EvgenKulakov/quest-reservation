@@ -16,6 +16,7 @@ const lastName = document.querySelector('#lastName')
 const phone = document.querySelector('#phone')
 const email = document.querySelector('#email')
 const selectCountPersons = document.querySelector('#countPersons')
+const adminComment = document.querySelector('#adminComment')
 
 let errorMessages = document.querySelectorAll('.error-message')
 const changeStatus = document.querySelector('#change-status')
@@ -78,9 +79,10 @@ function showReservation(slot, quest) {
         selectStatus.value = reservation.statusType
         firstName.value = client.firstName
         lastName.value = client.lastName
-        phone.value = client.phone
-        email.value = client.email
+        phone.value = client.phones
+        email.value = client.emails
         selectCountPersons.value = reservation.countPersons
+        adminComment.value = reservation.adminComment
         blockButton.style.display = 'none'
     }
 }

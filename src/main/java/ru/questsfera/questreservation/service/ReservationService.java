@@ -38,7 +38,9 @@ public class ReservationService {
     @Transactional
     public void saveReservation(Reservation reservation) {
 //        checkSecurityForReserve(reservation, account);
-        clientRepository.save(reservation.getClient());
+        if (reservation.getClient() != null) {
+            clientRepository.save(reservation.getClient());
+        }
         reservationRepository.save(reservation);
     }
 

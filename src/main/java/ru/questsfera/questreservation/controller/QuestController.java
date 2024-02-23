@@ -25,6 +25,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/quests")
@@ -56,6 +57,7 @@ public class QuestController {
         questForm.setStatuses(Status.getDefaultStatuses());
         questForm.setAutoBlock(LocalTime.MIN);
         questForm.setTypeBuilder(SlotListTypeBuilder.EQUAL_DAYS);
+        questForm.setAccounts(allAccounts.stream().filter(acc -> acc.getRole() != Account.Role.ROLE_USER).toList());
 
         SlotListMaker.addDefaultValues(questForm.getSlotList());
         String slotListJSON = SlotListMapper.createJSON(questForm.getSlotList());
@@ -116,6 +118,11 @@ public class QuestController {
         SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuilder());
         Quest quest = new Quest(questForm, account.getCompany());
         questService.saveQuest(quest);
+
+        for (Account acc : quest.getAccounts()) {
+            acc.getQuests().add(quest);
+            accountService.saveAccount(acc);
+        }
 
         return "redirect:/quests/quests-list";
     }

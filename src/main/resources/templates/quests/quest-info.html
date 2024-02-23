@@ -33,7 +33,7 @@
                 </table>
             </td>
             <td th:text="${#temporals.format(quest.autoBlock, 'HH:mm')}"></td>
-            <td th:switch="${#lists.isEmpty(users)}">
+            <td th:switch="${#lists.isEmpty(accounts)}">
                 <p th:case="${true}">Нет назначенных пользователей</p>
                 <table th:case="${false}">
                     <tr th:each="account : ${accounts}">

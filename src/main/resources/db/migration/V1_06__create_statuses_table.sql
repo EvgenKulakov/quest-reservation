@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS statuses
 (
     id          int                                                                                 NOT NULL AUTO_INCREMENT,
     status_type enum ('BLOCK','MODIFIED','NEW_RESERVE','CANCEL','CONFIRMED','NOT_COME','COMPLETED') NOT NULL,
-    text        varchar(20)                                                                         NOT NULL,
+    text        varchar(50)                                                                         NOT NULL,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4

@@ -158,9 +158,9 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="input-admin-comment" class="col-12 col-lg-3 col-form-label">Комментарий:</label>
+                        <label for="adminComment" class="col-12 col-lg-3 col-form-label">Комментарий:</label>
                         <div class="col-12 col-lg-8">
-                    <textarea maxlength="200" rows="4" class="form-control" id="input-admin-comment"
+                    <textarea maxlength="200" rows="4" class="form-control" id="adminComment"
                               th:field="*{adminComment}"></textarea>
                             <div class="error-message" th:if="${#fields.hasErrors('adminComment')}"
                                  th:errors="*{adminComment}"></div>

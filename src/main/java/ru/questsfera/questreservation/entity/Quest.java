@@ -44,11 +44,11 @@ public class Quest implements Comparable<Quest> {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "quest")
     private Set<Reservation> reservations = new HashSet<>();
 
-    @ManyToMany(mappedBy = "accounts")
-    private Set<Account> accounts = new HashSet<>();
+    @ManyToMany(mappedBy = "quests")
+    private List<Account> accounts = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "status_quest",

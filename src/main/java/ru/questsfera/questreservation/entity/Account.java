@@ -19,7 +19,7 @@ import java.util.TreeSet;
 @JsonIgnoreProperties({"emailAndLogin", "password", "firstName", "lastName", "phone", "role", "company", "quests"})
 public class Account {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание Email")
@@ -43,7 +43,6 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "company")
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;

@@ -88,7 +88,7 @@ public class TmpService {
 
     //***Moderator
     @Transactional
-    public Account getUserById(int id) {
+    public Account getUserById(Integer id) {
         Optional<Account> optionalAccount = accountRepository.findById(id);
         if (optionalAccount.isPresent()) {
             return optionalAccount.get();
@@ -97,7 +97,7 @@ public class TmpService {
     }
 
     @Transactional
-    public Quest getQuestById(int id) {
+    public Quest getQuestById(Integer id) {
         Optional<Quest> optionalQuest = questRepository.findById(id);
         if (optionalQuest.isPresent()) {
             return optionalQuest.get();
@@ -111,7 +111,7 @@ public class TmpService {
     }
 
     @Transactional
-    public Status getStatusById(int id) {
+    public Status getStatusById(Integer id) {
         Optional<Status> optionalStatus = statusRepository.findById(id);
         if (optionalStatus.isPresent()) {
             return optionalStatus.get();
@@ -128,7 +128,7 @@ public class TmpService {
         }
     }
 
-    public Reservation getReserveById(int id) {
+    public Reservation getReserveById(Long id) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(id);
         if (optionalReservation.isPresent()) {
             return optionalReservation.get();
@@ -136,7 +136,7 @@ public class TmpService {
         throw new RuntimeException("Попытка получить несуществующее бронирование");
     }
 
-    public Quest getQuest(int id) {
+    public Quest getQuest(Integer id) {
         Optional<Quest> optionalQuest = questRepository.findById(id);
         if (optionalQuest.isPresent()) {
             return optionalQuest.get();
@@ -144,7 +144,7 @@ public class TmpService {
         throw new RuntimeException("Попытка получить несуществующий квест");
     }
 
-    public Client getClientById(int id) {
+    public Client getClientById(Integer id) {
         Optional<Client> optionalClient = clientRepository.findById(id);
         if (optionalClient.isPresent()) {
             return optionalClient.get();
@@ -152,7 +152,7 @@ public class TmpService {
         throw new RuntimeException("Попытка получить несуществующего клиента");
     }
 
-    public BlackList BlackListById(int id) {
+    public BlackList BlackListById(Integer id) {
         Optional<BlackList> optionalBlackList = blackListRepository.findById(id);
         if (optionalBlackList.isPresent()) {
             return optionalBlackList.get();

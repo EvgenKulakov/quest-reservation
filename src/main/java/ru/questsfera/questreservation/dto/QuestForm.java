@@ -8,7 +8,9 @@ import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Status;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -38,7 +40,7 @@ public class QuestForm {
     @NotNull(message = "*Обязательное поле")
     private LocalTime autoBlock;
 
-    private Set<Account> accounts = new HashSet<>();
+    private List<Account> accounts = new ArrayList<>();
 
     private SlotList slotList = new SlotList();
 

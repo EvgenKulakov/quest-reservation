@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.entity.Account;
+import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.processor.PasswordGenerator;
 import ru.questsfera.questreservation.service.AccountService;
@@ -32,19 +33,20 @@ public class AccountController {
         List<Account> accounts = accountService.getAccountsByCompany(account.getCompany());
 
         model.addAttribute("accounts", accounts);
-        return "accounts/account-list";
+        return "accounts/accounts-list";
     }
 
     @PostMapping("/add-account")
     public String addAccount(Principal principal, Model model) {
 
-        Account currentAccount = accountService.getAccountByLogin(principal.getName());
-        List<Quest> allQuests = questService.getQuestsByCompany(currentAccount.getCompany());
+        Company company = accountService.getAccountByLogin(principal.getName()).getCompany();
+        List<Quest> allQuests = questService.getQuestsByCompany(company);
 
-        Account account = new Account();
-        account.setPassword(PasswordGenerator.createRandomPassword());
+        Account newAccount = new Account();
+        newAccount.setCompany(company);
+        newAccount.setPassword(PasswordGenerator.createRandomPassword());
 
-        model.addAttribute("account", account);
+        model.addAttribute("account", newAccount);
         model.addAttribute("all_quests", allQuests);
         return "accounts/account-form";
     }

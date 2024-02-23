@@ -23,9 +23,6 @@ public class Company {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "owner_id")
-    private Integer ownerId;
-
     @Column(name = "money")
     private Double money;
 

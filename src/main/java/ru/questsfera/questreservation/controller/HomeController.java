@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.entity.Account;
+import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.processor.PasswordGenerator;
 import ru.questsfera.questreservation.service.AccountService;
 import ru.questsfera.questreservation.service.CompanyService;
@@ -55,15 +56,16 @@ public class HomeController {
             return "home/register";
         }
 
+        Company company = account.getCompany();
+        company.setMoney(10000.00); //default
+        companyService.saveCompany(company);
+
         String passwordHash = PasswordGenerator.createBCrypt(account.getPassword());
-
         account.setPassword(passwordHash);
+
         account.setRole(Account.Role.ROLE_OWNER);
-        account.getCompany().setOwnerId(account.getId());
 
-        companyService.saveCompany(account.getCompany());
         accountService.saveAccount(account);
-
         return "redirect:/login?new_account";
     }
 

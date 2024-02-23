@@ -33,13 +33,13 @@
             </td>
             <td>
                 <form class="buttons" th:action="@{/accounts/update-password-account}" method="post">
-                    <input type="hidden" name="user" th:value="${account.id}">
+                    <input type="hidden" name="account" th:value="${account.id}">
                     <button type="submit" class="btn btn-warning">Обновить пароль</button>
                 </form>
             </td>
             <td>
                 <form class="buttons" th:action="@{/accounts/delete-account}" method="post">
-                    <input type="hidden" name="user" th:value="${account.id}">
+                    <input type="hidden" name="account" th:value="${account.id}">
                     <button type="submit" class="btn btn-danger">Удалить аккаунт</button>
                 </form>
             </td>
