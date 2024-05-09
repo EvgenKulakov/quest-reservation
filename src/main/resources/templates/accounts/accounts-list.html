@@ -14,11 +14,11 @@
 
     <table>
         <thead>
-        <form th:action="@{/accounts/add-account}" method="post">
             <h3 class="add-quest">Список ваших пользователей
-                <button type="submit" class="btn btn-outline-primary">+ Добавить пользователя</button>
+                <a href="/accounts/add-form">
+                    <button type="submit" class="btn btn-outline-primary">+ Добавить пользователя</button>
+                </a>
             </h3>
-        </form>
         </thead>
         <tbody>
         <tr class="quest-functions" th:each="account : ${accounts}">
@@ -26,19 +26,19 @@
                 <h3 class="quest-text" th:text="${account.firstName} + ' ' + ${account.lastName}"></h3>
             </td>
             <td>
-                <form class="buttons" th:action="@{/accounts/update-account}" method="post">
+                <form class="buttons" th:action="@{/accounts/update-form}" method="post">
                     <input type="hidden" name="account" th:value="${account.id}">
                     <button type="submit" class="btn btn-light">Редактировать</button>
                 </form>
             </td>
             <td>
-                <form class="buttons" th:action="@{/accounts/update-password-account}" method="post">
+                <form class="buttons" th:action="@{/accounts/update-account-password}" method="post">
                     <input type="hidden" name="account" th:value="${account.id}">
                     <button type="submit" class="btn btn-warning">Обновить пароль</button>
                 </form>
             </td>
             <td>
-                <form class="buttons" th:action="@{/accounts/delete-account}" method="post">
+                <form class="buttons" th:action="@{/accounts/delete}" method="post">
                     <input type="hidden" name="account" th:value="${account.id}">
                     <button type="submit" class="btn btn-danger">Удалить аккаунт</button>
                 </form>

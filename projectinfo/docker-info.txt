@@ -6,6 +6,7 @@ docker exec -it localhost sh
 mysql -u root -p quest_reservations < /app/Dump1.sql   or /data/Dump1.sql
 mysql with jar:
 docker run -p 3306:3306 --name db -e TZ=Europe/Moscow -v .:/app -e MYSQL_ROOT_PASSWORD=MySQL54535251 -e MYSQL_DATABASE=quest_reservations -d mysql:8.0.33
+-e spring.datasource.url='jdbc:mysql://host.docker.internal:3306/quest_reservations_db'
 
 latest:
 ========================================================================================================================
@@ -23,4 +24,4 @@ docker run -d --network quest_reservations_net --restart always -v /etc/timezone
 
 --------------------------------------------------
 local db in docker:
-docker run --name db --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v .:/app -e MYSQL_ROOT_PASSWORD=MySQL54535251 -e MYSQL_DATABASE=quest_reservations_db -p 3306:3306 -d mysql:8.0.33
+docker run --name db -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v .:/app -e MYSQL_ROOT_PASSWORD=MySQL54535251 -e MYSQL_DATABASE=quest_reservations_db -p 3306:3306 -d mysql:8.0.33

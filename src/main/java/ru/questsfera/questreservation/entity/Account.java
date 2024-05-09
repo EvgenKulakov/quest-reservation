@@ -3,6 +3,7 @@ package ru.questsfera.questreservation.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -53,9 +54,13 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "quest_id"))
     private Set<Quest> quests = new TreeSet<>();
 
+    @Getter
+    @AllArgsConstructor
     public enum Role {
-        ROLE_OWNER,
-        ROLE_ADMIN,
-        ROLE_USER,
+        ROLE_OWNER("Владелец"),
+        ROLE_ADMIN("Админ"),
+        ROLE_USER("Пользователь");
+
+        private final String text;
     }
 }

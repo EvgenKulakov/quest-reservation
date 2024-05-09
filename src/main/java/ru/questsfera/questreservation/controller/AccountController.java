@@ -26,7 +26,7 @@ public class AccountController {
     @Autowired
     private QuestService questService;
 
-    @GetMapping("/accounts-list")
+    @GetMapping("/")
     public String showAccountsList(Principal principal, Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
@@ -36,7 +36,7 @@ public class AccountController {
         return "accounts/accounts-list";
     }
 
-    @PostMapping("/add-account")
+    @GetMapping("/add-form")
     public String addAccount(Principal principal, Model model) {
 
         Company company = accountService.getAccountByLogin(principal.getName()).getCompany();
@@ -46,21 +46,26 @@ public class AccountController {
         newAccount.setCompany(company);
         newAccount.setPassword(PasswordGenerator.createRandomPassword());
 
+        Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
+
         model.addAttribute("account", newAccount);
         model.addAttribute("all_quests", allQuests);
+        model.addAttribute("roles", roles);
         return "accounts/account-form";
     }
 
-    @PostMapping("/update-account")
+    @PostMapping("/update-form")
     public String updateUser(@RequestParam("account") Account account, Model model) {
 
 //        Admin admin = adminService.getAdminByName(principal.getName());
 //        userService.checkSecurityForUser(user, admin);
 
         List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany());
+        Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 
         model.addAttribute("account", account);
         model.addAttribute("all_quests", allQuests);
+        model.addAttribute("roles", roles);
         return "accounts/account-form";
     }
 
@@ -96,13 +101,11 @@ public class AccountController {
             questService.saveQuest(quest);
         }
 
-        account.setRole(Account.Role.ROLE_USER); //TODO: create in template input Role
-
         accountService.saveAccount(account);
-        return "redirect:/accounts/accounts-list";
+        return "redirect:/accounts/";
     }
 
-    @PostMapping("/update-password-account")
+    @PostMapping("/update-account-password")
     public String updatePassword(@RequestParam("account") Account account, Model model) {
 
 //        Admin admin = adminService.getAdminByName(principal.getName());
@@ -130,12 +133,12 @@ public class AccountController {
 
         account.setPassword(PasswordGenerator.createBCrypt(newPassword));
         accountService.saveAccount(account);
-        return "redirect:/accounts/accounts-list";
+        return "redirect:/accounts/";
     }
 
-    @PostMapping("/delete-account")
+    @PostMapping("/delete")
     public String deleteUser(@RequestParam("account") Account account) {
         accountService.deleteAccount(account);
-        return "redirect:/accounts/accounts-list";
+        return "redirect:/accounts/";
     }
 }

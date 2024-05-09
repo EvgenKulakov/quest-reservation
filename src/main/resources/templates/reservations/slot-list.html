@@ -2,193 +2,194 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
-    <meta charset="UTF-8">
-    <title>Бронирования по дате</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/air-datepicker.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/slot-list.css}">
+  <meta charset="UTF-8">
+  <title>Бронирования по дате</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/css/air-datepicker.css}" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/slot-list.css}">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
 
 <section>
-    <th:block th:switch="${#maps.isEmpty(quests_and_slots)}">
+  <th:block th:switch="${#maps.isEmpty(quests_and_slots)}">
 
-        <div th:case="${true}" class="container-fluid mt-4">
-            <div sec:authorize="hasAnyRole('ADMIN', 'OWNER')">
-                <form th:action="@{/quests/quests-list}" method="get">
-                    <h6 class="add-quest">Перейдите во вкладку Квесты, чтобы добавить квест
-                        <button class="btn btn-outline-primary" type="submit">Редактировать квесты →
-                        </button>
-                    </h6>
-                </form>
-            </div>
-            <div sec:authorize="hasRole('USER')">
-                <h4 class="add-quest">Администратор ещё не предоставил вам доступ к квестам</h4>
-            </div>
-        </div>
-
-        <div th:case="${false}" id="slot-list-section">
-            <div class="container-fluid mt-4">
-                <form id="date-form" th:action="@{/reservations/slot-list/}" method="get">
-                    <div>
-                        <h3 id="date">Бронирования по дате
-                            <button type="button" class="badge bg-light text-dark" id="date-button">
-                                <span th:text="${#temporals.format(date, 'dd-MM-yyyy (EEEE)')}"></span>
-                                <img src="/images/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
-                                <input class="form-control" type="text" id="input-date" name="date" readonly>
-                            </button>
-                        </h3>
-                    </div>
-                </form>
-
-                <div class="row row-cols-auto" id="status-info">
-                    <h6>Статусы</h6>
-                    <th:block th:each="status_type : ${use_statuses}">
-                        <div class="slot-button custom-status col-auto" th:text="${status_type.text}"
-                             th:attr="data-status=${status_type}"></div>
-                    </th:block>
-                </div>
-            </div>
-
-            <div th:each="one_quest_with_slots : ${quests_and_slots}" class="container-fluid" id="block-reserves">
-                <div class="row-cols-auto d-flex align-items-center quest-name">
-                    <h3>
-                        <td th:text="${one_quest_with_slots.key}"></td>
-                    </h3>
-                </div>
-                <div class="row-cols-auto d-flex flex-wrap">
-                    <td th:each="slot, index : ${one_quest_with_slots.value}">
-                        <form>
-                            <button class="slot-button custom-button"
-                                    th:value="${slot.getJSON()}"
-                                    onclick="clickSlot(this.value)"
-                                    th:attr="data-status=${slot.statusType}" type="button"
-                                    th:utext="${slot.time} + '<br/>₽' + ${slot.price}">
-                            </button>
-                        </form>
-                    </td>
-                </div>
-            </div>
-
-            <div class="container-fluid my-3">
-                <form th:action="@{/reservations/slot-list/}" method="get">
-                    <button id="backButton" type="submit" class="btn btn-outline-secondary back-forward" name="date"
-                            th:value="${date.minusDays(1)}" th:text="'← Назад'"></button>
-                    <button id="nextButton" type="submit" class="btn btn-outline-secondary back-forward" name="date"
-                            th:value="${date.plusDays(1)}" th:text="'Вперёд →'"></button>
-                </form>
-            </div>
-        </div>
-    </th:block>
-
-
-    <!--    **********************************RESERVATION FORM WINDOW************************************************-->
-
-
-    <div id="reserve-modal" class="reserve-modal">
-        <a id="close-area" onclick="closeSlot()"></a>
-        <div class="reserve-container">
-            <div id="reserve-content" class="reserve-content">
-                <div class="row">
-                    <div class="col-11">
-                        <h1 id="questName"></h1>
-                        <span id="slotDate"></span><br>
-                        <span id="slotTime"></span><br>
-                        <span id="slotPrice"></span><br><br>
-                    </div>
-                    <div class="col-1">
-                        <button type="button" id="close" onclick="closeSlot()" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                </div>
-
-                <form class="reserve-form" th:object="${res_form}" th:action="@{/reservations/save-reservation}"
-                      th:method="post">
-
-                    <div class="mb-3 row">
-                        <label for="selectStatus" class="col-12 col-lg-3 col-form-label">Статус:</label>
-                        <div class="col-12 col-lg-6">
-                            <select class="form-select" id="selectStatus" th:field="*{statusType}"></select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <label for="firstName" class="col-12 col-lg-3 col-form-label">Имя:</label>
-                        <div class="col-12 col-lg-6">
-                            <input type="text" maxlength="25" class="form-control" id="firstName"
-                                   th:field="*{firstName}">
-                            <div class="error-message" th:if="${#fields.hasErrors('firstName')}"
-                                 th:errors="*{firstName}"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <label for="lastName" class="col-12 col-lg-3 col-form-label">Фамилия:</label>
-                        <div class="col-12 col-lg-6">
-                            <input type="text" maxlength="25" class="form-control" id="lastName" th:field="*{lastName}">
-                            <div class="error-message" th:if="${#fields.hasErrors('lastName')}"
-                                 th:errors="*{lastName}"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <label for="phone" class="col-12 col-lg-3 col-form-label">Телефон:</label>
-                        <div class="col-12 col-lg-6">
-                            <input type="text" maxlength="18" class="form-control" id="phone" th:field="*{phone}">
-                            <div class="error-message" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <label for="email" class="col-12 col-lg-3 col-form-label">Email:</label>
-                        <div class="col-12 col-lg-6">
-                            <input type="text" maxlength="45" class="form-control" id="email" th:field="*{email}">
-                            <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <label for="countPersons" class="col-12 col-lg-3 col-form-label">Кол-во человек:</label>
-                        <div class="col-12 col-lg-2">
-                            <select class="form-select" id="countPersons" th:field="*{countPersons}"></select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 row">
-                        <label for="adminComment" class="col-12 col-lg-3 col-form-label">Комментарий:</label>
-                        <div class="col-12 col-lg-8">
-                    <textarea maxlength="200" rows="4" class="form-control" id="adminComment"
-                              th:field="*{adminComment}"></textarea>
-                            <div class="error-message" th:if="${#fields.hasErrors('adminComment')}"
-                                 th:errors="*{adminComment}"></div>
-                        </div>
-                    </div>
-
-                    <input type="hidden" id="slotInfo" name="slot">
-                    <input type="hidden" name="date" th:value="${date}">
-                    <input type="hidden" id="error-slot" th:value="${error_slot}">
-                    <input type="hidden" id="change-status" th:value="${change_status}">
-                    <input type="hidden" id="change-count-persons" th:value="${change_count_persons}">
-
-                    <div class="row justify-content-end">
-                        <button id="unBlockButton" onclick="saveSlot()" class="btn btn-secondary mr-2 col-auto"
-                                type="submit" formaction="/reservations/unBlock">Разблокировать
-                        </button>
-                        <button id="blockButton" onclick="saveSlot()" class="btn btn-secondary mr-2 col-3"
-                                type="submit" formaction="/reservations/block-slot">Заблокировать
-                        </button>
-                        <button id="saveButton" onclick="saveSlot()" class="btn btn-primary mr-2 col-3"
-                                type="submit">Сохранить
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-        </div>
+    <div th:case="${true}" class="container-fluid mt-4">
+      <div sec:authorize="hasAnyRole('ADMIN', 'OWNER')">
+        <form th:action="@{/quests/quests-list}" method="get">
+          <h6 class="add-quest">Перейдите во вкладку Квесты, чтобы добавить квест
+            <button class="btn btn-outline-primary" type="submit">Редактировать квесты →</button>
+          </h6>
+        </form>
+      </div>
+      <div sec:authorize="hasRole('USER')">
+        <h4 class="add-quest">Администратор ещё не предоставил вам доступ к квестам</h4>
+      </div>
     </div>
+
+    <div th:case="${false}" id="slot-list-section">
+      <div class="container-fluid mt-4">
+        <form id="date-form" th:action="@{/reservations/slot-list/}" method="get">
+          <div>
+            <h3 id="date">Бронирования по дате
+              <button type="button" class="badge bg-light text-dark" id="date-button">
+                <span th:text="${#temporals.format(date, 'dd-MM-yyyy (EEEE)')}"></span>
+                <img src="/images/Pictogrammers-Material-Calendar-edit.48.png" width="24" height="24">
+                <input class="form-control" type="text" id="input-date" name="date" readonly>
+              </button>
+            </h3>
+          </div>
+        </form>
+
+        <div class="row row-cols-auto" id="status-info">
+          <h6>Статусы</h6>
+          <th:block th:each="status_type : ${use_statuses}">
+            <div class="slot-button custom-status col-auto" th:text="${status_type.text}"
+                 th:attr="data-status=${status_type}">
+            </div>
+          </th:block>
+        </div>
+      </div>
+
+      <div th:each="one_quest_with_slots : ${quests_and_slots}" class="container-fluid" id="block-reserves">
+        <div class="row-cols-auto d-flex align-items-center quest-name">
+          <h3>
+            <td th:text="${one_quest_with_slots.key}"></td>
+          </h3>
+        </div>
+        <div class="row-cols-auto d-flex flex-wrap">
+          <td th:each="slot, index : ${one_quest_with_slots.value}">
+            <form>
+              <button class="slot-button custom-button"
+                      th:value="${slot.getJSON()}"
+                      onclick="clickSlot(this.value)"
+                      th:attr="data-status=${slot.statusType}" type="button"
+                      th:utext="${slot.time} + '<br/>₽' + ${slot.price}">
+              </button>
+            </form>
+          </td>
+        </div>
+      </div>
+
+      <div class="container-fluid my-3">
+        <form th:action="@{/reservations/slot-list/}" method="get">
+          <button id="backButton" type="submit" class="btn btn-outline-secondary back-forward" name="date"
+                  th:value="${date.minusDays(1)}" th:text="'← Назад'"></button>
+          <button id="nextButton" type="submit" class="btn btn-outline-secondary back-forward" name="date"
+                  th:value="${date.plusDays(1)}" th:text="'Вперёд →'"></button>
+        </form>
+      </div>
+    </div>
+  </th:block>
+
+
+  <!--    **********************************RESERVATION FORM WINDOW************************************************-->
+
+
+  <div id="reserve-modal" class="reserve-modal">
+    <a id="close-area" onclick="closeSlot()"></a>
+    <div class="reserve-container">
+      <div id="reserve-content" class="reserve-content">
+        <div class="row">
+          <div class="col-11">
+            <h1 id="questName"></h1>
+            <span id="slotDate"></span><br>
+            <span id="slotTime"></span><br>
+            <span id="slotPrice"></span><br><br>
+          </div>
+          <div class="col-1">
+            <button type="button" id="close" onclick="closeSlot()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+
+        <form class="reserve-form" th:object="${res_form}" th:action="@{/reservations/save-reservation}"
+              th:method="post">
+
+          <div class="mb-3 row">
+            <label for="selectStatus" class="col-12 col-lg-3 col-form-label">Статус:</label>
+            <div class="col-12 col-lg-6">
+              <select class="form-select" id="selectStatus" th:field="*{statusType}"></select>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="firstName" class="col-12 col-lg-3 col-form-label">Имя:</label>
+            <div class="col-12 col-lg-6">
+              <input type="text" maxlength="25" class="form-control" id="firstName"
+                     th:field="*{firstName}">
+              <div class="error-message" th:if="${#fields.hasErrors('firstName')}"
+                   th:errors="*{firstName}"></div>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="lastName" class="col-12 col-lg-3 col-form-label">Фамилия:</label>
+            <div class="col-12 col-lg-6">
+              <input type="text" maxlength="25" class="form-control" id="lastName" th:field="*{lastName}">
+              <div class="error-message" th:if="${#fields.hasErrors('lastName')}"
+                   th:errors="*{lastName}"></div>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="phone" class="col-12 col-lg-3 col-form-label">Телефон:</label>
+            <div class="col-12 col-lg-6">
+              <input type="text" maxlength="18" class="form-control" id="phone" th:field="*{phone}">
+              <div class="error-message" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="email" class="col-12 col-lg-3 col-form-label">Email:</label>
+            <div class="col-12 col-lg-6">
+              <input type="text" maxlength="45" class="form-control" id="email" th:field="*{email}">
+              <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="countPersons" class="col-12 col-lg-3 col-form-label">Кол-во человек:</label>
+            <div class="col-12 col-lg-2">
+              <select class="form-select" id="countPersons" th:field="*{countPersons}"></select>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="adminComment" class="col-12 col-lg-3 col-form-label">Комментарий:</label>
+            <div class="col-12 col-lg-8">
+                    <textarea maxlength="200" rows="4" class="form-control" id="adminComment"
+                              th:field="*{adminComment}">
+                    </textarea>
+              <div class="error-message" th:if="${#fields.hasErrors('adminComment')}"
+                   th:errors="*{adminComment}"></div>
+            </div>
+          </div>
+
+          <input type="hidden" id="slotInfo" name="slot">
+          <input type="hidden" name="date" th:value="${date}">
+          <input type="hidden" id="error-slot" th:value="${error_slot}">
+          <input type="hidden" id="change-status" th:value="${change_status}">
+          <input type="hidden" id="change-count-persons" th:value="${change_count_persons}">
+
+          <div class="row justify-content-end">
+            <button id="unBlockButton" onclick="saveSlot()" class="btn btn-secondary mr-2 col-auto"
+                    type="submit" formaction="/reservations/unBlock">Разблокировать
+            </button>
+            <button id="blockButton" onclick="saveSlot()" class="btn btn-secondary mr-2 col-3"
+                    type="submit" formaction="/reservations/block-slot">Заблокировать
+            </button>
+            <button id="saveButton" onclick="saveSlot()" class="btn btn-primary mr-2 col-3"
+                    type="submit">Сохранить
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
 </section>
 
 <script src="/js/air-datepicker.js"></script>
