@@ -38,20 +38,21 @@ public class HomeController {
                                  Model model) {
 
         if (accountService.existAccountByLogin(account.getEmailLogin())) {
-            bindingResult.rejectValue("email", "errorCode",
-                    "Такой пользователь уже зарегистрирован");
-            model.addAttribute("account", account);
-            return "home/register";
+            bindingResult.rejectValue("emailLogin", "errorCode",
+                    "*Такой пользователь уже зарегистрирован");
         }
 
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("account", account);
-            return "home/register";
+        if (account.getCompany().getName().isBlank()) {
+            bindingResult.rejectValue("company.name", "errorCode",
+                    "*Введите название компании");
         }
 
         if (!account.getPassword().equals(duplicatePass)) {
             bindingResult.rejectValue("password", "errorCode",
-                    "Повторный пароль не совпадает");
+                    "*Повторный пароль не совпадает");
+        }
+
+        if (bindingResult.hasErrors()) {
             model.addAttribute("account", account);
             return "home/register";
         }

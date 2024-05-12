@@ -5,4 +5,6 @@ public interface SwitchValidator {
     interface SaveReserve {}
 
     interface BlockSlot {}
+
+    interface NoRegistration {}
 }

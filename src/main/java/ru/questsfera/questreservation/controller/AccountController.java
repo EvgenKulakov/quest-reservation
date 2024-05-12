@@ -1,10 +1,10 @@
 package ru.questsfera.questreservation.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Company;
@@ -13,6 +13,7 @@ import ru.questsfera.questreservation.processor.PasswordGenerator;
 import ru.questsfera.questreservation.service.AccountService;
 import ru.questsfera.questreservation.service.QuestService;
 import ru.questsfera.questreservation.validator.Patterns;
+import ru.questsfera.questreservation.validator.SwitchValidator;
 
 import java.security.Principal;
 import java.util.List;
@@ -31,8 +32,12 @@ public class AccountController {
 
         Account account = accountService.getAccountByLogin(principal.getName());
         List<Account> accounts = accountService.getAccountsByCompany(account.getCompany());
+        if (account.getRole() != Account.Role.ROLE_OWNER) {
+             accounts.removeIf(acc -> !acc.getRole().equals(Account.Role.ROLE_USER));
+        }
 
         model.addAttribute("accounts", accounts);
+        model.addAttribute("myAccount", account);
         return "accounts/accounts-list";
     }
 
@@ -49,45 +54,50 @@ public class AccountController {
         Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 
         model.addAttribute("account", newAccount);
-        model.addAttribute("all_quests", allQuests);
+        model.addAttribute("allQuests", allQuests);
         model.addAttribute("roles", roles);
         return "accounts/account-form";
     }
 
     @PostMapping("/update-form")
-    public String updateUser(@RequestParam("account") Account account, Model model) {
+    public String updateAccount(@RequestParam("account") Account account, Principal principal, Model model) {
 
-//        Admin admin = adminService.getAdminByName(principal.getName());
-//        userService.checkSecurityForUser(user, admin);
+        Account myAccount = accountService.getAccountByLogin(principal.getName());
+        accountService.checkSecurityForAccount(account, myAccount);
 
         List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany());
         Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 
         model.addAttribute("account", account);
-        model.addAttribute("all_quests", allQuests);
+        model.addAttribute("allQuests", allQuests);
         model.addAttribute("roles", roles);
         return "accounts/account-form";
     }
 
     @PostMapping("/save-account")
-    public String saveUser(@Valid @ModelAttribute("account") Account account,
-                           BindingResult bindingResult,
-                           Model model) {
-//        Admin admin = adminService.getAdminByName(principal.getName());
-//        user.setAdmin(admin);
-//
-//        if (user.getId() != null) userService.checkSecurityForUser(user, admin);
+    public String saveAccount(@Validated(SwitchValidator.NoRegistration.class)
+                              @ModelAttribute("account") Account account,
+                              BindingResult bindingResult,
+                              Principal principal,
+                              Model model) {
+
+        Account myAccount = accountService.getAccountByLogin(principal.getName());
+        if (account.getId() != null) accountService.checkSecurityForAccount(account, myAccount);
 
         boolean existsUsername = accountService.existAccountByLogin(account.getEmailLogin()) && account.getId() == null;
+        if (existsUsername) {
+            String errorMessage = "Аккаунт " + account.getEmailLogin() + " уже существует";
+            bindingResult.rejectValue("emailLogin", "errorCode", errorMessage);
+        }
 
-        if (bindingResult.hasErrors() || existsUsername) {
+        if (bindingResult.hasErrors()) {
 
-            if (existsUsername) {
-                String errorMessage = "Аккаунт " + account.getEmailLogin() + " уже существует";
-                bindingResult.rejectValue("emailLogin", "errorCode", errorMessage);
-            }
+            List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany());
+            Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 
             model.addAttribute("account", account);
+            model.addAttribute("allQuests", allQuests);
+            model.addAttribute("roles", roles);
             return "accounts/account-form";
         }
 
@@ -106,28 +116,29 @@ public class AccountController {
     }
 
     @PostMapping("/update-account-password")
-    public String updatePassword(@RequestParam("account") Account account, Model model) {
+    public String updatePassword(@RequestParam("account") Account account, Principal principal, Model model) {
 
-//        Admin admin = adminService.getAdminByName(principal.getName());
-//        userService.checkSecurityForUser(user, admin);
+        Account myAccount = accountService.getAccountByLogin(principal.getName());
+        accountService.checkSecurityForAccount(account, myAccount);
 
         model.addAttribute("account", account);
-        model.addAttribute("new_password", "");
-        model.addAttribute("error_password", false);
+        model.addAttribute("newPassword", "");
+        model.addAttribute("errorPassword", false);
         return "accounts/password-form";
     }
 
     @PostMapping("/save-new-password")
-    public String saveNewPassword(@RequestParam("account") Account account, Model model,
-                                  @RequestParam("new_password") String newPassword) {
+    public String saveNewPassword(@RequestParam("account") Account account,
+                                  @RequestParam("newPassword") String newPassword,
+                                  Principal principal, Model model) {
 
-//        Admin admin = adminService.getAdminByName(principal.getName());
-//        userService.checkSecurityForUser(user, admin);
+        Account myAccount = accountService.getAccountByLogin(principal.getName());
+        accountService.checkSecurityForAccount(account, myAccount);
 
         if (!newPassword.matches(Patterns.PASSWORD)) {
             model.addAttribute("account", account);
-            model.addAttribute("new_password", newPassword);
-            model.addAttribute("error_password", true);
+            model.addAttribute("newPassword", newPassword);
+            model.addAttribute("errorPassword", true);
             return "accounts/password-form";
         }
 
@@ -137,7 +148,9 @@ public class AccountController {
     }
 
     @PostMapping("/delete")
-    public String deleteUser(@RequestParam("account") Account account) {
+    public String deleteUser(@RequestParam("account") Account account, Principal principal) {
+        Account myAccount = accountService.getAccountByLogin(principal.getName());
+        accountService.checkSecurityForAccount(account, myAccount);
         accountService.deleteAccount(account);
         return "redirect:/accounts/";
     }

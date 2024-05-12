@@ -1,51 +1,54 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">>
 <head>
-    <meta charset="UTF-8">
-    <title>Список ваших пользователей</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/list-quests-accounts.css}" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Список ваших пользователей</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/css/list-quests-accounts.css}" rel="stylesheet">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
 
 <section class="container font-style">
 
-    <table>
-        <thead>
-            <h3 class="add-quest">Список ваших пользователей
-                <a href="/accounts/add-form">
-                    <button type="submit" class="btn btn-outline-primary">+ Добавить пользователя</button>
-                </a>
-            </h3>
-        </thead>
-        <tbody>
-        <tr class="quest-functions" th:each="account : ${accounts}">
-            <td>
-                <h3 class="quest-text" th:text="${account.firstName} + ' ' + ${account.lastName}"></h3>
-            </td>
-            <td>
-                <form class="buttons" th:action="@{/accounts/update-form}" method="post">
-                    <input type="hidden" name="account" th:value="${account.id}">
-                    <button type="submit" class="btn btn-light">Редактировать</button>
-                </form>
-            </td>
-            <td>
-                <form class="buttons" th:action="@{/accounts/update-account-password}" method="post">
-                    <input type="hidden" name="account" th:value="${account.id}">
-                    <button type="submit" class="btn btn-warning">Обновить пароль</button>
-                </form>
-            </td>
-            <td>
-                <form class="buttons" th:action="@{/accounts/delete}" method="post">
-                    <input type="hidden" name="account" th:value="${account.id}">
-                    <button type="submit" class="btn btn-danger">Удалить аккаунт</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+  <table>
+    <thead>
+    <h3 class="add-quest">Список ваших пользователей
+      <a sec:authorize="hasRole('OWNER')" href="/accounts/add-form">
+        <button type="submit" class="btn btn-outline-primary">+ Добавить пользователя</button>
+      </a>
+    </h3>
+    </thead>
+    <tbody>
+    <tr class="quest-functions" th:each="account : ${accounts}">
+      <th:block th:if="${!account.equals(myAccount)}">
+        <td>
+          <h3 class="quest-text" th:text="${account.firstName} + ' ' + ${account.lastName}"></h3>
+        </td>
+        <td>
+          <form class="buttons" th:action="@{/accounts/update-form}" method="post">
+            <input type="hidden" name="account" th:value="${account.id}">
+            <button type="submit" class="btn btn-light">Редактировать</button>
+          </form>
+        </td>
+        <td>
+          <form class="buttons" th:action="@{/accounts/update-account-password}" method="post">
+            <input type="hidden" name="account" th:value="${account.id}">
+            <button type="submit" class="btn btn-warning">Обновить пароль</button>
+          </form>
+        </td>
+        <td sec:authorize="hasRole('OWNER')">
+          <form class="buttons" th:action="@{/accounts/delete}" method="post">
+            <input type="hidden" name="account" th:value="${account.id}">
+            <button type="submit" class="btn btn-danger">Удалить аккаунт</button>
+          </form>
+        </td>
+      </th:block>
+    </tr>
+    </tbody>
+  </table>
 
 </section>
 

@@ -41,7 +41,7 @@ public class QuestController {
     public String showQuestList(Principal principal, Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
-        List<Quest> quests = questService.getQuestsByCompany(account.getCompany()); //TODO: account.getQuests() ?
+        Set<Quest> quests = account.getQuests();//TODO: account.getQuests() ?
 
         model.addAttribute("quests", quests);
         return "quests/quests-list";

@@ -2,13 +2,16 @@ package ru.questsfera.questreservation.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.questsfera.questreservation.validator.Patterns;
+import ru.questsfera.questreservation.validator.SwitchValidator;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -27,10 +30,11 @@ public class Account {
     @Column(name = "email_login")
     private String emailLogin;
 
-    @Pattern(regexp = Patterns.PASSWORD, message = "*Минимум 8 символов без пробелов")
+    @Pattern(regexp = Patterns.PASSWORD, message = "*Пароль минимум 8 символов без пробелов")
     @Column(name = "password")
     private String password;
 
+    @NotBlank(message = "*Обязательное поле", groups = SwitchValidator.NoRegistration.class)
     @Column(name = "first_name")
     private String firstName;
 
@@ -62,5 +66,17 @@ public class Account {
         ROLE_USER("Пользователь");
 
         private final String text;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Account account)) return false;
+        return id != null && Objects.equals(getId(), account.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

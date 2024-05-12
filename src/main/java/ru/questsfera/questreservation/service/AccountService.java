@@ -11,7 +11,6 @@ import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.repository.AccountRepository;
-import ru.questsfera.questreservation.repository.QuestRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -71,14 +70,17 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public void deleteAccount(Account account) {
-//        checkSecurityForUser(user, admin);
         accountRepository.delete(account);
     }
 
     @Transactional
-    public void checkSecurityForAccount(Account account, Company company) {
-        boolean existUserByAdmin = existAccountByCompany(account, company);
-        if (!existUserByAdmin) {
+    public void checkSecurityForAccount(Account changeAccount, Account myAccount) {
+        boolean existAccountByCompany = existAccountByCompany(changeAccount, myAccount.getCompany());
+
+        boolean haveAccess = myAccount.getRole() == Account.Role.ROLE_OWNER
+                || changeAccount.getRole() == Account.Role.ROLE_USER;
+
+        if (!existAccountByCompany || !haveAccess) {
             throw new SecurityException("Нет доступа для изменения данного пользователя");
         }
     }
