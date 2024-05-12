@@ -22,10 +22,10 @@ import ru.questsfera.questreservation.validator.SlotListValidator;
 
 import java.security.Principal;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/quests")
@@ -37,17 +37,17 @@ public class QuestController {
     private AccountService accountService;
 
 
-    @GetMapping("/quests-list")
+    @GetMapping("/")
     public String showQuestList(Principal principal, Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
-        Set<Quest> quests = account.getQuests();//TODO: account.getQuests() ?
+        Set<Quest> quests = account.getQuests();//TODO: sort for quests
 
         model.addAttribute("quests", quests);
         return "quests/quests-list";
     }
 
-    @PostMapping("/add-quest")
+    @PostMapping("/add-form")
     public String addQuest(Principal principal, Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
@@ -57,29 +57,29 @@ public class QuestController {
         questForm.setStatuses(Status.getDefaultStatuses());
         questForm.setAutoBlock(LocalTime.MIN);
         questForm.setTypeBuilder(SlotListTypeBuilder.EQUAL_DAYS);
-        questForm.setAccounts(allAccounts.stream().filter(acc -> acc.getRole() != Account.Role.ROLE_USER).toList());
+        questForm.setAccounts(new ArrayList<>(List.of(account)));
 
         SlotListMaker.addDefaultValues(questForm.getSlotList());
         String slotListJSON = SlotListMapper.createJSON(questForm.getSlotList());
 
-        model.addAttribute("quest_form", questForm);
-        model.addAttribute("type_builders", SlotListTypeBuilder.values());
-        model.addAttribute("slotlist_json", slotListJSON);
-        model.addAttribute("all_accounts", allAccounts);
-        model.addAttribute("user_statuses", Status.getUserStatuses());
+        model.addAttribute("questForm", questForm);
+        model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
+        model.addAttribute("slotListJSON", slotListJSON);
+        model.addAttribute("allAccounts", allAccounts);
+        model.addAttribute("userStatuses", Status.getUserStatuses());
 
-        return "quests/add-quest";
+        return "quests/add-quest-form";
     }
 
     @PostMapping("/save-quest")
-    public String saveQuest(@Valid @ModelAttribute("quest_form") QuestForm questForm,
+    public String saveQuest(@Valid @ModelAttribute("questForm") QuestForm questForm,
                             BindingResult binding,
                             Principal principal,
                             Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
 
-//        userService.checkSecurityForUsers(questForm.getUsers(), admin);
+        accountService.checkSecurityForAccounts(questForm.getAccounts(), account);
 
         boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompany());
         String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuilder());
@@ -106,13 +106,13 @@ public class QuestController {
 
             String slotListJSON = SlotListMapper.createJSON(questForm.getSlotList());
 
-            model.addAttribute("quest_form", questForm);
-            model.addAttribute("type_builders", SlotListTypeBuilder.values());
-            model.addAttribute("slotlist_json", slotListJSON);
-            model.addAttribute("user_statuses", Status.getUserStatuses());
-            model.addAttribute("all_accounts", accountService.getAccountsByCompany(account.getCompany()));
+            model.addAttribute("questForm", questForm);
+            model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
+            model.addAttribute("slotListJSON", slotListJSON);
+            model.addAttribute("userStatuses", Status.getUserStatuses());
+            model.addAttribute("allAccounts", accountService.getAccountsByCompany(account.getCompany()));
 
-            return "quests/add-quest";
+            return "quests/add-quest-form";
         }
 
         SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuilder());
@@ -124,15 +124,11 @@ public class QuestController {
             accountService.saveAccount(acc);
         }
 
-        return "redirect:/quests/quests-list";
+        return "redirect:/quests/";
     }
 
     @PostMapping("/quest-info")
-    public String showQuest(@RequestParam("quest") Quest quest,
-                            Principal principal, Model model) {
-
-//        Account account = accountService.getAccountByLogin(principal.getName());
-//        questService.checkSecurityForQuest(quest, admin);
+    public String showQuest(@RequestParam("quest") Quest quest, Model model) {
 
         Set<Account> accounts = new TreeSet<>((u1, u2) -> u1.getEmailLogin().compareToIgnoreCase(u2.getEmailLogin()));
         accounts.addAll(accountService.getAccountsByQuest(quest));
@@ -142,31 +138,30 @@ public class QuestController {
 
         model.addAttribute("quest", quest);
         model.addAttribute("accounts", accounts);
-        model.addAttribute("all_slot_list", allDays);
+        model.addAttribute("allSlotList", allDays);
 
         return "quests/quest-info";
     }
 
-    @PostMapping("/delete-quest")
+    @PostMapping("/delete")
     public String deleteQuest(@RequestParam("quest") Quest quest,
                               Principal principal, Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
 
         if (questService.hasReservationsByQuest(quest)) {
-//            questService.checkSecurityForQuest(quest, admin);
             model.addAttribute("quest", quest);
             return "quests/question-delete-quest";
         }
 
         questService.deleteQuest(quest, account.getCompany());
-        return "redirect:/quests/quests-list";
+        return "redirect:/quests/";
     }
 
-    @PostMapping("/delete-quest-final")
+    @PostMapping("/delete-final")
     public String deleteQuestFinal(@RequestParam("quest") Quest quest, Principal principal) {
         Account account = accountService.getAccountByLogin(principal.getName());
         questService.deleteQuest(quest, account.getCompany());
-        return "redirect:/quests/quests-list";
+        return "redirect:/quests/";
     }
 }

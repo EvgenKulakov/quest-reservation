@@ -1,88 +1,88 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Информация о квесте</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Информация о квесте</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
 
 <section class="container">
-    <h2 th:text="'Название квеста: ' + ${quest.questName}"></h2>
+  <h2 th:text="'Название квеста: ' + ${quest.questName}"></h2>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Кол-во человек</th>
-            <th>Используемые статусы</th>
-            <th>Автоблокировка</th>
-            <th>Назначеные пользователи</th>
-            <th>Синхронизированные квесты</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td th:text="${quest.minPersons} + ' - ' + ${quest.maxPersons}"></td>
-            <td>
-                <table>
-                    <tr th:each="status : ${quest.statuses}">
-                        <td th:text="${status.type.text}"></td>
-                    </tr>
-                </table>
-            </td>
-            <td th:text="${#temporals.format(quest.autoBlock, 'HH:mm')}"></td>
-            <td th:switch="${#lists.isEmpty(accounts)}">
-                <p th:case="${true}">Нет назначенных пользователей</p>
-                <table th:case="${false}">
-                    <tr th:each="account : ${accounts}">
-                        <td th:text="${account.firstName} + ' ' + ${account.lastName}"></td>
-                    </tr>
-                </table>
-            </td>
-            <td th:switch="${#lists.isEmpty(quest.synchronizedQuests)}">
-                <p th:case="${true}">Нет синхронизированных квестов</p>
-                <table th:case="*">
-                    <tr th:each="synchQuest : ${quest.synchronizedQuests}">
-                        <td th:text="${synchQuest.questName}"></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <h3>Сетка квеста</h3>
-
-    <th:block th:switch="${all_slot_list == null}">
-        <h4 th:case="${true}">Сетка квеста не задана</h4>
-
-        <table th:case="${false}" class="table">
-            <thead>
-            <tr>
-                <th>Понедельник</th>
-                <th>Вторник</th>
-                <th>Среда</th>
-                <th>Четверг</th>
-                <th>Пятница</th>
-                <th>Суббота</th>
-                <th>Воскресенье</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td th:each="slot_list : ${all_slot_list}">
-                    <table>
-                        <tr th:each="slot : ${slot_list}">
-                            <td th:text="${slot.time} + ' - ' + ${slot.price} + '₽'"></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            </tbody>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Кол-во человек</th>
+      <th>Используемые статусы</th>
+      <th>Автоблокировка</th>
+      <th>Назначеные пользователи</th>
+      <th>Синхронизированные квесты</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td th:text="${quest.minPersons} + ' - ' + ${quest.maxPersons}"></td>
+      <td>
+        <table>
+          <tr th:each="status : ${quest.statuses}">
+            <td th:text="${status.type.text}"></td>
+          </tr>
         </table>
-    </th:block>
+      </td>
+      <td th:text="${#temporals.format(quest.autoBlock, 'HH:mm')}"></td>
+      <td th:switch="${#lists.isEmpty(accounts)}">
+        <p th:case="${true}">Нет назначенных пользователей</p>
+        <table th:case="${false}">
+          <tr th:each="account : ${accounts}">
+            <td th:text="${account.firstName} + ' ' + ${account.lastName}"></td>
+          </tr>
+        </table>
+      </td>
+      <td th:switch="${#lists.isEmpty(quest.synchronizedQuests)}">
+        <p th:case="${true}">Нет синхронизированных квестов</p>
+        <table th:case="*">
+          <tr th:each="synchQuest : ${quest.synchronizedQuests}">
+            <td th:text="${synchQuest.questName}"></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <h3>Сетка квеста</h3>
+
+  <th:block th:switch="${allSlotList == null}">
+    <h4 th:case="${true}">Сетка квеста не задана</h4>
+
+    <table th:case="${false}" class="table">
+      <thead>
+      <tr>
+        <th>Понедельник</th>
+        <th>Вторник</th>
+        <th>Среда</th>
+        <th>Четверг</th>
+        <th>Пятница</th>
+        <th>Суббота</th>
+        <th>Воскресенье</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td th:each="slotList : ${allSlotList}">
+          <table>
+            <tr th:each="slot : ${slotList}">
+              <td th:text="${slot.time} + ' - ' + ${slot.price} + '₽'"></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </th:block>
 </section>
 </body>
 </html>

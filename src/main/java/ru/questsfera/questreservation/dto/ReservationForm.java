@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.questsfera.questreservation.validator.Patterns;
-import ru.questsfera.questreservation.validator.SwitchValidator;
+import ru.questsfera.questreservation.validator.ValidType;
 
 @Getter
 @Setter
@@ -18,27 +18,27 @@ public class ReservationForm {
 
     private StatusType statusType;
 
-    @NotBlank(message = "*Обязательное поле", groups = SwitchValidator.SaveReserve.class)
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = SwitchValidator.BlockSlot.class)
+    @NotBlank(message = "*Обязательное поле", groups = ValidType.SaveReserve.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = ValidType.BlockSlot.class)
     private String firstName;
 
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = SwitchValidator.BlockSlot.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = ValidType.BlockSlot.class)
     private String lastName;
 
     @Pattern(regexp = Patterns.PHONE,
             message = "*Введите номер телефона в формате +7хххххххххх",
-            groups = SwitchValidator.SaveReserve.class)
-    @Size(max = 2, message = ERROR_BLOCK_MESSAGE, groups = SwitchValidator.BlockSlot.class)
+            groups = ValidType.SaveReserve.class)
+    @Size(max = 2, message = ERROR_BLOCK_MESSAGE, groups = ValidType.BlockSlot.class)
     private String phone = "+7";
 
     @Pattern(regexp = Patterns.EMAIL_OR_EMPTY,
-            message = "*Проверьте правильное написание Email", groups = SwitchValidator.SaveReserve.class)
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = SwitchValidator.BlockSlot.class)
+            message = "*Проверьте правильное написание Email", groups = ValidType.SaveReserve.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = ValidType.BlockSlot.class)
     private String email;
 
     private Integer countPersons;
 
-    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = SwitchValidator.BlockSlot.class)
+    @Size(max = 0, message = ERROR_BLOCK_MESSAGE, groups = ValidType.BlockSlot.class)
     private String adminComment;
 
     private String clientComment;

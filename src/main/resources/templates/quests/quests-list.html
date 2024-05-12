@@ -1,45 +1,50 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
-    <meta charset="UTF-8">
-    <title>Список ваших квестов</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/list-quests-accounts.css}" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Список ваших квестов</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/css/list-quests-accounts.css}" rel="stylesheet">
 </head>
 <body>
 <header th:insert="~{header-fragment :: head}"></header>
 
 <section class="container">
 
-    <table>
-        <thead>
-        <form th:action="@{/quests/add-quest}" method="post">
-            <h3 class="add-quest">Список ваших квестов
-                <button class="btn btn-outline-primary" type="submit">+ Добавить квест</button>
-            </h3>
+  <table>
+    <thead>
+    <form th:action="@{/quests/add-form}" method="post">
+      <h3 class="add-quest">Список ваших квестов
+        <th:block sec:authorize="hasRole('OWNER')">
+          <button class="btn btn-outline-primary" type="submit">+ Добавить квест</button>
+        </th:block>
+      </h3>
+    </form>
+    </thead>
+    <tbody>
+    <tr class="quest-functions" th:each="quest : ${quests}">
+      <td>
+        <h3 class="quest-text" th:text="${quest.questName}"></h3>
+      </td>
+      <td>
+        <form class="buttons" th:action="@{/quests/quest-info}" method="post">
+          <input type="hidden" name="quest" th:value="${quest.id}">
+          <button class="btn btn-secondary" type="submit">Подробнее</button>
         </form>
-        </thead>
-        <tbody>
-        <tr class="quest-functions" th:each="quest : ${quests}">
-            <td>
-                <h3 class="quest-text" th:text="${quest.questName}"></h3>
-            </td>
-            <td>
-                <form class="buttons" th:action="@{/quests/quest-info}" method="post">
-                    <input type="hidden" name="quest" th:value="${quest.id}">
-                    <button class="btn btn-secondary" type="submit">Подробнее</button>
-                </form>
-            </td>
-            <td>
-                <form class="buttons" th:action="@{/quests/delete-quest}" method="post">
-                    <input type="hidden" name="quest" th:value="${quest.id}">
-                    <button class="btn btn-danger" type="submit">Удалить</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+      </td>
+      <td>
+        <th:block sec:authorize="hasRole('OWNER')">
+          <form class="buttons" th:action="@{/quests/delete}" method="post">
+            <input type="hidden" name="quest" th:value="${quest.id}">
+            <button class="btn btn-danger" type="submit">Удалить</button>
+          </form>
+        </th:block>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 
 </section>
 </body>

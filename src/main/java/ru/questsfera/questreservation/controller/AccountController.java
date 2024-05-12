@@ -13,7 +13,7 @@ import ru.questsfera.questreservation.processor.PasswordGenerator;
 import ru.questsfera.questreservation.service.AccountService;
 import ru.questsfera.questreservation.service.QuestService;
 import ru.questsfera.questreservation.validator.Patterns;
-import ru.questsfera.questreservation.validator.SwitchValidator;
+import ru.questsfera.questreservation.validator.ValidType;
 
 import java.security.Principal;
 import java.util.List;
@@ -75,7 +75,7 @@ public class AccountController {
     }
 
     @PostMapping("/save-account")
-    public String saveAccount(@Validated(SwitchValidator.NoRegistration.class)
+    public String saveAccount(@Validated(ValidType.NoRegistration.class)
                               @ModelAttribute("account") Account account,
                               BindingResult bindingResult,
                               Principal principal,
@@ -148,7 +148,7 @@ public class AccountController {
     }
 
     @PostMapping("/delete")
-    public String deleteUser(@RequestParam("account") Account account, Principal principal) {
+    public String deleteAccount(@RequestParam("account") Account account, Principal principal) {
         Account myAccount = accountService.getAccountByLogin(principal.getName());
         accountService.checkSecurityForAccount(account, myAccount);
         accountService.deleteAccount(account);

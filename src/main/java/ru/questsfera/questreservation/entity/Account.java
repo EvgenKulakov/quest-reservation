@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.questsfera.questreservation.validator.Patterns;
-import ru.questsfera.questreservation.validator.SwitchValidator;
+import ru.questsfera.questreservation.validator.ValidType;
 
 import java.util.Objects;
 import java.util.Set;
@@ -26,15 +26,17 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание Email")
+    @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание Email",
+            groups = {ValidType.Registration.class, ValidType.NoRegistration.class})
     @Column(name = "email_login")
     private String emailLogin;
 
-    @Pattern(regexp = Patterns.PASSWORD, message = "*Пароль минимум 8 символов без пробелов")
+    @Pattern(regexp = Patterns.PASSWORD, message = "*Пароль минимум 8 символов без пробелов",
+            groups = {ValidType.Registration.class, ValidType.NoRegistration.class})
     @Column(name = "password")
     private String password;
 
-    @NotBlank(message = "*Обязательное поле", groups = SwitchValidator.NoRegistration.class)
+    @NotBlank(message = "*Обязательное поле", groups = ValidType.NoRegistration.class)
     @Column(name = "first_name")
     private String firstName;
 

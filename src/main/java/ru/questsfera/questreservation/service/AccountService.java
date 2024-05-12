@@ -84,4 +84,12 @@ public class AccountService implements UserDetailsService {
             throw new SecurityException("Нет доступа для изменения данного пользователя");
         }
     }
+
+    @Transactional
+    public void checkSecurityForAccounts(List<Account> changeAccounts, Account myAccount) {
+        List<Account> usersByAdmin = getAccountsByCompany(myAccount.getCompany());
+        if (!usersByAdmin.containsAll(changeAccounts)) {
+            throw new SecurityException("Нет доступа для изменения данных пользователей");
+        }
+    }
 }
