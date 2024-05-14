@@ -17,7 +17,7 @@
 
     <div th:case="${true}" class="container-fluid mt-4">
       <div sec:authorize="hasAnyRole('ADMIN', 'OWNER')">
-        <form th:action="@{/quests/quests-list}" method="get">
+        <form th:action="@{/quests/}" method="get">
           <h6 class="add-quest">Перейдите во вкладку Квесты, чтобы добавить квест
             <button class="btn btn-outline-primary" type="submit">Редактировать квесты →</button>
           </h6>
