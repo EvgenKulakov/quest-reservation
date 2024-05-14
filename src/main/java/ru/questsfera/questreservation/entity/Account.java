@@ -27,16 +27,16 @@ public class Account {
     private Integer id;
 
     @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание Email",
-            groups = {ValidType.Registration.class, ValidType.NoRegistration.class})
+            groups = {ValidType.Registration.class, ValidType.AccountForm.class})
     @Column(name = "email_login")
     private String emailLogin;
 
     @Pattern(regexp = Patterns.PASSWORD, message = "*Пароль минимум 8 символов без пробелов",
-            groups = {ValidType.Registration.class, ValidType.NoRegistration.class})
+            groups = {ValidType.Registration.class, ValidType.AccountForm.class})
     @Column(name = "password")
     private String password;
 
-    @NotBlank(message = "*Обязательное поле", groups = ValidType.NoRegistration.class)
+    @NotBlank(message = "*Обязательное поле", groups = ValidType.AccountForm.class)
     @Column(name = "first_name")
     private String firstName;
 

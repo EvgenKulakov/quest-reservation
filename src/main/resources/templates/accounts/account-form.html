@@ -24,6 +24,7 @@
       <div class="col-8">
         <input type="text" maxlength="100" class="form-control" id="input-email" th:field="*{emailLogin}">
         <div class="error-message" th:if="${#fields.hasErrors('emailLogin')}" th:errors="*{emailLogin}"></div>
+        <input type="hidden" name="oldLogin" th:value="${account.emailLogin}">
       </div>
     </div>
 

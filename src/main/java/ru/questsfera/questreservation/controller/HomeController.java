@@ -13,6 +13,8 @@ import ru.questsfera.questreservation.service.AccountService;
 import ru.questsfera.questreservation.service.CompanyService;
 import ru.questsfera.questreservation.validator.ValidType;
 
+import java.math.BigDecimal;
+
 @Controller
 public class HomeController {
 
@@ -60,7 +62,7 @@ public class HomeController {
         }
 
         Company company = account.getCompany();
-        company.setMoney(10000.00); //default
+        company.setMoney(new BigDecimal("10000.00")); //default
         companyService.saveCompany(company);
 
         String passwordHash = PasswordGenerator.createBCrypt(account.getPassword());

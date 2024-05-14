@@ -75,23 +75,25 @@ public class AccountController {
     }
 
     @PostMapping("/save-account")
-    public String saveAccount(@Validated(ValidType.NoRegistration.class)
+    public String saveAccount(@Validated(ValidType.AccountForm.class)
                               @ModelAttribute("account") Account account,
                               BindingResult bindingResult,
+                              @RequestParam("oldLogin") String oldLogin,
                               Principal principal,
                               Model model) {
 
         Account myAccount = accountService.getAccountByLogin(principal.getName());
         if (account.getId() != null) accountService.checkSecurityForAccount(account, myAccount);
 
-        boolean existsUsername = accountService.existAccountByLogin(account.getEmailLogin()) && account.getId() == null;
-        if (existsUsername) {
-            String errorMessage = "Аккаунт " + account.getEmailLogin() + " уже существует";
-            bindingResult.rejectValue("emailLogin", "errorCode", errorMessage);
+        if (!account.getEmailLogin().equals(oldLogin)) {
+            boolean existsUsername = accountService.existAccountByLogin(account.getEmailLogin());
+            if (existsUsername) {
+                String errorMessage = "Аккаунт " + account.getEmailLogin() + " уже существует";
+                bindingResult.rejectValue("emailLogin", "errorCode", errorMessage);
+            }
         }
 
         if (bindingResult.hasErrors()) {
-
             List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany());
             Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 

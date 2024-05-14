@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class Company {
     private String name;
 
     @Column(name = "money")
-    private Double money;
+    private BigDecimal money;
 
     @OneToMany(mappedBy = "company")
     private Set<Client> clients = new HashSet<>();

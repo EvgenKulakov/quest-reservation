@@ -6,7 +6,7 @@ public interface ValidType {
 
     interface BlockSlot {}
 
-    interface NoRegistration {}
+    interface AccountForm {}
 
     interface Registration {}
 }

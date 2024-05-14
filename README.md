@@ -1,21 +1,22 @@
 # Система бронирования квестов: Web Application (alpha)
 
 ## Особенности приложения:
-+ Разный доступ для редактирования 
-+ Создание схемы квеста для роли Admin
-+ Управление пользователями для роли Admin
-+ Отменённые бронирования не удаляются из БД
++ Приложение создаётся как B2B SaaS 
++ Возможность создания схемы квеста для роли Owner
++ Управление пользователями для ролей Owner и Admin
++ Сохранение и мониторинг клиентов
++ Подсчёт и контроль финансов
++ API для интеграции с другими сайтами
 
 ## Stack:
 ```
-Java 17, MySQL, Spring Boot 3, Spring Data JPA, Spring Security 6, 
+Java 17, MySQL, Spring Boot 3, Spring Data JPA, FlyWay, Spring Security 6, 
 Spring MVC, Hibernate Validator, Thymeleaf, BootStrap 5, Docker
 ```
 ***
 
 ### Сделанная часть: 
 Взаимодействие с БД, часть view, валидация, security
-
 
 ### В разработке: 
 View, refactoring, внешний виджет
@@ -28,9 +29,7 @@ View, refactoring, внешний виджет
 
 ### Сервер:
 >__Сборка:__
-MySQL и Spring Boot в двух отдельных Docker контейнерах на общей сети network
+MySQL и Spring Boot в Docker контейнерах
 > 
 >__Ссылка на сервер:__ 
-> <a href="http://195.80.51.184" target="_blank">quest-reservations</a>
-> 
->__Логин/пароль от тестового аккаунта:__ _admin_
+> <a href="http://82.97.248.165" target="_blank">http://82.97.248.165</a>
