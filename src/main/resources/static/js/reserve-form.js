@@ -72,6 +72,9 @@ function showReservation(slot, quest) {
     if (errorMessages.length > 0) {
         selectStatus.value = changeStatus.value
         selectCountPersons.value = changeCountPersons.value
+        if (slot.reservation) {
+            blockButton.style.display = 'none'
+        }
     } else if (slot.reservation) {
         const reservation = slot.reservation
         const client = reservation.client

@@ -150,7 +150,7 @@ public class ReservationController {
     }
 
     @PostMapping("/unBlock")
-    public String deleteBlockReserve(@RequestParam("slot") String slotJSON, Principal principal) {
+    public String deleteBlockReserve(@RequestParam("slot") String slotJSON) {
 
         Slot slot = SlotMapper.createSlotObject(slotJSON);
         Reservation reservation = reservationService.getReserveById(slot.getReservation().getId());

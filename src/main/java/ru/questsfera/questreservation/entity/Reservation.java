@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.questsfera.questreservation.dto.StatusType;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -51,8 +52,11 @@ public class Reservation {
     @Column(name = "source_reserve")
     private String sourceReserve;
 
+    @Column(name = "price")
+    private BigDecimal price;
+
     @Column(name = "changed_price")
-    private Integer changedPrice;
+    private BigDecimal changedPrice;
 
     @ManyToOne
     @JoinColumn(name = "client_id")

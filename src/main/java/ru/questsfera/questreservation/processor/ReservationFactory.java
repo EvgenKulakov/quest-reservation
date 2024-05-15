@@ -5,6 +5,7 @@ import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Reservation;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class ReservationFactory {
@@ -16,6 +17,7 @@ public class ReservationFactory {
         reservation.setDateAndTimeCreated(LocalDateTime.now());
         reservation.setQuest(slot.getQuest());
         reservation.setStatusType(resForm.getStatusType());
+        reservation.setPrice(new BigDecimal(slot.getPrice()));
         reservation.setCountPersons(resForm.getCountPersons());
         reservation.setAdminComment(resForm.getAdminComment());
         reservation.setClientComment(resForm.getClientComment());
