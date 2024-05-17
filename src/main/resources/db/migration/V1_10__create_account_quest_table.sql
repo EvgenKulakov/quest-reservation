@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS account_quest
 (
-    account_id  int NOT NULL,
-    quest_id int NOT NULL,
+    account_id int NOT NULL,
+    quest_id   int NOT NULL,
     PRIMARY KEY (account_id, quest_id),
     KEY account_quest_account_id_fk (account_id),
     KEY account_quest_quest_id_fk (quest_id),

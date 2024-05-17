@@ -9,5 +9,10 @@ CREATE TABLE IF NOT EXISTS statuses
   COLLATE = utf8mb4_0900_ai_ci;
 
 LOCK TABLES `statuses` WRITE;
-INSERT INTO `statuses` VALUES (1,'NEW_RESERVE','Новый'),(2,'CANCEL','Отменён'),(3,'CONFIRMED','Подтверждён'),(4,'NOT_COME','Не пришёл'),(5,'COMPLETED','Завершён');
+INSERT INTO `statuses`
+VALUES (1, 'NEW_RESERVE', 'Новый'),
+       (2, 'CANCEL', 'Отменён'),
+       (3, 'CONFIRMED', 'Подтверждён'),
+       (4, 'NOT_COME', 'Не пришёл'),
+       (5, 'COMPLETED', 'Завершён');
 UNLOCK TABLES;

@@ -5,6 +5,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.questsfera.questreservation.cache.object.ReservationCache;
+import ru.questsfera.questreservation.cache.service.CacheService;
 import ru.questsfera.questreservation.converter.SlotMapper;
 import ru.questsfera.questreservation.dto.*;
 import ru.questsfera.questreservation.entity.*;
@@ -32,6 +34,8 @@ public class ReservationController {
     private ReservationService reservationService;
     @Autowired
     private QuestService questService;
+    @Autowired
+    private CacheService cacheService;
 
     private Map<String, List<Slot>> questsAndSlots = new LinkedHashMap<>();
     private Set<StatusType> useStatuses = new TreeSet<>();
@@ -122,6 +126,8 @@ public class ReservationController {
         reservation.setTimeLastChange(LocalDateTime.now());
         reservation.setHistoryMessages("default"); //TODO: history message
         reservationService.saveReservation(reservation);
+        ReservationCache cache = new ReservationCache(reservation);
+        cacheService.save(cache);
 
         return "redirect:/reservations/slot-list/?date=" + date;
     }

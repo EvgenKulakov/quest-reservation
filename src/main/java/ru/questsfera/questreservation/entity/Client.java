@@ -27,12 +27,15 @@ public class Client {
     @Column(name = "last_name")
     private String lastName;
 
-    //TODO: phones and emails
+    //TODO: phones and emails: новая таблица: связь с клиентами и бронированиями
     @Column(name = "phone")
     private String phones;
 
     @Column(name = "email")
     private String emails;
+
+    @Column(name = "comments")
+    private String comments;
 
     @OneToOne
     @JoinColumn(name = "blacklist_id")

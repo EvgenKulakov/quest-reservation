@@ -1,14 +1,9 @@
 package ru.questsfera.questreservation.cache.object;
 
-import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
 import ru.questsfera.questreservation.dto.StatusType;
-import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Quest;
+import ru.questsfera.questreservation.entity.Reservation;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,11 +11,10 @@ import java.time.LocalTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class ReservationCache {
+public class ReservationCache implements Cache {
 
-    private Long id;
+    private String cacheId;
     private LocalDate dateReserve;
     private LocalTime timeReserve;
     private LocalDateTime dateAndTimeCreated;
@@ -36,4 +30,23 @@ public class ReservationCache {
     private String adminComment;
     private String clientComment;
     private String historyMessages;
+
+    public ReservationCache(Reservation reservation) {
+        this.cacheId = "reservation:%d".formatted(reservation.getId());
+        this.dateReserve = reservation.getDateReserve();
+        this.timeReserve = reservation.getTimeReserve();
+        this.dateAndTimeCreated = reservation.getDateAndTimeCreated();
+        this.timeLastChange = reservation.getTimeLastChange();
+        this.changedSlotTime = reservation.getChangedSlotTime();
+        this.questId = reservation.getQuest().getId();
+        this.statusType = reservation.getStatusType();
+        this.sourceReserve = reservation.getSourceReserve();
+        this.price = reservation.getPrice();
+        this.changedPrice = reservation.getChangedPrice();
+        this.clientId = reservation.getClient().getId();
+        this.countPersons = reservation.getCountPersons();
+        this.adminComment = reservation.getAdminComment();
+        this.clientComment = reservation.getClientComment();
+        this.historyMessages = reservation.getHistoryMessages();
+    }
 }

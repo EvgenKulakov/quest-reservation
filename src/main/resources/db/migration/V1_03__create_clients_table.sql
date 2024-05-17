@@ -2,9 +2,10 @@ CREATE TABLE IF NOT EXISTS clients
 (
     id           int NOT NULL AUTO_INCREMENT,
     first_name   varchar(25) DEFAULT NULL,
-    last_name    varchar(25) DEFAULT NULL,
+    last_name    varchar(30) DEFAULT NULL,
     phone        varchar(12) DEFAULT NULL,
-    email        varchar(45) DEFAULT NULL,
+    email        varchar(50) DEFAULT NULL,
+    comments     text        DEFAULT NULL,
     blacklist_id int         DEFAULT NULL,
     company_id   int NOT NULL,
     PRIMARY KEY (id),
