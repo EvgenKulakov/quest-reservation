@@ -54,7 +54,7 @@ public class Account {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "account_quest",
             joinColumns = @JoinColumn(name = "account_id"),
             inverseJoinColumns = @JoinColumn(name = "quest_id"))

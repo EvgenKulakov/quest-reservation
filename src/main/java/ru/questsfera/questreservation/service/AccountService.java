@@ -53,6 +53,11 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
+    public List<Account> findAll() {
+        return accountRepository.findAll();
+    }
+
+    @Transactional
     public boolean existAccountByLogin(String emailLogin) {
         if (emailLogin.isEmpty()) return false;
         return accountRepository.existsAccountByEmailLogin(emailLogin);

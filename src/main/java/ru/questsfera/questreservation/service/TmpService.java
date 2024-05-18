@@ -38,22 +38,7 @@ public class TmpService {
 //        status.deleteQuestForStatus(quest);
     }
 
-    @Transactional
-    public Set<Status> getStatusesByQuest(Quest quest) {
-        return quest.getStatuses();
-    }
-
     //***BlackList
-    @Transactional
-    public List<BlackList> getAllBlackLists() {
-        return blackListRepository.findAll();
-    }
-
-    @Transactional
-    public Set<BlackList> getBlackListsByCompany(Company company) {
-        return company.getBlackLists();
-    }
-
     @Transactional
     public void saveBlackList(Company company, Client client, BlackList blackList) {
         if (!client.getCompany().equals(company)) {
@@ -75,17 +60,6 @@ public class TmpService {
 //        client.deleteBlackListForClient();
     }
 
-    //***Clients
-    @Transactional
-    public Set<Client> getClientsByCompany(Company company) {
-        return company.getClients();
-    }
-
-    @Transactional
-    public Client getClientByReserve(Reservation reservation) {
-        return reservation.getClient();
-    }
-
     //***Moderator
     @Transactional
     public Account getUserById(Integer id) {
@@ -103,11 +77,6 @@ public class TmpService {
             return optionalQuest.get();
         }
         throw new RuntimeException("Попытка получить несуществующий квест");
-    }
-
-    @Transactional
-    public void saveStatus(Status status) {
-        statusRepository.save(status);
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package ru.questsfera.questreservation.cache.object;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -8,13 +9,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class ReservationCache implements Cache {
 
-    private String cacheId;
+    private Long id;
     private LocalDate dateReserve;
     private LocalTime timeReserve;
     private LocalDateTime dateAndTimeCreated;
@@ -25,14 +27,14 @@ public class ReservationCache implements Cache {
     private String sourceReserve;
     private BigDecimal price;
     private BigDecimal changedPrice;
-    private Integer clientId;
+    private ClientCache clientCache;
     private Integer countPersons;
     private String adminComment;
     private String clientComment;
     private String historyMessages;
 
     public ReservationCache(Reservation reservation) {
-        this.cacheId = "reservation:%d".formatted(reservation.getId());
+        this.id = reservation.getId();
         this.dateReserve = reservation.getDateReserve();
         this.timeReserve = reservation.getTimeReserve();
         this.dateAndTimeCreated = reservation.getDateAndTimeCreated();
@@ -43,10 +45,19 @@ public class ReservationCache implements Cache {
         this.sourceReserve = reservation.getSourceReserve();
         this.price = reservation.getPrice();
         this.changedPrice = reservation.getChangedPrice();
-        this.clientId = reservation.getClient().getId();
+        this.clientCache = new ClientCache(reservation.getClient());
         this.countPersons = reservation.getCountPersons();
         this.adminComment = reservation.getAdminComment();
         this.clientComment = reservation.getClientComment();
         this.historyMessages = reservation.getHistoryMessages();
+    }
+
+    @Override
+    @JsonIgnore
+    public String getCacheId() {
+        return String.format("reserve:[quest:%d][datetime:%s-%s]",
+                this.getQuestId(),
+                this.getDateReserve().format(DateTimeFormatter.ofPattern("dd-MM")),
+                this.getTimeReserve().format(DateTimeFormatter.ofPattern("HH-mm")));
     }
 }

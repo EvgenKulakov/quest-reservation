@@ -45,7 +45,7 @@ public class Client {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Reservation> reservations = new ArrayList<>();
 

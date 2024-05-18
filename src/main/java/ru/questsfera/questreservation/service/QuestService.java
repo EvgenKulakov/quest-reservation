@@ -38,6 +38,11 @@ public class QuestService {
     }
 
     @Transactional
+    public List<Quest> findAll() {
+        return questRepository.findAll();
+    }
+
+    @Transactional
     public boolean existQuestNameByCompany(String questName, Company company) {
         return questRepository.existsQuestByQuestNameAndCompany(questName, company);
     }

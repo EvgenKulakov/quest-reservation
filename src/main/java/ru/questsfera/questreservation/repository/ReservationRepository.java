@@ -9,6 +9,7 @@ import ru.questsfera.questreservation.entity.Reservation;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.LinkedList;
+import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
@@ -29,4 +30,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("dateReserve") LocalDate dateReserve,
             @Param("timeReserve") LocalTime timeReserve
     );
+
+    List<Reservation> findAllByQuestAndDateReserve(Quest quest, LocalDate date);
+
+    List<Reservation> findAllByQuestAndDateReserveIn(Quest quest, List<LocalDate> dates);
 }

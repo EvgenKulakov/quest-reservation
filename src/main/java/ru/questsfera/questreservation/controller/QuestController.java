@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.cache.object.QuestCache;
-import ru.questsfera.questreservation.cache.service.CacheService;
+import ru.questsfera.questreservation.cache.service.RedisService;
 import ru.questsfera.questreservation.dto.QuestForm;
 import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.SlotListTypeBuilder;
@@ -38,7 +38,7 @@ public class QuestController {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private CacheService cacheService;
+    private RedisService redisService;
 
 
     @GetMapping("/")
@@ -129,7 +129,7 @@ public class QuestController {
         }
 
         QuestCache questCache = new QuestCache(quest);
-        cacheService.save(questCache);
+        redisService.save(questCache);
 
         return "redirect:/quests/";
     }

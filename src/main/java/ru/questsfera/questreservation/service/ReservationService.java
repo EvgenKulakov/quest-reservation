@@ -11,7 +11,10 @@ import ru.questsfera.questreservation.repository.ReservationRepository;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -33,6 +36,14 @@ public class ReservationService {
     @Transactional
     public LinkedList<Reservation> getReservationsByDate(Quest quest, LocalDate date) {
         return reservationRepository.findAllByQuestAndDateReserveOrderByTimeReserve(quest, date);
+    }
+
+    @Transactional
+    public Map<LocalDate, List<Reservation>> findAllByQuestAndDates(Quest quest, List<LocalDate> dates) {
+
+        List<Reservation> reservations = reservationRepository.findAllByQuestAndDateReserveIn(quest, dates);
+
+        return reservations.stream().collect(Collectors.groupingBy(Reservation::getDateReserve));
     }
 
     @Transactional

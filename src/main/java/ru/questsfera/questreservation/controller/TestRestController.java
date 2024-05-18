@@ -5,7 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.questsfera.questreservation.cache.repository.CacheRepository;
+import ru.questsfera.questreservation.cache.repository.RedisRepository;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -23,7 +23,7 @@ public class TestRestController {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private CacheRepository cacheRepository;
+    private RedisRepository redisRepository;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 

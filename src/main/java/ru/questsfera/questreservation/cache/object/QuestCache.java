@@ -1,5 +1,6 @@
 package ru.questsfera.questreservation.cache.object;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class QuestCache implements Cache {
 
-    private String cacheId;
+    private Integer id;
     private String questName;
     private Integer minPersons;
     private Integer maxPersons;
@@ -26,10 +27,10 @@ public class QuestCache implements Cache {
     private SlotList slotList;
     private Integer companyId;
     private Set<Status> statuses;
-    private Set<String> synchronizedQuestIds;
+    private Set<Integer> synchronizedQuestIds;
 
     public QuestCache(Quest quest) {
-        this.cacheId = "quest:%d".formatted(quest.getId());
+        this.id = quest.getId();
         this.questName = quest.getQuestName();
         this.minPersons = quest.getMinPersons();
         this.maxPersons = quest.getMaxPersons();
@@ -38,9 +39,12 @@ public class QuestCache implements Cache {
         this.slotList = SlotListMapper.createObject(quest.getSlotList());
         this.companyId = quest.getCompany().getId();
         this.statuses = quest.getStatuses();
-        this.synchronizedQuestIds = quest.getSynchronizedQuests()
-                .stream()
-                .map(q -> "quest:%d".formatted(q.getId()))
-                .collect(Collectors.toSet());
+        this.synchronizedQuestIds = quest.getSynchronizedQuests().stream().map(Quest::getId).collect(Collectors.toSet());
+    }
+
+    @Override
+    @JsonIgnore
+    public String getCacheId() {
+        return "quest:%d".formatted(this.getId());
     }
 }
