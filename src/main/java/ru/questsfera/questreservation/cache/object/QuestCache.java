@@ -47,4 +47,9 @@ public class QuestCache implements Cache {
     public String getCacheId() {
         return "quest:%d".formatted(this.getId());
     }
+
+    @JsonIgnore
+    public static String getCacheId(Integer questId) {
+        return "quest:%d".formatted(questId);
+    }
 }

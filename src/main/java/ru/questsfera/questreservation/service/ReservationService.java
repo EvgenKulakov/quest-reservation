@@ -3,6 +3,7 @@ package ru.questsfera.questreservation.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -39,11 +40,19 @@ public class ReservationService {
     }
 
     @Transactional
-    public Map<LocalDate, List<Reservation>> findAllByQuestAndDates(Quest quest, List<LocalDate> dates) {
+    public Map<LocalDate, List<Reservation>> findActiveByQuestAndDates(Quest quest, List<LocalDate> dates) {
 
         List<Reservation> reservations = reservationRepository.findAllByQuestAndDateReserveIn(quest, dates);
 
-        return reservations.stream().collect(Collectors.groupingBy(Reservation::getDateReserve));
+        return reservations
+                .stream()
+                .filter(reservation -> reservation.getStatusType() != StatusType.CANCEL)
+                .collect(Collectors.groupingBy(Reservation::getDateReserve));
+    }
+
+    @Transactional
+    public List<Reservation> findAllByListId(List<Long> ids) {
+        return reservationRepository.findAllByIdIn(ids);
     }
 
     @Transactional

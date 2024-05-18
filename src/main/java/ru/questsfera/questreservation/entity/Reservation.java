@@ -71,6 +71,7 @@ public class Reservation {
     @Column(name = "client_comment")
     private String clientComment;
 
+    //TODO: new table historyMessages
     @Column(name = "history_messages")
     private String historyMessages;
 

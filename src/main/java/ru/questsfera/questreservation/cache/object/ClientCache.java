@@ -43,4 +43,9 @@ public class ClientCache implements Cache {
     public String getCacheId() {
         return "client:%d".formatted(this.getId());
     }
+
+    @JsonIgnore
+    public static String getCacheId(Integer clientId) {
+        return "client:%d".formatted(clientId);
+    }
 }

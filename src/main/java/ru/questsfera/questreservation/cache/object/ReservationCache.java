@@ -27,7 +27,7 @@ public class ReservationCache implements Cache {
     private String sourceReserve;
     private BigDecimal price;
     private BigDecimal changedPrice;
-    private ClientCache clientCache;
+    private Integer clientId;
     private Integer countPersons;
     private String adminComment;
     private String clientComment;
@@ -45,7 +45,7 @@ public class ReservationCache implements Cache {
         this.sourceReserve = reservation.getSourceReserve();
         this.price = reservation.getPrice();
         this.changedPrice = reservation.getChangedPrice();
-        this.clientCache = new ClientCache(reservation.getClient());
+        this.clientId = reservation.getClient() != null ? reservation.getClient().getId() : null;
         this.countPersons = reservation.getCountPersons();
         this.adminComment = reservation.getAdminComment();
         this.clientComment = reservation.getClientComment();
@@ -59,5 +59,13 @@ public class ReservationCache implements Cache {
                 this.getQuestId(),
                 this.getDateReserve().format(DateTimeFormatter.ofPattern("dd-MM")),
                 this.getTimeReserve().format(DateTimeFormatter.ofPattern("HH-mm")));
+    }
+
+    @JsonIgnore
+    public static String getCacheId(Integer questId, LocalDate dateReserve, LocalTime timeReserve) {
+        return String.format("reserve:[quest:%d][datetime:%s-%s]",
+                questId,
+                dateReserve.format(DateTimeFormatter.ofPattern("dd-MM")),
+                timeReserve.format(DateTimeFormatter.ofPattern("HH-mm")));
     }
 }

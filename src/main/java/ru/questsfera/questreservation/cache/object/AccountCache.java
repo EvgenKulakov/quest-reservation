@@ -42,4 +42,9 @@ public class AccountCache implements Cache {
     public String getCacheId() {
         return "account:%d".formatted(this.getId());
     }
+
+    @JsonIgnore
+    public static String getCacheId(Integer accountId) {
+        return "account:%d".formatted(accountId);
+    }
 }

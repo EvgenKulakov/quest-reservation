@@ -4,13 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.questsfera.questreservation.cache.object.AccountCache;
+import ru.questsfera.questreservation.cache.object.ClientCache;
 import ru.questsfera.questreservation.cache.object.QuestCache;
 import ru.questsfera.questreservation.cache.object.ReservationCache;
-import ru.questsfera.questreservation.cache.repository.RedisRepository;
 import ru.questsfera.questreservation.cache.service.RedisService;
+import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -33,15 +36,13 @@ public class RedisCacheInitializer {
     @Autowired
     private RedisService redisService;
     @Autowired
-    private RedisRepository redisRepository;
-    //TODO: logger
+    private ObjectMapper mapper;
+
+    private Logger logger = LoggerFactory.getLogger(RedisCacheInitializer.class);
 
 
     @PostConstruct
     public void init() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
         List<Account> accounts = accountService.findAll();
         accounts.forEach(account -> redisService.save(new AccountCache(account)));
 
@@ -51,15 +52,34 @@ public class RedisCacheInitializer {
         for (Quest quest : allQuests) {
             redisService.save(new QuestCache(quest));
 
-            //TODO: не отменённые
-            Map<LocalDate, List<Reservation>> reservesByDates = reservationService.findAllByQuestAndDates(quest, dates);
+            Map<LocalDate, List<Reservation>> reservesByDates = reservationService.findActiveByQuestAndDates(quest, dates);
             for (Map.Entry<LocalDate, List<Reservation>> pair : reservesByDates.entrySet()) {
                 String redisKey = String.format("reservations:[quest:%d][date:%s]",
                         quest.getId(), pair.getKey().format(DateTimeFormatter.ofPattern("dd-MM")));
 
+                Date dateOfDeletion = getDateOfDeletion(pair.getKey());
+
                 Map<String, String> mapValue = new HashMap<>();
 
                 for (Reservation res : pair.getValue()) {
+                    if (res.getClient() != null) {
+                        ClientCache clientCache = new ClientCache(res.getClient());
+                        if (clientCache.getReservationIds().size() > 1) {
+                            if (!redisService.existCacheObject(clientCache.getCacheId())) {
+                                LocalDate latestDate = reservationService
+                                        .findAllByListId(clientCache.getReservationIds())
+                                        .stream()
+                                        .filter(r -> r.getStatusType() != StatusType.CANCEL)
+                                        .map(Reservation::getDateReserve)
+                                        .max(Comparator.naturalOrder())
+                                        .orElseThrow();
+                                redisService.saveWithExpire(clientCache, getDateOfDeletion(latestDate));
+                            }
+                        } else {
+                            redisService.saveWithExpire(clientCache, dateOfDeletion);
+                        }
+                    }
+
                     ReservationCache reservationCache = new ReservationCache(res);
                     String reservationJSON = null;
                     try {
@@ -71,12 +91,10 @@ public class RedisCacheInitializer {
                     mapValue.put(key, reservationJSON);
                 }
 
-                LocalDateTime dateTimeOfDeletion = pair.getKey().plusDays(8).atStartOfDay();
-                Date dateOfDeletion = Date.from(dateTimeOfDeletion.atZone(ZoneId.systemDefault()).toInstant());
-
-                redisRepository.saveDictionary(redisKey, mapValue, dateOfDeletion);
+                redisService.saveDictionary(redisKey, mapValue, dateOfDeletion);
             }
         }
+        logger.info("Cache was created");
     }
 
     private List<LocalDate> getDatesForCache() {
@@ -91,5 +109,11 @@ public class RedisCacheInitializer {
         }
 
         return dateList;
+    }
+
+    private Date getDateOfDeletion(LocalDate localDate) {
+        LocalDateTime dateTimeOfDeletion = localDate.plusDays(8).atStartOfDay();
+        Date dateOfDeletion = Date.from(dateTimeOfDeletion.atZone(ZoneId.systemDefault()).toInstant());
+        return dateOfDeletion;
     }
 }

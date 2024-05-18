@@ -34,4 +34,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findAllByQuestAndDateReserve(Quest quest, LocalDate date);
 
     List<Reservation> findAllByQuestAndDateReserveIn(Quest quest, List<LocalDate> dates);
+
+    List<Reservation> findAllByIdIn(List<Long> ids);
 }
