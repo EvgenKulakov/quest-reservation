@@ -41,15 +41,4 @@ public class QuestCache implements Cache {
         this.statuses = quest.getStatuses();
         this.synchronizedQuestIds = quest.getSynchronizedQuests().stream().map(Quest::getId).collect(Collectors.toSet());
     }
-
-    @Override
-    @JsonIgnore
-    public String getCacheId() {
-        return "quest:%d".formatted(this.getId());
-    }
-
-    @JsonIgnore
-    public static String getCacheId(Integer questId) {
-        return "quest:%d".formatted(questId);
-    }
 }

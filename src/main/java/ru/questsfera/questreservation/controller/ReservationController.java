@@ -5,8 +5,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.questsfera.questreservation.cache.object.ReservationCache;
-import ru.questsfera.questreservation.cache.service.RedisService;
 import ru.questsfera.questreservation.converter.SlotMapper;
 import ru.questsfera.questreservation.dto.*;
 import ru.questsfera.questreservation.entity.*;
@@ -34,36 +32,32 @@ public class ReservationController {
     private ReservationService reservationService;
     @Autowired
     private QuestService questService;
-    @Autowired
-    private RedisService redisService;
 
-    private Map<String, List<Slot>> questsAndSlots = new LinkedHashMap<>();
-    private Set<StatusType> useStatuses = new TreeSet<>();
 
     @GetMapping("/slot-list")
     public String showSlotList(Principal principal, Model model) {
-        Account account = accountService.getAccountByLogin(principal.getName());
 
-        Set<Quest> quests = new TreeSet<>(questService.getQuestsByAccount(account));
-        LocalDate date = LocalDate.now();
+        fillSlotList(LocalDate.now(), principal, model);
+        model.addAttribute("res_form", new ReservationForm());
 
-        return slotListRendering(quests, date, model);
+        return "reservations/slot-list";
     }
 
     @GetMapping("/slot-list/")
-    public String showSlotListWithDate(@RequestParam("date") LocalDate date,
-                                       Principal principal, Model model) {
+    public String showSlotListWithDate(@RequestParam("date") LocalDate date, Principal principal, Model model) {
+
+        fillSlotList(date, principal, model);
+        model.addAttribute("res_form", new ReservationForm());
+
+        return "reservations/slot-list";
+    }
+
+    private void fillSlotList(LocalDate date, Principal principal, Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
         Set<Quest> quests = new TreeSet<>(questService.getQuestsByAccount(account));
-
-        return slotListRendering(quests, date, model);
-    }
-
-    public String slotListRendering(Set<Quest> quests, LocalDate date, Model model) {
-
-        questsAndSlots.clear();
-        useStatuses.clear();
+        Map<String, List<Slot>> questsAndSlots = new LinkedHashMap<>();
+        Set<StatusType> useStatuses = new TreeSet<>();
 
         for (Quest quest : quests) {
             LinkedList<Reservation> reservations = reservationService.getReservationsByDate(quest, date);
@@ -77,16 +71,13 @@ public class ReservationController {
         model.addAttribute("quests_and_slots", questsAndSlots);
         model.addAttribute("use_statuses" , useStatuses);
         model.addAttribute("date", date);
-        model.addAttribute("res_form", new ReservationForm());
-
-        return "reservations/slot-list";
     }
 
-    public String errorSlotListRendering(LocalDate date, String errorSlotJson, ReservationForm resForm, Model model) {
+    private String errorSlotListRendering(LocalDate date, Principal principal,
+                                          String errorSlotJson, ReservationForm resForm, Model model) {
 
-        model.addAttribute("quests_and_slots", questsAndSlots);
-        model.addAttribute("use_statuses" , useStatuses);
-        model.addAttribute("date", date);
+        fillSlotList(date, principal, model);
+
         model.addAttribute("res_form", resForm);
         model.addAttribute("error_slot", errorSlotJson);
         model.addAttribute("change_status", resForm.getStatusType());
@@ -105,7 +96,7 @@ public class ReservationController {
                                   Model model) {
 
         if (bindingResult.hasErrors()) {
-            return errorSlotListRendering(date, slotJSON, resForm, model);
+            return errorSlotListRendering(date, principal, slotJSON, resForm, model);
         }
 
         Account account = accountService.getAccountByLogin(principal.getName());
@@ -126,8 +117,6 @@ public class ReservationController {
         reservation.setTimeLastChange(LocalDateTime.now());
         reservation.setHistoryMessages("default"); //TODO: history message
         reservationService.saveReservation(reservation);
-//        ReservationCache cache = new ReservationCache(reservation);
-//        redisService.save(cache);
 
         return "redirect:/reservations/slot-list/?date=" + date;
     }
@@ -138,10 +127,11 @@ public class ReservationController {
                             BindingResult bindingResult,
                             @RequestParam("slot") String slotJSON,
                             @RequestParam("date") LocalDate date,
+                            Principal principal,
                             Model model) {
 
         if (bindingResult.hasErrors()) {
-            return errorSlotListRendering(date, slotJSON, resForm, model);
+            return errorSlotListRendering(date, principal, slotJSON, resForm, model);
         }
 
         Slot slot = SlotMapper.createSlotObject(slotJSON);

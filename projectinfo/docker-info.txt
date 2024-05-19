@@ -12,9 +12,8 @@ latest:
 ========================================================================================================================
 mysql -u root -p quest_reservations < /app/Dump13.sql
 --------------------------------------------------
-docker network create quest_reservations_net
---------------------------------------------------
-docker run --name db --network quest_reservations_net --restart always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v db_data:/var/lib/mysql -e MYSQL_USER= -e MYSQL_PASSWORD= -e MYSQL_ROOT_PASSWORD= -e MYSQL_DATABASE=quest_reservations_db -d mysql:8.0.33
+docker run --name=redis -d -e REDIS_PASSWORD=<pass> redis redis-server --appendonly yes --requirepass <pass>
+docker run --name=db --network=quest_reservations_net --restart=always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v db_data:/var/lib/mysql -e MYSQL_USER= -e MYSQL_PASSWORD= -e MYSQL_ROOT_PASSWORD= -e MYSQL_DATABASE=quest_reservations_db -d mysql:8.0.33
 docker exec -it db bash
 mysql -u <user> -p
 --------------------------------------------------
@@ -23,5 +22,5 @@ docker run -d --network quest_reservations_net --restart always -v /etc/timezone
 
 --------------------------------------------------
 local db in docker:
-docker run --name db-ports -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v questreservation_data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=12345 -e MYSQL_DATABASE=quest_reservations_db -p 3306:3306 -d mysql:8.0.33
-docker run --name redis-ports -d -p 6379:6379 redis redis-server --appendonly yes
+docker run --name=db-ports -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v questreservation_data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=12345 -e MYSQL_DATABASE=quest_reservations_db -p 3306:3306 -d mysql:8.0.33
+docker run --name=redis-ports -d -p 6379:6379 -e REDIS_PASSWORD=12345 redis redis-server --appendonly yes --requirepass 12345

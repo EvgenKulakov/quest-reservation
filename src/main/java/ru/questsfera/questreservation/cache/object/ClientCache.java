@@ -37,15 +37,4 @@ public class ClientCache implements Cache {
         this.companyId = client.getCompany().getId();
         this.reservationIds = client.getReservations().stream().map(Reservation::getId).toList();
     }
-
-    @Override
-    @JsonIgnore
-    public String getCacheId() {
-        return "client:%d".formatted(this.getId());
-    }
-
-    @JsonIgnore
-    public static String getCacheId(Integer clientId) {
-        return "client:%d".formatted(clientId);
-    }
 }

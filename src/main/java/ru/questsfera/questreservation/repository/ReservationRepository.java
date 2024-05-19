@@ -31,9 +31,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("timeReserve") LocalTime timeReserve
     );
 
-    List<Reservation> findAllByQuestAndDateReserve(Quest quest, LocalDate date);
-
     List<Reservation> findAllByQuestAndDateReserveIn(Quest quest, List<LocalDate> dates);
 
     List<Reservation> findAllByIdIn(List<Long> ids);
+
+    List<Reservation> findAllByDateReserveIn(List<LocalDate> dates);
 }

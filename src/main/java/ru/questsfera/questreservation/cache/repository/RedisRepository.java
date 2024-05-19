@@ -3,43 +3,36 @@ package ru.questsfera.questreservation.cache.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import ru.questsfera.questreservation.cache.object.Cache;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Repository
-@Transactional
 public class RedisRepository {
 
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, Cache> redisTemplate;
 
 
-    public void save(String key, String value) {
+    public void save(String key, Cache value) {
         redisTemplate.opsForValue().set(key, value);
     }
 
-    public void saveWithTTL(String key, String value, long timeout, TimeUnit timeUnit) {
+    public void saveWithTTL(String key, Cache value, long timeout, TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
     }
 
-    public void saveWithExpire(String key, String value, Date dateOfDeletion) {
+    public void saveWithExpire(String key, Cache value, Date dateOfDeletion) {
         redisTemplate.opsForValue().set(key, value);
         redisTemplate.expireAt(key, dateOfDeletion);
     }
 
-    public void saveDictionary(String nameDict, Map<String, String> dict, Date dateOfDeletion) {
-        redisTemplate.opsForHash().putAll(nameDict, dict);
-        redisTemplate.expireAt(nameDict, dateOfDeletion);
+    public Cache findByCacheId(String cacheId) {
+        return redisTemplate.opsForValue().get(cacheId);
     }
 
-    public String findByCacheId(String key) {
-        return redisTemplate.opsForValue().get(key);
-    }
-
-    public Boolean existCacheObject(String key) {
-        return redisTemplate.hasKey(key);
+    public Boolean existByCacheId(String cacheId) {
+        return redisTemplate.hasKey(cacheId);
     }
 }

@@ -1,6 +1,5 @@
 package ru.questsfera.questreservation.cache.object;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -9,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -52,20 +50,20 @@ public class ReservationCache implements Cache {
         this.historyMessages = reservation.getHistoryMessages();
     }
 
-    @Override
-    @JsonIgnore
-    public String getCacheId() {
-        return String.format("reserve:[quest:%d][datetime:%s-%s]",
-                this.getQuestId(),
-                this.getDateReserve().format(DateTimeFormatter.ofPattern("dd-MM")),
-                this.getTimeReserve().format(DateTimeFormatter.ofPattern("HH-mm")));
-    }
+//    @Override
+//    @JsonIgnore
+//    public String createCacheId(Reservation reservation) {
+//        return String.format("[quest:%d][datetime:%s-%s]",
+//                reservation.getQuest().getId(),
+//                reservation.getDateReserve().format(DateTimeFormatter.ofPattern("dd-MM")),
+//                reservation.getTimeReserve().format(DateTimeFormatter.ofPattern("HH-mm")));
+//    }
 
-    @JsonIgnore
-    public static String getCacheId(Integer questId, LocalDate dateReserve, LocalTime timeReserve) {
-        return String.format("reserve:[quest:%d][datetime:%s-%s]",
-                questId,
-                dateReserve.format(DateTimeFormatter.ofPattern("dd-MM")),
-                timeReserve.format(DateTimeFormatter.ofPattern("HH-mm")));
-    }
+//    @JsonIgnore
+//    public static String getCacheId(Integer questId, LocalDate dateReserve, LocalTime timeReserve) {
+//        return String.format("reserve:[quest:%d][datetime:%s-%s]",
+//                questId,
+//                dateReserve.format(DateTimeFormatter.ofPattern("dd-MM")),
+//                timeReserve.format(DateTimeFormatter.ofPattern("HH-mm")));
+//    }
 }

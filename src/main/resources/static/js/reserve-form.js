@@ -26,6 +26,7 @@ const slotInfo = document.querySelector('#slotInfo')
 const errorSlot = document.querySelector('#error-slot')
 const saveButton = document.querySelector('#saveButton')
 const blockButton = document.querySelector('#blockButton')
+//TODO: unBlockButton при нажатии на Enter
 const unBlockButton = document.querySelector('#unBlockButton')
 
 function clickSlot(slotButton) {
