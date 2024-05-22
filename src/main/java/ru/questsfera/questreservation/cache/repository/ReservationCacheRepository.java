@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 @Repository
-public interface ReservationCacheRepository extends CrudRepository<ReservationCache, Integer> {
+public interface ReservationCacheRepository extends CrudRepository<ReservationCache, Long> {
 
     Optional<ReservationCache> findByQuestIdAndDateReserveAndTimeReserve(
             Integer questId,

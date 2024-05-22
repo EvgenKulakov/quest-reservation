@@ -8,14 +8,11 @@ import ru.questsfera.questreservation.entity.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.LinkedList;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    LinkedList<Reservation> findAllByQuestAndDateReserveOrderByTimeReserve(Quest quest, LocalDate date);
-
-    LinkedList<Reservation> findAllByQuestIdAndDateReserveOrderByTimeReserve(Integer questId, LocalDate date);
+    List<Reservation> findAllByQuestIdAndDateReserve(Integer questId, LocalDate date);
 
     boolean existsByQuest(Quest quest);
 
@@ -38,4 +35,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findAllByIdIn(List<Long> ids);
 
     List<Reservation> findAllByDateReserveIn(List<LocalDate> dates);
+
+    List<Reservation> findAllByClientId(Integer clientId);
 }

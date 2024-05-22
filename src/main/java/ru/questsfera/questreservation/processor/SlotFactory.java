@@ -17,10 +17,9 @@ public class SlotFactory {
     private Quest quest;
     private LocalDate date;
     private SlotList slotList;
-    private LinkedList<Reservation> reservations;
+    private Map<LocalTime, Reservation> reservations;
 
     public List<Slot> getActualSlots() {
-        checkReservations();
 
         List<Slot> slots = new ArrayList<>();
 
@@ -30,13 +29,8 @@ public class SlotFactory {
             LocalTime time = timePrice.getTime();
             Integer price = timePrice.getPrice();
 
-            while (!reservations.isEmpty()
-                    && reservations.peek().getStatusType().equals(StatusType.CANCEL)) {
-                reservations.pop();
-            }
-
-            if (!reservations.isEmpty() && reservations.peek().getTimeReserve().equals(time)) {
-                slots.add(createSlotWithReserve(time, price, reservations.pop()));
+            if (reservations.containsKey(time)) {
+                slots.add(createSlotWithReserve(time, price, reservations.get(time)));
             } else {
                 slots.add(createEmptySlot(time, price));
             }
@@ -55,16 +49,6 @@ public class SlotFactory {
             case SATURDAY -> slotList.getSaturday();
             case SUNDAY -> slotList.getSunday();
         };
-    }
-
-    private void checkReservations() {
-        for (int i = 1; i < reservations.size(); i++) {
-            if (reservations.get(i).getTimeReserve().equals(reservations.get(i-1).getTimeReserve())
-                    && !reservations.get(i).getStatusType().equals(StatusType.CANCEL)
-                    && !reservations.get(i-1).getStatusType().equals(StatusType.CANCEL)) {
-                throw new RuntimeException("Два бронирования на одно и тоже время");
-            }
-        }
     }
 
     private Slot createSlotWithReserve(LocalTime time, Integer price, Reservation reserve) {

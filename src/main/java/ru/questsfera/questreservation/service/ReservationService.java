@@ -7,11 +7,11 @@ import ru.questsfera.questreservation.cache.object.ReservationCache;
 import ru.questsfera.questreservation.cache.service.ReservationCacheService;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Company;
-import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.repository.ReservationRepository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -27,21 +27,33 @@ public class ReservationService {
 
     @Transactional
     public Reservation getReserveById(Long id) {
-        Optional<Reservation> optionalReservation = reservationRepository.findById(id);
-        if (optionalReservation.isPresent()) {
-            return optionalReservation.get();
+        return reservationRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public Map<LocalTime, Reservation> findActiveByQuestIdAndDate(Integer questId, LocalDate date) {
+
+        Map<LocalTime, Reservation> reservationMap = new HashMap<>();
+        List<Reservation> reservations = reservationRepository.findAllByQuestIdAndDateReserve(questId, date);
+
+        for (Reservation reservation : reservations) {
+            if (reservation.getStatusType() != StatusType.CANCEL) {
+                if (!reservationMap.containsKey(reservation.getTimeReserve())) {
+                    reservationMap.put(reservation.getTimeReserve(), reservation);
+                }
+                else throw new RuntimeException("Double reservation");
+            }
         }
-        throw new RuntimeException("Данного бронирования не существует");
+
+        return reservationMap;
     }
 
     @Transactional
-    public LinkedList<Reservation> findByQuestAndDate(Quest quest, LocalDate date) {
-        return reservationRepository.findAllByQuestAndDateReserveOrderByTimeReserve(quest, date);
-    }
-
-    @Transactional
-    public LinkedList<Reservation> findByQuestIdAndDate(Integer questId, LocalDate date) {
-        return reservationRepository.findAllByQuestIdAndDateReserveOrderByTimeReserve(questId, date);
+    public List<Reservation> findActiveByClientId(Integer clientId) {
+        return reservationRepository.findAllByClientId(clientId)
+                .stream()
+                .filter(reservation -> reservation.getStatusType() != StatusType.CANCEL)
+                .toList();
     }
 
     @Transactional
@@ -72,10 +84,10 @@ public class ReservationService {
     }
 
     @Transactional
-    public void deleteBlockedReservation(Reservation reservation) {
+    public void deleteBlockedReservation(Long reservationId) {
 //        checkSecurityForReserve(reservation, account);
-        reservationRepository.delete(reservation);
-        reservationCacheService.delete(new ReservationCache(reservation));
+        reservationRepository.deleteById(reservationId);
+        reservationCacheService.deleteById(reservationId);
     }
 
     @Transactional

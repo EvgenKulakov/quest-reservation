@@ -22,4 +22,8 @@ public class ClientCacheService {
     public boolean existById(Integer id) {
         return clientCacheRepository.existsById(id);
     }
+
+    public void delete(ClientCache clientCache) {
+        clientCacheRepository.delete(clientCache);
+    }
 }

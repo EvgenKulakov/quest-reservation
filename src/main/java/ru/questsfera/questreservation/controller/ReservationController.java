@@ -20,6 +20,7 @@ import ru.questsfera.questreservation.validator.ValidType;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @org.springframework.stereotype.Controller
@@ -67,7 +68,7 @@ public class ReservationController {
 
         for (Quest quest : quests) {
             //TODO: query in cache
-            LinkedList<Reservation> reservations = reservationService.findByQuestIdAndDate(quest.getId(), date);
+            Map<LocalTime, Reservation> reservations = reservationService.findActiveByQuestIdAndDate(quest.getId(), date);
             SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
             SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
             List<Slot> slots = slotFactory.getActualSlots();
@@ -116,6 +117,7 @@ public class ReservationController {
             reservationService.doubleCheck(reservation);
             Client client = new Client(resForm, company);
             reservation.setClient(client);
+            client.setReservations(new ArrayList<>(List.of(reservation)));
             reservation.setSourceReserve("default"); //TODO: source reserve
         } else {
             reservation = reservationService.getReserveById(slot.getReservation().getId());
@@ -155,11 +157,9 @@ public class ReservationController {
 
     @PostMapping("/unBlock")
     public String deleteBlockReserve(@RequestParam("slot") String slotJSON) {
-
+        //TODO: редактирование вместо удаления
         Slot slot = SlotMapper.createSlotObject(slotJSON);
-        Reservation reservation = reservationService.getReserveById(slot.getReservation().getId());
-
-        reservationService.deleteBlockedReservation(reservation);
+        reservationService.deleteBlockedReservation(slot.getReservation().getId());
         return "redirect:/reservations/slot-list/?date=" + slot.getDate();
     }
 }

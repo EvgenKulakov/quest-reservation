@@ -9,7 +9,6 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 import ru.questsfera.questreservation.entity.BlackList;
 import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,6 @@ public class ClientCache {
     private List<String> emailIds;
     private BlackList blackList;
     private Integer companyId;
-    private List<Long> reservationIds;
 
     public ClientCache(Client client) {
         this.id = client.getId();
@@ -38,9 +36,7 @@ public class ClientCache {
         //TODO: phones and emails
         this.phoneIds = new ArrayList<>(List.of(client.getPhones()));
         this.emailIds = new ArrayList<>(List.of(client.getEmails()));
-        //TODO: BlackListCache
         this.blackList = client.getBlackList();
         this.companyId = client.getCompany().getId();
-        this.reservationIds = client.getReservations().stream().map(Reservation::getId).toList();
     }
 }

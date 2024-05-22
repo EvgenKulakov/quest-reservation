@@ -53,11 +53,13 @@ public class RedisCacheInitializer {
 
             if (reservation.getClient() != null) {
                 Client client = reservation.getClient();
+                List<Reservation> reserveByClient = reservationService.findActiveByClientId(client.getId());
                 ClientCache clientCache = new ClientCache(client);
 
-                if (clientCache.getReservationIds().size() > 1) {
+                //TODO: на слой clientCacheService
+                if (reserveByClient.size() > 1) {
                     if (!clientCacheService.existById(clientCache.getId())) {
-                        LocalDate latestDate = CacheCalendar.getLatestDateReservation(client.getReservations());
+                        LocalDate latestDate = CacheCalendar.getLatestDateReservation(reserveByClient);
                         long timeToLiveClient = CacheCalendar.getTimeToLive(latestDate);
                         clientCache.setTimeToLive(timeToLiveClient);
                         clientCacheService.save(clientCache);

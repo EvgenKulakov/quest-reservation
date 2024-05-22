@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.questsfera.questreservation.cache.object.ReservationCache;
 import ru.questsfera.questreservation.cache.repository.ReservationCacheRepository;
+import ru.questsfera.questreservation.dto.StatusType;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,7 +16,10 @@ public class ReservationCacheService {
 
 
     public void save(ReservationCache reservationCache) {
-        reservationCacheRepository.save(reservationCache);
+        if (reservationCache.getStatusType() != StatusType.CANCEL) {
+            reservationCacheRepository.save(reservationCache);
+        }
+        else deleteById(reservationCache.getId());
     }
 
     public ReservationCache findByQuestIdDateTime(Integer questId, LocalDate dateReserve, LocalTime timeReserve) {
@@ -24,7 +28,7 @@ public class ReservationCacheService {
                 .orElse(null);
     }
 
-    public void delete(ReservationCache reservationCache) {
-        reservationCacheRepository.delete(reservationCache);
+    public void deleteById(Long reservationId) {
+        reservationCacheRepository.deleteById(reservationId);
     }
 }

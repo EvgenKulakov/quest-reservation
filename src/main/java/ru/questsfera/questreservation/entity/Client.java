@@ -15,7 +15,7 @@ import java.util.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "clients", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"company"})
+@JsonIgnoreProperties({"company", "reservations"})
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,8 +45,7 @@ public class Client {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
-    @JsonIgnore
+    @OneToMany(mappedBy = "client")
     private List<Reservation> reservations = new ArrayList<>();
 
     public Client(ReservationForm resForm, Company company) {
