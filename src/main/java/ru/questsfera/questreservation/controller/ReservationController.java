@@ -5,16 +5,16 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.questsfera.questreservation.cache.object.AccountCache;
+import ru.questsfera.questreservation.cache.service.*;
+import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.converter.SlotMapper;
 import ru.questsfera.questreservation.dto.*;
 import ru.questsfera.questreservation.entity.*;
 import ru.questsfera.questreservation.processor.Editor;
 import ru.questsfera.questreservation.processor.ReservationFactory;
 import ru.questsfera.questreservation.processor.SlotFactory;
-import ru.questsfera.questreservation.converter.SlotListMapper;
-import ru.questsfera.questreservation.service.AccountService;
-import ru.questsfera.questreservation.service.QuestService;
-import ru.questsfera.questreservation.service.ReservationService;
+import ru.questsfera.questreservation.service.*;
 import ru.questsfera.questreservation.validator.ValidType;
 
 import java.security.Principal;
@@ -27,11 +27,17 @@ import java.util.*;
 public class ReservationController {
 
     @Autowired
-    private AccountService accountService;
-    @Autowired
     private ReservationService reservationService;
     @Autowired
+    private CompanyService companyService;
+    @Autowired
     private QuestService questService;
+    @Autowired
+    private AccountCacheService accountCacheService;
+    @Autowired
+    private ReservationCacheService reservationCacheService;
+    @Autowired
+    private ClientCacheService clientCacheService;
 
 
     @GetMapping("/slot-list")
@@ -54,13 +60,14 @@ public class ReservationController {
 
     private void fillSlotList(LocalDate date, Principal principal, Model model) {
 
-        Account account = accountService.getAccountByLogin(principal.getName());
-        Set<Quest> quests = new TreeSet<>(questService.getQuestsByAccount(account));
+        AccountCache accountCache = accountCacheService.findByEmailLogin(principal.getName());
+        Set<Quest> quests = new TreeSet<>(questService.findAllByAccountId(accountCache.getId()));
         Map<String, List<Slot>> questsAndSlots = new LinkedHashMap<>();
         Set<StatusType> useStatuses = new TreeSet<>();
 
         for (Quest quest : quests) {
-            LinkedList<Reservation> reservations = reservationService.getReservationsByDate(quest, date);
+            //TODO: query in cache
+            LinkedList<Reservation> reservations = reservationService.findByQuestIdAndDate(quest.getId(), date);
             SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
             SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
             List<Slot> slots = slotFactory.getActualSlots();
@@ -99,14 +106,15 @@ public class ReservationController {
             return errorSlotListRendering(date, principal, slotJSON, resForm, model);
         }
 
-        Account account = accountService.getAccountByLogin(principal.getName());
+        AccountCache accountCache = accountCacheService.findByEmailLogin(principal.getName());
+        Company company = companyService.findById(accountCache.getCompanyId());
         Slot slot = SlotMapper.createSlotObject(slotJSON);
         Reservation reservation = null;
 
         if (slot.getReservation() == null) {
             reservation = ReservationFactory.createReservation(resForm, slot);
             reservationService.doubleCheck(reservation);
-            Client client = new Client(resForm, account.getCompany());
+            Client client = new Client(resForm, company);
             reservation.setClient(client);
             reservation.setSourceReserve("default"); //TODO: source reserve
         } else {

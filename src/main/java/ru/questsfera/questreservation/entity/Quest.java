@@ -50,13 +50,13 @@ public class Quest implements Comparable<Quest> {
     @ManyToMany(mappedBy = "quests")
     private List<Account> accounts = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "status_quest",
             joinColumns = @JoinColumn(name = "quest_id"),
             inverseJoinColumns = @JoinColumn(name = "status_id"))
     private Set<Status> statuses = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "synchronized_quests",
             joinColumns = @JoinColumn(name = "id_first_quest"),
             inverseJoinColumns = @JoinColumn(name = "id_second_quest"))

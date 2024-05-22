@@ -1,9 +1,12 @@
 package ru.questsfera.questreservation.cache.object;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 import ru.questsfera.questreservation.entity.BlackList;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -14,9 +17,12 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ClientCache implements Cache {
+@AllArgsConstructor
+@RedisHash("client")
+public class ClientCache {
 
-    private Integer id;
+    @Id private Integer id;
+    @TimeToLive private Long timeToLive;
     private String firstName;
     private String lastName;
     private List<String> phoneIds;

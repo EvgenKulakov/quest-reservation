@@ -1,8 +1,11 @@
 package ru.questsfera.questreservation.cache.object;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Quest;
 
@@ -12,10 +15,12 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AccountCache implements Cache {
+@AllArgsConstructor
+@RedisHash("account")
+public class AccountCache {
 
+    @Id private String emailLogin;
     private Integer id;
-    private String emailLogin;
     private String firstName;
     private String lastName;
     private String phone;
@@ -24,8 +29,8 @@ public class AccountCache implements Cache {
     private Set<Integer> questIds;
 
     public AccountCache(Account account) {
-        this.id = account.getId();
         this.emailLogin = account.getEmailLogin();
+        this.id = account.getId();
         this.firstName = account.getFirstName();
         this.lastName = account.getLastName();
         this.phone = account.getPhone();

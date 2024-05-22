@@ -15,6 +15,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     LinkedList<Reservation> findAllByQuestAndDateReserveOrderByTimeReserve(Quest quest, LocalDate date);
 
+    LinkedList<Reservation> findAllByQuestIdAndDateReserveOrderByTimeReserve(Integer questId, LocalDate date);
+
     boolean existsByQuest(Quest quest);
 
     void deleteByQuest(Quest quest);

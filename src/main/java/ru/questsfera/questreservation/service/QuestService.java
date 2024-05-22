@@ -33,8 +33,8 @@ public class QuestService {
     }
 
     @Transactional
-    public List<Quest> getQuestsByAccount(Account account) {
-        return questRepository.findAllByAccountId(account.getId());
+    public List<Quest> findAllByAccountId(Integer accountId) {
+        return questRepository.findAllByAccountId(accountId);
     }
 
     @Transactional

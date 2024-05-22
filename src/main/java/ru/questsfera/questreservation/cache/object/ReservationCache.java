@@ -1,8 +1,13 @@
 package ru.questsfera.questreservation.cache.object;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Reservation;
+import ru.questsfera.questreservation.processor.CacheCalendar;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,15 +17,19 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReservationCache implements Cache {
+@AllArgsConstructor
+@RedisHash("reserve")
+public class ReservationCache {
 
-    private Long id;
-    private LocalDate dateReserve;
-    private LocalTime timeReserve;
+    @Id private Long id;
+    @TimeToLive private Long timeToLive;
+    @Indexed private LocalDate dateReserve;
+    @Indexed private LocalTime timeReserve;
+    @Indexed private Integer questId;
+
     private LocalDateTime dateAndTimeCreated;
     private LocalDateTime timeLastChange;
     private LocalTime changedSlotTime;
-    private Integer questId;
     private StatusType statusType;
     private String sourceReserve;
     private BigDecimal price;
@@ -33,12 +42,13 @@ public class ReservationCache implements Cache {
 
     public ReservationCache(Reservation reservation) {
         this.id = reservation.getId();
+        this.timeToLive = CacheCalendar.getTimeToLive(reservation.getDateReserve());
         this.dateReserve = reservation.getDateReserve();
         this.timeReserve = reservation.getTimeReserve();
+        this.questId = reservation.getQuest().getId();
         this.dateAndTimeCreated = reservation.getDateAndTimeCreated();
         this.timeLastChange = reservation.getTimeLastChange();
         this.changedSlotTime = reservation.getChangedSlotTime();
-        this.questId = reservation.getQuest().getId();
         this.statusType = reservation.getStatusType();
         this.sourceReserve = reservation.getSourceReserve();
         this.price = reservation.getPrice();
@@ -49,21 +59,4 @@ public class ReservationCache implements Cache {
         this.clientComment = reservation.getClientComment();
         this.historyMessages = reservation.getHistoryMessages();
     }
-
-//    @Override
-//    @JsonIgnore
-//    public String createCacheId(Reservation reservation) {
-//        return String.format("[quest:%d][datetime:%s-%s]",
-//                reservation.getQuest().getId(),
-//                reservation.getDateReserve().format(DateTimeFormatter.ofPattern("dd-MM")),
-//                reservation.getTimeReserve().format(DateTimeFormatter.ofPattern("HH-mm")));
-//    }
-
-//    @JsonIgnore
-//    public static String getCacheId(Integer questId, LocalDate dateReserve, LocalTime timeReserve) {
-//        return String.format("reserve:[quest:%d][datetime:%s-%s]",
-//                questId,
-//                dateReserve.format(DateTimeFormatter.ofPattern("dd-MM")),
-//                timeReserve.format(DateTimeFormatter.ofPattern("HH-mm")));
-//    }
 }

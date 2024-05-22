@@ -7,19 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.questsfera.questreservation.cache.object.AccountCache;
 import ru.questsfera.questreservation.cache.object.ClientCache;
-import ru.questsfera.questreservation.cache.object.QuestCache;
 import ru.questsfera.questreservation.cache.object.ReservationCache;
 import ru.questsfera.questreservation.cache.service.AccountCacheService;
 import ru.questsfera.questreservation.cache.service.ClientCacheService;
-import ru.questsfera.questreservation.cache.service.QuestCacheService;
 import ru.questsfera.questreservation.cache.service.ReservationCacheService;
-import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Quest;
+import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.processor.CacheCalendar;
 import ru.questsfera.questreservation.service.AccountService;
-import ru.questsfera.questreservation.service.QuestService;
 import ru.questsfera.questreservation.service.ReservationService;
 
 import java.time.*;
@@ -30,13 +26,9 @@ public class RedisCacheInitializer {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private QuestService questService;
-    @Autowired
     private ReservationService reservationService;
     @Autowired
     private AccountCacheService accountCacheService;
-    @Autowired
-    private QuestCacheService questCacheService;
     @Autowired
     private ReservationCacheService reservationCacheService;
     @Autowired
@@ -52,32 +44,27 @@ public class RedisCacheInitializer {
         List<Account> accounts = accountService.findAll();
         accounts.forEach(account -> accountCacheService.save(new AccountCache(account)));
 
-        List<Quest> quests = questService.findAll();
-        quests.forEach(quest -> questCacheService.save(new QuestCache(quest)));
-
         List<LocalDate> dates = CacheCalendar.getDatesForCache();
         List<Reservation> reservationsByDates = reservationService.findActiveByDates(dates);
 
         for (Reservation reservation : reservationsByDates) {
-            Date dateOfDeletion = CacheCalendar.getDateOfDeletion(reservation.getDateReserve());
             ReservationCache reservationCache = new ReservationCache(reservation);
-            reservationCacheService.save(reservationCache, dateOfDeletion);
+            reservationCacheService.save(reservationCache);
 
             if (reservation.getClient() != null) {
-                ClientCache clientCache = new ClientCache(reservation.getClient());
+                Client client = reservation.getClient();
+                ClientCache clientCache = new ClientCache(client);
+
                 if (clientCache.getReservationIds().size() > 1) {
                     if (!clientCacheService.existById(clientCache.getId())) {
-                        LocalDate latestDate = reservationService
-                                .findAllByListId(clientCache.getReservationIds())
-                                .stream()
-                                .filter(r -> r.getStatusType() != StatusType.CANCEL)
-                                .map(Reservation::getDateReserve)
-                                .max(Comparator.naturalOrder())
-                                .orElseThrow();
-                        clientCacheService.save(clientCache, CacheCalendar.getDateOfDeletion(latestDate));
+                        LocalDate latestDate = CacheCalendar.getLatestDateReservation(client.getReservations());
+                        long timeToLiveClient = CacheCalendar.getTimeToLive(latestDate);
+                        clientCache.setTimeToLive(timeToLiveClient);
+                        clientCacheService.save(clientCache);
                     }
                 } else {
-                    clientCacheService.save(clientCache, dateOfDeletion);
+                    clientCache.setTimeToLive(CacheCalendar.getTimeToLive(reservation.getDateReserve()));
+                    clientCacheService.save(clientCache);
                 }
             }
         }

@@ -21,6 +21,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @JsonIgnoreProperties({"autoBlock"})
 public class Slot {
+    //TODO: данные по квесту на уровень ResForm
     private Quest quest;
     private StatusType statusType;
     private Reservation reservation;

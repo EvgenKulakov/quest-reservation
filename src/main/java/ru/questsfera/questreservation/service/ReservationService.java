@@ -2,7 +2,6 @@ package ru.questsfera.questreservation.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.cache.object.ReservationCache;
 import ru.questsfera.questreservation.cache.service.ReservationCacheService;
@@ -10,8 +9,6 @@ import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
-import ru.questsfera.questreservation.processor.CacheCalendar;
-import ru.questsfera.questreservation.repository.ClientRepository;
 import ru.questsfera.questreservation.repository.ReservationRepository;
 
 import java.time.LocalDate;
@@ -23,7 +20,7 @@ public class ReservationService {
     @Autowired
     private ReservationRepository reservationRepository;
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
     @Autowired
     private ReservationCacheService reservationCacheService;
 
@@ -38,11 +35,16 @@ public class ReservationService {
     }
 
     @Transactional
-    public LinkedList<Reservation> getReservationsByDate(Quest quest, LocalDate date) {
+    public LinkedList<Reservation> findByQuestAndDate(Quest quest, LocalDate date) {
         return reservationRepository.findAllByQuestAndDateReserveOrderByTimeReserve(quest, date);
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
+    public LinkedList<Reservation> findByQuestIdAndDate(Integer questId, LocalDate date) {
+        return reservationRepository.findAllByQuestIdAndDateReserveOrderByTimeReserve(questId, date);
+    }
+
+    @Transactional
     public List<Reservation> findActiveByDates(List<LocalDate> dates) {
 
         List<Reservation> reservations = reservationRepository.findAllByDateReserveIn(dates);
@@ -54,32 +56,26 @@ public class ReservationService {
     }
 
     @Transactional
-    public List<Reservation> findAllByListId(List<Long> ids) {
-        return reservationRepository.findAllByIdIn(ids);
-    }
-
-    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void saveReservation(Reservation reservation) {
 //        checkSecurityForReserve(reservation, account);
         try {
             if (reservation.getClient() != null) {
-                clientRepository.save(reservation.getClient());
+                clientService.save(reservation.getClient());
             }
             reservationRepository.save(reservation);
 
             ReservationCache reservationCache = new ReservationCache(reservation);
-            Date dateOfDeletion = CacheCalendar.getDateOfDeletion(reservationCache.getDateReserve());
-            reservationCacheService.save(reservationCache, dateOfDeletion);
+            reservationCacheService.save(reservationCache);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
-
     }
 
     @Transactional
     public void deleteBlockedReservation(Reservation reservation) {
 //        checkSecurityForReserve(reservation, account);
         reservationRepository.delete(reservation);
+        reservationCacheService.delete(new ReservationCache(reservation));
     }
 
     @Transactional
