@@ -15,7 +15,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     boolean existsAccountByEmailLogin(String emailLogin);
 
-    boolean existsAccountByIdAndCompany(Integer id, Company company);
+    boolean existsAccountByIdAndCompanyId(Integer accountd, Integer companyId);
 
     List<Account> findAllByCompanyOrderByEmailLogin(Company company);
 

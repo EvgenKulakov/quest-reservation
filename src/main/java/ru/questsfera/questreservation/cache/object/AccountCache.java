@@ -17,11 +17,13 @@ public class AccountCache {
 
     @Id private String emailLogin;
     private Integer id;
+    private Account.Role role;
     private Integer companyId;
 
     public AccountCache(Account account) {
         this.emailLogin = account.getEmailLogin();
         this.id = account.getId();
+        this.role = account.getRole();
         this.companyId = account.getCompany().getId();
     }
 }

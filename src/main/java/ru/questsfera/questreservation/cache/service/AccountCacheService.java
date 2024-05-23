@@ -18,4 +18,12 @@ public class AccountCacheService {
     public AccountCache findByEmailLogin(String emailLogin) {
         return accountCacheRepository.findById(emailLogin).orElse(null);
     }
+
+    public boolean existByEmailLogin(String emailLogin) {
+        return accountCacheRepository.existsById(emailLogin);
+    }
+
+    public void deleteByEmailLogin(String emailLogin) {
+        accountCacheRepository.deleteById(emailLogin);
+    }
 }

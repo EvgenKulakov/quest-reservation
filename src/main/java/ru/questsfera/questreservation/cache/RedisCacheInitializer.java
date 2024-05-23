@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.DefaultStringRedisConnection;
 import org.springframework.stereotype.Component;
 import ru.questsfera.questreservation.cache.object.AccountCache;
 import ru.questsfera.questreservation.cache.object.ClientCache;
@@ -33,6 +34,8 @@ public class RedisCacheInitializer {
     private ReservationCacheService reservationCacheService;
     @Autowired
     private ClientCacheService clientCacheService;
+    @Autowired
+    private DefaultStringRedisConnection redisConnection;
 
     private Logger logger = LoggerFactory.getLogger(RedisCacheInitializer.class);
 
@@ -40,6 +43,8 @@ public class RedisCacheInitializer {
     @PostConstruct
     public void init() {
         LocalTime startInit = LocalTime.now();
+
+        redisConnection.flushAll();
 
         List<Account> accounts = accountService.findAll();
         accounts.forEach(account -> accountCacheService.save(new AccountCache(account)));

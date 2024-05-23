@@ -14,6 +14,10 @@
                                  formaction="/" value="← Войти"/></div>
         <div><p> Email:<input type="text" maxlength="50" placeholder="email - логин для входа"
                               class="form-control" th:field="*{emailLogin}"/></div>
+        <div><p> Имя:<input type="text" maxlength="50" placeholder="ваше имя в системе"
+                              class="form-control" th:field="*{firstName}"/></div>
+        <div><p> Фамилия:<input type="text" maxlength="50" placeholder="необязательное поле"
+                              class="form-control" th:field="*{lastName}"/></div>
         <div><p> Название компании:<input type="text" maxlength="100" placeholder="название в свободной форме"
                               class="form-control" th:field="*{company.name}"/></div>
         <div><p> Пароль:<input type="password" maxlength="50" placeholder="минимум 8 символов"
@@ -22,8 +26,9 @@
                                          class="form-control" name="duplicate-pass"/></p></div>
 
         <div class="message error" th:if="${#fields.hasErrors('emailLogin')}" th:errors="*{emailLogin}"></div>
-        <div class="message error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        <div class="message error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
         <div class="message error" th:if="${#fields.hasErrors('company.name')}" th:errors="*{company.name}"></div>
+        <div class="message error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
         <div class="mt-4"><input type="submit" class="btn btn-success button" value="Зарегистрироваться"/></div>
     </form>
 </div>

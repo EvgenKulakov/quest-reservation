@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.questsfera.questreservation.cache.object.AccountCache;
+import ru.questsfera.questreservation.cache.service.AccountCacheService;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
@@ -21,6 +23,8 @@ public class AccountService implements UserDetailsService {
 
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private AccountCacheService accountCacheService;
 
     @Override
     @Transactional
@@ -64,23 +68,29 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public boolean existAccountByCompany(Account account, Company company) {
-        return accountRepository.existsAccountByIdAndCompany(account.getId(), company);
+    public boolean existAccountByCompanyId(Account account, Integer companyId) {
+        return accountRepository.existsAccountByIdAndCompanyId(account.getId(), companyId);
     }
 
     @Transactional
     public void saveAccount(Account account) {
-        accountRepository.save(account);
+        try {
+            accountRepository.save(account);
+            accountCacheService.save(new AccountCache(account));
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     @Transactional
-    public void deleteAccount(Account account) {
+    public void delete(Account account) {
         accountRepository.delete(account);
+        accountCacheService.deleteByEmailLogin(account.getEmailLogin());
     }
 
     @Transactional
-    public void checkSecurityForAccount(Account changeAccount, Account myAccount) {
-        boolean existAccountByCompany = existAccountByCompany(changeAccount, myAccount.getCompany());
+    public void checkSecurityForAccount(Account changeAccount, AccountCache myAccount) {
+        boolean existAccountByCompany = existAccountByCompanyId(changeAccount, myAccount.getCompanyId());
 
         boolean haveAccess = myAccount.getRole() == Account.Role.ROLE_OWNER
                 || changeAccount.getRole() == Account.Role.ROLE_USER;

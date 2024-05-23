@@ -1,17 +1,16 @@
 package ru.questsfera.questreservation.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.processor.PasswordGenerator;
 import ru.questsfera.questreservation.service.AccountService;
 import ru.questsfera.questreservation.service.CompanyService;
-import ru.questsfera.questreservation.validator.ValidType;
 
 import java.math.BigDecimal;
 
@@ -35,8 +34,7 @@ public class HomeController {
     }
 
     @PostMapping("/register/save-new-account")
-    public String saveNewAccount(@Validated(ValidType.Registration.class)
-                                 @ModelAttribute("account") Account account,
+    public String saveNewAccount(@Valid @ModelAttribute("account") Account account,
                                  BindingResult bindingResult,
                                  @RequestParam("duplicate-pass") String duplicatePass,
                                  Model model) {
