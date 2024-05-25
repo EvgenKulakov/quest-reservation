@@ -6,12 +6,9 @@ import ru.questsfera.questreservation.entity.Reservation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-public class CacheCalendar {
+public class RedisCalendar {
 
     public static long getTimeToLive(LocalDate localDate) {
         Date dateOfDeletion = getDateOfDeletion(localDate);
@@ -26,19 +23,19 @@ public class CacheCalendar {
         return dateOfDeletion;
     }
 
-    public static LocalDate getLatestDateReservation(List<Reservation> reservations) {
+    public static Optional<LocalDate> getLatestDateForRedis(List<Reservation> reservations) {
 
-        LocalDate latestDate = reservations
+        Optional<LocalDate> latestDate = reservations
                 .stream()
                 .filter(res -> res.getStatusType() != StatusType.CANCEL)
                 .map(Reservation::getDateReserve)
-                .max(Comparator.naturalOrder())
-                .orElseThrow();
+                .filter(RedisCalendar::isDateForRedis)
+                .max(Comparator.naturalOrder());
 
         return latestDate;
     }
 
-    public static List<LocalDate> getDatesForCache() {
+    public static List<LocalDate> getDatesForRedis() {
         List<LocalDate> dateList = new ArrayList<>();
 
         LocalDate today = LocalDate.now();
@@ -50,5 +47,15 @@ public class CacheCalendar {
         }
 
         return dateList;
+    }
+
+    public static boolean isDateForRedis(LocalDate checkDate) {
+
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = today.minusWeeks(1);
+        LocalDate endDate = today.plusWeeks(2);
+
+        return (checkDate.isEqual(startDate) || checkDate.isAfter(startDate))
+                && (checkDate.isEqual(endDate) || checkDate.isBefore(endDate));
     }
 }

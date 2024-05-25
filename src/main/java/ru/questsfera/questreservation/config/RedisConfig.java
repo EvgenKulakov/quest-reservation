@@ -12,7 +12,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 @Configuration
-@EnableRedisRepositories(basePackages = "ru.questsfera.questreservation.cache.repository")
+@EnableRedisRepositories(basePackages = "ru.questsfera.questreservation.redis.repository")
 public class RedisConfig {
 
     @Value("${spring.data.redis.host}")

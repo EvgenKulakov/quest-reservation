@@ -29,7 +29,7 @@ View, refactoring, внешний виджет
 
 ### Сервер:
 >__Сборка:__
-MySQL и Spring Boot в Docker контейнерах
+MySQL, Redis и Spring Boot в Docker контейнерах
 > 
 >__Ссылка на сервер:__ 
-> <a href="http://82.97.248.165" target="_blank">http://82.97.248.165</a>
+> <a href="http://99152dd5cacb.vps.myjino.ru" target="_blank">http://99152dd5cacb.vps.myjino.ru</a>

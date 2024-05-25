@@ -1,10 +1,9 @@
-package ru.questsfera.questreservation.service;
+package ru.questsfera.questreservation.service.reservation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.cache.object.ReservationCache;
-import ru.questsfera.questreservation.cache.service.ReservationCacheService;
+import ru.questsfera.questreservation.redis.service.ReservationRedisService;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -20,9 +19,7 @@ public class ReservationService {
     @Autowired
     private ReservationRepository reservationRepository;
     @Autowired
-    private ClientService clientService;
-    @Autowired
-    private ReservationCacheService reservationCacheService;
+    private ReservationRedisService reservationRedisService;
 
 
     @Transactional
@@ -68,26 +65,28 @@ public class ReservationService {
     }
 
     @Transactional
-    public void saveReservation(Reservation reservation) {
-//        checkSecurityForReserve(reservation, account);
-        try {
-            if (reservation.getClient() != null) {
-                clientService.save(reservation.getClient());
-            }
-            reservationRepository.save(reservation);
+    public List<Reservation> findActiveByDate(LocalDate dateReserve) {
 
-            ReservationCache reservationCache = new ReservationCache(reservation);
-            reservationCacheService.save(reservationCache);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
+        List<Reservation> reservations = reservationRepository.findAllByDateReserve(dateReserve);
+
+        return reservations
+                .stream()
+                .filter(reservation -> reservation.getStatusType() != StatusType.CANCEL)
+                .toList();
+    }
+
+    @Transactional
+    public void saveReservation(Reservation reservation) {
+        doubleCheck(reservation);
+//        checkSecurityForReserve(reservation, account);
+        reservationRepository.save(reservation);
     }
 
     @Transactional
     public void deleteBlockedReservation(Long reservationId) {
 //        checkSecurityForReserve(reservation, account);
         reservationRepository.deleteById(reservationId);
-        reservationCacheService.deleteById(reservationId);
+        reservationRedisService.deleteById(reservationId);
     }
 
     @Transactional
@@ -100,14 +99,16 @@ public class ReservationService {
     @Transactional
     public void doubleCheck(Reservation reservation) {
 
-        boolean existsReservation = reservationRepository.existsByQuestAndDateReserveAndTimeReserve(
-                reservation.getQuest(),
-                reservation.getDateReserve(),
-                reservation.getTimeReserve()
-        );
+        if (reservation.getId() == null) {
+            boolean existsReservation = reservationRepository.existsByQuestAndDateReserveAndTimeReserve(
+                    reservation.getQuest(),
+                    reservation.getDateReserve(),
+                    reservation.getTimeReserve()
+            );
 
-        if (existsReservation) {
-            throw new RuntimeException("Два бронирования на одно и тоже время");
+            if (existsReservation) {
+                throw new RuntimeException("Double reservations");
+            }
         }
     }
 }

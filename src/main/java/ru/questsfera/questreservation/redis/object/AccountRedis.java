@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.cache.object;
+package ru.questsfera.questreservation.redis.object;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,14 +13,14 @@ import ru.questsfera.questreservation.entity.Account;
 @NoArgsConstructor
 @AllArgsConstructor
 @RedisHash("account")
-public class AccountCache {
+public class AccountRedis {
 
     @Id private String emailLogin;
     private Integer id;
     private Account.Role role;
     private Integer companyId;
 
-    public AccountCache(Account account) {
+    public AccountRedis(Account account) {
         this.emailLogin = account.getEmailLogin();
         this.id = account.getId();
         this.role = account.getRole();

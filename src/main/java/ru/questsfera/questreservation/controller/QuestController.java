@@ -16,8 +16,8 @@ import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.processor.SlotListMaker;
-import ru.questsfera.questreservation.service.AccountService;
-import ru.questsfera.questreservation.service.QuestService;
+import ru.questsfera.questreservation.service.account.AccountService;
+import ru.questsfera.questreservation.service.quest.QuestService;
 import ru.questsfera.questreservation.validator.SlotListValidator;
 
 import java.security.Principal;

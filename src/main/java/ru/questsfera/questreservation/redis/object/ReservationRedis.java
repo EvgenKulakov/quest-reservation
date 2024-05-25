@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.cache.object;
+package ru.questsfera.questreservation.redis.object;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Reservation;
-import ru.questsfera.questreservation.processor.CacheCalendar;
+import ru.questsfera.questreservation.processor.RedisCalendar;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,7 +19,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @RedisHash("reserve")
-public class ReservationCache {
+public class ReservationRedis {
 
     @Id private Long id;
     @TimeToLive private Long timeToLive;
@@ -40,9 +40,9 @@ public class ReservationCache {
     private String clientComment;
     private String historyMessages;
 
-    public ReservationCache(Reservation reservation) {
+    public ReservationRedis(Reservation reservation) {
         this.id = reservation.getId();
-        this.timeToLive = CacheCalendar.getTimeToLive(reservation.getDateReserve());
+        this.timeToLive = RedisCalendar.getTimeToLive(reservation.getDateReserve());
         this.dateReserve = reservation.getDateReserve();
         this.timeReserve = reservation.getTimeReserve();
         this.questId = reservation.getQuest().getId();

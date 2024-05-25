@@ -36,5 +36,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findAllByDateReserveIn(List<LocalDate> dates);
 
+    List<Reservation> findAllByDateReserve(LocalDate dateReserve);
+
     List<Reservation> findAllByClientId(Integer clientId);
 }

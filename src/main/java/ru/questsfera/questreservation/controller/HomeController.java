@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.processor.PasswordGenerator;
-import ru.questsfera.questreservation.service.AccountService;
-import ru.questsfera.questreservation.service.CompanyService;
+import ru.questsfera.questreservation.service.account.AccountService;
+import ru.questsfera.questreservation.service.company.CompanyService;
 
 import java.math.BigDecimal;
 

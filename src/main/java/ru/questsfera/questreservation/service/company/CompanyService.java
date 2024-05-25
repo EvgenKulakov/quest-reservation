@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.service;
+package ru.questsfera.questreservation.service.company;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

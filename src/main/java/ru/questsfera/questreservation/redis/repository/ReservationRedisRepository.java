@@ -1,17 +1,17 @@
-package ru.questsfera.questreservation.cache.repository;
+package ru.questsfera.questreservation.redis.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import ru.questsfera.questreservation.cache.object.ReservationCache;
+import ru.questsfera.questreservation.redis.object.ReservationRedis;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
 @Repository
-public interface ReservationCacheRepository extends CrudRepository<ReservationCache, Long> {
+public interface ReservationRedisRepository extends CrudRepository<ReservationRedis, Long> {
 
-    Optional<ReservationCache> findByQuestIdAndDateReserveAndTimeReserve(
+    Optional<ReservationRedis> findByQuestIdAndDateReserveAndTimeReserve(
             Integer questId,
             LocalDate dateReserve,
             LocalTime timeReserve

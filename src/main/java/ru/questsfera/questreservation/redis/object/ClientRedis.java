@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.cache.object;
+package ru.questsfera.questreservation.redis.object;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @RedisHash("client")
-public class ClientCache {
+public class ClientRedis {
 
     @Id private Integer id;
     @TimeToLive private Long timeToLive;
@@ -29,7 +29,7 @@ public class ClientCache {
     private BlackList blackList;
     private Integer companyId;
 
-    public ClientCache(Client client) {
+    public ClientRedis(Client client) {
         this.id = client.getId();
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
