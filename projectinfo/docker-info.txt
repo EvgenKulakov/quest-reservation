@@ -19,7 +19,7 @@ mysql -u <user> -p
 --------------------------------------------------
 docker run -d --network=quest_reservations_net --restart=always -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro --name=spring-cont -p 80:8080 <name>
 ========================================================================================================================
-
+spring.profiles.active=docker
 --------------------------------------------------
 local db in docker:
 docker run --name=db-ports -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro -v questreservation_data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=12345 -e MYSQL_DATABASE=quest_reservations_db -p 3306:3306 -d mysql:8.0.33

@@ -124,9 +124,6 @@ public class QuestController {
             accountService.saveAccount(acc);
         }
 
-//        QuestCache questCache = new QuestCache(quest);
-//        redisService.save(questCache);
-
         return "redirect:/quests/";
     }
 

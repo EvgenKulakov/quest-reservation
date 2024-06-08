@@ -13,7 +13,6 @@ import ru.questsfera.questreservation.repository.ReservationRepository;
 import ru.questsfera.questreservation.repository.StatusRepository;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class QuestService {
@@ -80,15 +79,15 @@ public class QuestService {
         }
 
         for (Status status : statusRepository.findAllByQuestId(quest.getId())) {
-            status.getQuests().remove(quest);
+//            status.getQuests().remove(quest);
             statusRepository.save(status);
         }
 
-        if (!quest.getSynchronizedQuests().isEmpty()) {
-            dontSynchronizeQuests(quest);
-            System.out.println("Синхронизация по квесту id:" + quest.getId()
-                    + " и всем связаным квестам отменена"); //TODO: вывести сообщение на страницу
-        }
+//        if (!quest.getSynchronizedQuests().isEmpty()) {
+//            dontSynchronizeQuests(quest);
+//            System.out.println("Синхронизация по квесту id:" + quest.getId()
+//                    + " и всем связаным квестам отменена"); //TODO: вывести сообщение на страницу
+//        }
         questRepository.delete(quest);
     }
 
@@ -100,19 +99,20 @@ public class QuestService {
         }
     }
 
-    //***SynchronizeQuests
-    @Transactional
-    public void synchronizeQuests(Quest... quests) {
-        Quest.synchronizeQuests(quests);
-    }
 
-    @Transactional
-    public Set<Quest> getSynchronizedQuests(Quest quest) {
-        return quest.getSynchronizedQuests();
-    }
-
-    @Transactional
-    public void dontSynchronizeQuests(Quest quest) {
-        Quest.dontSynchronizeQuests(quest);
-    }
+    //TODO: SynchronizeQuests
+//    @Transactional
+//    public void synchronizeQuests(Quest... quests) {
+//        Quest.synchronizeQuests(quests);
+//    }
+//
+//    @Transactional
+//    public Set<Quest> getSynchronizedQuests(Quest quest) {
+//        return quest.getSynchronizedQuests();
+//    }
+//
+//    @Transactional
+//    public void dontSynchronizeQuests(Quest quest) {
+//        Quest.dontSynchronizeQuests(quest);
+//    }
 }
