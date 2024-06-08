@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.questsfera.questreservation.converter.AccountParser;
+import ru.questsfera.questreservation.dto.AccountDTO;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.processor.PasswordGenerator;
@@ -20,6 +22,8 @@ public class HomeController {
     @Autowired
     private AccountService accountService;
     @Autowired
+    private AccountParser accountParser;
+    @Autowired
     private CompanyService companyService;
 
     @RequestMapping("/login")
@@ -29,44 +33,46 @@ public class HomeController {
 
     @PostMapping("/register")
     public String register(Model model) {
-        model.addAttribute("account", new Account());
+        model.addAttribute("account", new AccountDTO());
         return "home/register";
     }
 
     @PostMapping("/register/save-new-account")
-    public String saveNewAccount(@Valid @ModelAttribute("account") Account account,
+    public String saveNewAccount(@Valid @ModelAttribute("account") AccountDTO accountDTO,
                                  BindingResult bindingResult,
                                  @RequestParam("duplicate-pass") String duplicatePass,
                                  Model model) {
 
-        if (accountService.existAccountByLogin(account.getEmailLogin())) {
+        if (accountService.existAccountByLogin(accountDTO.getEmailLogin())) {
             bindingResult.rejectValue("emailLogin", "errorCode",
                     "*Такой пользователь уже зарегистрирован");
         }
 
-        if (account.getCompany().getName().isBlank()) {
+        if (accountDTO.getCompany().getName().isBlank()) {
             bindingResult.rejectValue("company.name", "errorCode",
                     "*Введите название компании");
         }
 
-        if (!account.getPassword().equals(duplicatePass)) {
+        if (!accountDTO.getPassword().equals(duplicatePass)) {
             bindingResult.rejectValue("password", "errorCode",
                     "*Повторный пароль не совпадает");
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("account", account);
+            model.addAttribute("account", accountDTO);
             return "home/register";
         }
 
-        Company company = account.getCompany();
-        company.setMoney(new BigDecimal("10000.00")); //default
+        Company company = accountDTO.getCompany();
+        company.setMoney(new BigDecimal("10000.00")); // TODO: default
         companyService.saveCompany(company);
 
-        String passwordHash = PasswordGenerator.createBCrypt(account.getPassword());
-        account.setPassword(passwordHash);
+        String passwordHash = PasswordGenerator.createBCrypt(accountDTO.getPassword());
+        accountDTO.setPassword(passwordHash);
 
-        account.setRole(Account.Role.ROLE_OWNER);
+        accountDTO.setRole(Account.Role.ROLE_OWNER);
+
+        Account account = accountParser.convertToEntity(accountDTO);
 
         accountService.saveAccount(account);
         return "redirect:/login?new_account";

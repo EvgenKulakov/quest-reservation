@@ -4,11 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.redis.object.AccountRedis;
-import ru.questsfera.questreservation.redis.object.ClientRedis;
-import ru.questsfera.questreservation.redis.object.ReservationRedis;
 import ru.questsfera.questreservation.redis.service.AccountRedisService;
-import ru.questsfera.questreservation.redis.service.ClientRedisService;
-import ru.questsfera.questreservation.redis.service.ReservationRedisService;
 import ru.questsfera.questreservation.converter.SlotMapper;
 import ru.questsfera.questreservation.dto.ReservationForm;
 import ru.questsfera.questreservation.dto.Slot;
@@ -35,10 +31,10 @@ public class ReservationSaveOperator {
     private CompanyService companyService;
     @Autowired
     private AccountRedisService accountRedisService;
-    @Autowired
-    private ReservationRedisService reservationRedisService;
-    @Autowired
-    private ClientRedisService clientRedisService;
+//    @Autowired
+//    private ReservationRedisService reservationRedisService;
+//    @Autowired
+//    private ClientRedisService clientRedisService;
 
 
     @Transactional
@@ -67,9 +63,9 @@ public class ReservationSaveOperator {
 
         try {
             reservationService.saveReservation(reservation);
-            reservationRedisService.save(new ReservationRedis(reservation));
+//            reservationRedisService.save(new ReservationRedis(reservation));
             clientService.saveClient(client);
-            clientRedisService.save(new ClientRedis(client), client.getReservations());
+//            clientRedisService.save(new ClientRedis(client), client.getReservations());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -85,6 +81,6 @@ public class ReservationSaveOperator {
         reservation.setHistoryMessages("default"); //TODO: history message
 
         reservationService.saveReservation(reservation);
-        reservationRedisService.save(new ReservationRedis(reservation));
+//        reservationRedisService.save(new ReservationRedis(reservation));
     }
 }

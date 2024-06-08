@@ -17,8 +17,8 @@ import java.time.LocalTime;
 public class TestRestController {
     @Autowired
     private ReservationService reservationService;
-    @Autowired
-    private ReservationRedisService reservationRedisService;
+//    @Autowired
+//    private ReservationRedisService reservationRedisService;
     @Autowired
     private AccountService accountService;
 
@@ -31,10 +31,10 @@ public class TestRestController {
                                           @PathVariable("h") Integer h,
                                           @PathVariable("min") Integer min
     ) {
-        ReservationRedis reservationRedis = reservationRedisService
-                .findByQuestIdDateTime(questId, LocalDate.of(y, m, d), LocalTime.of(h, min));
+//        ReservationRedis reservationRedis = reservationRedisService
+//                .findByQuestIdDateTime(questId, LocalDate.of(y, m, d), LocalTime.of(h, min));
 
-        return reservationRedis;
+        return null;
     }
 
     @GetMapping("get-acc")

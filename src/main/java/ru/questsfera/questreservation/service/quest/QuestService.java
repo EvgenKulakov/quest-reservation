@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.repository.AccountRepository;
@@ -27,8 +26,8 @@ public class QuestService {
     private StatusRepository statusRepository;
 
     @Transactional
-    public List<Quest> getQuestsByCompany(Company company) {
-        return questRepository.findAllByCompanyOrderByQuestName(company);
+    public List<Quest> getQuestsByCompanyId(Integer companyId) {
+        return questRepository.findAllByCompanyIdOrderByQuestName(companyId);
     }
 
     @Transactional
@@ -42,13 +41,13 @@ public class QuestService {
     }
 
     @Transactional
-    public boolean existQuestNameByCompany(String questName, Company company) {
-        return questRepository.existsQuestByQuestNameAndCompany(questName, company);
+    public boolean existQuestNameByCompany(String questName, Integer companyId) {
+        return questRepository.existsQuestByQuestNameAndCompanyId(questName, companyId);
     }
 
     @Transactional
-    public boolean existQuestByCompany(Quest quest, Company company) {
-        return questRepository.existsQuestByIdAndCompany(quest.getId(), company);
+    public boolean existQuestByAccountId(Quest quest, Integer accountId) {
+        return questRepository.existsQuestByIdAndAccountId(quest.getId(), accountId);
     }
 
     //TODO: migration in reservationService
@@ -67,9 +66,9 @@ public class QuestService {
     }
 
     @Transactional
-    public void deleteQuest(Quest quest, Company company) {
+    public void deleteQuest(Quest quest, Integer accountId) {
 
-        checkSecurityForQuest(quest, company);
+        checkSecurityForQuest(quest, accountId);
 
         reservationRepository.deleteByQuest(quest);
 
@@ -79,7 +78,7 @@ public class QuestService {
         }
 
         for (Status status : statusRepository.findAllByQuestId(quest.getId())) {
-//            status.getQuests().remove(quest);
+            status.getQuests().remove(quest);
             statusRepository.save(status);
         }
 
@@ -92,8 +91,8 @@ public class QuestService {
     }
 
     @Transactional
-    public void checkSecurityForQuest(Quest quest, Company company) {
-        boolean existQuestByCompany = existQuestByCompany(quest, company);
+    public void checkSecurityForQuest(Quest quest, Integer accountId) {
+        boolean existQuestByCompany = existQuestByAccountId(quest, accountId);
         if (!existQuestByCompany) {
             throw new SecurityException("Нет доступа для изменения данного квеста");
         }

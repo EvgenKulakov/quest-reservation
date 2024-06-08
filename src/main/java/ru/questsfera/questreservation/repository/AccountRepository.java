@@ -17,7 +17,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     boolean existsAccountByIdAndCompanyId(Integer accountd, Integer companyId);
 
-    List<Account> findAllByCompanyOrderByEmailLogin(Company company);
+    List<Account> findAllByCompanyIdOrderByEmailLogin(Integer companyId);
 
     @Query("SELECT ac FROM Account ac JOIN ac.quests qu WHERE qu.id = :questId")
     List<Account> findAllByQuestId(@Param("questId") Integer questId);

@@ -10,12 +10,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.questsfera.questreservation.validator.Patterns;
 
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "accounts", schema = "quest_reservations_db")
@@ -47,15 +46,14 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @Column(name = "company_id")
+    private Integer companyId;
 
     @ManyToMany
     @JoinTable(name = "account_quest",
             joinColumns = @JoinColumn(name = "account_id"),
             inverseJoinColumns = @JoinColumn(name = "quest_id"))
-    private Set<Quest> quests = new TreeSet<>();
+    private List<Quest> quests = new ArrayList<>();
 
     @Getter
     @AllArgsConstructor

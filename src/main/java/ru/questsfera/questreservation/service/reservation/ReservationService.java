@@ -18,8 +18,8 @@ public class ReservationService {
 
     @Autowired
     private ReservationRepository reservationRepository;
-    @Autowired
-    private ReservationRedisService reservationRedisService;
+//    @Autowired
+//    private ReservationRedisService reservationRedisService;
 
 
     @Transactional
@@ -86,7 +86,7 @@ public class ReservationService {
     public void deleteBlockedReservation(Long reservationId) {
 //        checkSecurityForReserve(reservation, account);
         reservationRepository.deleteById(reservationId);
-        reservationRedisService.deleteById(reservationId);
+//        reservationRedisService.deleteById(reservationId);
     }
 
     @Transactional

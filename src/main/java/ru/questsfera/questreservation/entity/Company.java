@@ -36,9 +36,6 @@ public class Company {
     @OneToMany(mappedBy = "company")
     private Set<Quest> quests = new TreeSet<>();
 
-    @OneToMany(mappedBy = "company")
-    private Set<Account> accounts = new HashSet<>();
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

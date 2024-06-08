@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.redis.object.AccountRedis;
 import ru.questsfera.questreservation.redis.service.AccountRedisService;
 import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.repository.AccountRepository;
 
@@ -47,8 +46,8 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public List<Account> getAccountsByCompany(Company company) {
-        return accountRepository.findAllByCompanyOrderByEmailLogin(company);
+    public List<Account> getAccountsByCompanyId(Integer companyId) {
+        return accountRepository.findAllByCompanyIdOrderByEmailLogin(companyId);
     }
 
     @Transactional
@@ -102,7 +101,7 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public void checkSecurityForAccounts(List<Account> changeAccounts, Account myAccount) {
-        List<Account> usersByAdmin = getAccountsByCompany(myAccount.getCompany());
+        List<Account> usersByAdmin = getAccountsByCompanyId(myAccount.getCompanyId());
         if (!usersByAdmin.containsAll(changeAccounts)) {
             throw new SecurityException("Нет доступа для изменения данных пользователей");
         }

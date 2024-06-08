@@ -37,7 +37,6 @@ public class ReservationGetOperator {
         Set<Quest> quests = new TreeSet<>(questService.findAllByAccountId(accountRedis.getId()));
 
         for (Quest quest : quests) {
-            //TODO: query in cache
             Map<LocalTime, Reservation> reservations = reservationService.findActiveByQuestIdAndDate(quest.getId(), date);
             SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
             SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);

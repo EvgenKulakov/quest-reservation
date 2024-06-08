@@ -10,9 +10,9 @@ import ru.questsfera.questreservation.processor.RedisCalendar;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Service
+//@Service
 public class ReservationRedisService {
-    @Autowired
+//    @Autowired
     private ReservationRedisRepository reservationRedisRepository;
 
 

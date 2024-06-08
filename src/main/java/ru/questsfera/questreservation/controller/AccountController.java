@@ -38,7 +38,7 @@ public class AccountController {
     public String showAccountsList(Principal principal, Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
-        List<Account> accounts = accountService.getAccountsByCompany(account.getCompany());
+        List<Account> accounts = accountService.getAccountsByCompanyId(account.getCompanyId());
         if (account.getRole() != Account.Role.ROLE_OWNER) {
              accounts.removeIf(acc -> !acc.getRole().equals(Account.Role.ROLE_USER));
         }
@@ -53,10 +53,10 @@ public class AccountController {
 
         AccountRedis myAccount = accountRedisService.findByEmailLogin(principal.getName());
         Company company = companyService.findById(myAccount.getCompanyId());
-        List<Quest> allQuests = questService.getQuestsByCompany(company);
+        List<Quest> allQuests = questService.getQuestsByCompanyId(company.getId());
 
         Account newAccount = new Account();
-        newAccount.setCompany(company);
+        newAccount.setCompanyId(company.getId());
         newAccount.setPassword(PasswordGenerator.createRandomPassword());
 
         Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
@@ -73,7 +73,7 @@ public class AccountController {
         AccountRedis myAccount = accountRedisService.findByEmailLogin(principal.getName());
         accountService.checkSecurityForAccount(account, myAccount);
 
-        List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany());
+        List<Quest> allQuests = questService.getQuestsByCompanyId(account.getCompanyId());
         Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 
         model.addAttribute("account", account);
@@ -103,7 +103,7 @@ public class AccountController {
         }
 
         if (bindingResult.hasErrors()) {
-            List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany());
+            List<Quest> allQuests = questService.getQuestsByCompanyId(account.getCompanyId());
             Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 
             model.addAttribute("account", account);
@@ -115,11 +115,6 @@ public class AccountController {
         if (account.getId() == null) {
             String passwordHash = PasswordGenerator.createBCrypt(account.getPassword());
             account.setPassword(passwordHash);
-        }
-
-        for (Quest quest : account.getQuests()) {
-            quest.getAccounts().add(account);
-            questService.saveQuest(quest);
         }
 
         accountService.saveAccount(account);

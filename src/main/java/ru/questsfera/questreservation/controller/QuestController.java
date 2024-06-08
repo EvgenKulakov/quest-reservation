@@ -12,11 +12,13 @@ import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.SlotListTypeBuilder;
 import ru.questsfera.questreservation.dto.TimePrice;
 import ru.questsfera.questreservation.entity.Account;
+import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.processor.SlotListMaker;
 import ru.questsfera.questreservation.service.account.AccountService;
+import ru.questsfera.questreservation.service.company.CompanyService;
 import ru.questsfera.questreservation.service.quest.QuestService;
 import ru.questsfera.questreservation.validator.SlotListValidator;
 
@@ -35,13 +37,15 @@ public class QuestController {
     private QuestService questService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private CompanyService companyService;
 
 
     @GetMapping("/")
     public String showQuestList(Principal principal, Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
-        Set<Quest> quests = account.getQuests();//TODO: sort for quests
+        List<Quest> quests = account.getQuests();//TODO: sort for quests
 
         model.addAttribute("quests", quests);
         return "quests/quests-list";
@@ -51,7 +55,7 @@ public class QuestController {
     public String addQuest(Principal principal, Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
-        List<Account> allAccounts = accountService.getAccountsByCompany(account.getCompany());
+        List<Account> allAccounts = accountService.getAccountsByCompanyId(account.getCompanyId());
 
         QuestForm questForm = new QuestForm();
         questForm.setStatuses(Status.getDefaultStatuses());
@@ -81,7 +85,7 @@ public class QuestController {
 
         accountService.checkSecurityForAccounts(questForm.getAccounts(), account);
 
-        boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompany());
+        boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompanyId());
         String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuilder());
 
         if (binding.hasErrors() || questForm.getMinPersons() > questForm.getMaxPersons()
@@ -110,16 +114,17 @@ public class QuestController {
             model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
             model.addAttribute("slotListJSON", slotListJSON);
             model.addAttribute("userStatuses", Status.getUserStatuses());
-            model.addAttribute("allAccounts", accountService.getAccountsByCompany(account.getCompany()));
+            model.addAttribute("allAccounts", accountService.getAccountsByCompanyId(account.getCompanyId()));
 
             return "quests/add-quest-form";
         }
 
+        Company company = companyService.findById(account.getCompanyId());
         SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuilder());
-        Quest quest = new Quest(questForm, account.getCompany());
+        Quest quest = new Quest(questForm, company);
         questService.saveQuest(quest);
 
-        for (Account acc : quest.getAccounts()) {
+        for (Account acc : questForm.getAccounts()) {
             acc.getQuests().add(quest);
             accountService.saveAccount(acc);
         }
@@ -154,14 +159,14 @@ public class QuestController {
             return "quests/question-delete-quest";
         }
 
-        questService.deleteQuest(quest, account.getCompany());
+        questService.deleteQuest(quest, account.getId());
         return "redirect:/quests/";
     }
 
     @PostMapping("/delete-final")
     public String deleteQuestFinal(@RequestParam("quest") Quest quest, Principal principal) {
         Account account = accountService.getAccountByLogin(principal.getName());
-        questService.deleteQuest(quest, account.getCompany());
+        questService.deleteQuest(quest, account.getId());
         return "redirect:/quests/";
     }
 }

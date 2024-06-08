@@ -47,9 +47,6 @@ public class Quest implements Comparable<Quest> {
     @OneToMany(mappedBy = "quest")
     private Set<Reservation> reservations = new HashSet<>();
 
-    @ManyToMany(mappedBy = "quests")
-    private List<Account> accounts = new ArrayList<>();
-
     @ManyToMany
     @JoinTable(name = "status_quest",
             joinColumns = @JoinColumn(name = "quest_id"),
@@ -68,7 +65,6 @@ public class Quest implements Comparable<Quest> {
         this.maxPersons = questForm.getMaxPersons();
         this.autoBlock = questForm.getAutoBlock();
         this.slotList = SlotListMapper.createJSON(questForm.getSlotList());
-        this.accounts = questForm.getAccounts();
         this.statuses = questForm.getStatuses();
         this.company = company;
     }

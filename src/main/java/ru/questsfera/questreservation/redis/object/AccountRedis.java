@@ -24,6 +24,6 @@ public class AccountRedis {
         this.emailLogin = account.getEmailLogin();
         this.id = account.getId();
         this.role = account.getRole();
-        this.companyId = account.getCompany().getId();
+        this.companyId = account.getCompanyId();
     }
 }
