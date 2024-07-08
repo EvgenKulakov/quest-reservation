@@ -18,7 +18,7 @@ import java.util.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "accounts", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"emailAndLogin", "password", "firstName", "lastName", "phone", "role", "company", "quests"})
+@JsonIgnoreProperties({"emailAndLogin", "password", "firstName", "lastName", "phone", "role", "companyId", "quests"})
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

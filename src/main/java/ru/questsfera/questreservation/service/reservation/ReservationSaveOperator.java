@@ -9,7 +9,6 @@ import ru.questsfera.questreservation.converter.SlotMapper;
 import ru.questsfera.questreservation.dto.ReservationForm;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.processor.Editor;
 import ru.questsfera.questreservation.processor.ReservationFactory;
@@ -18,8 +17,6 @@ import ru.questsfera.questreservation.service.company.CompanyService;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ReservationSaveOperator {
@@ -41,30 +38,28 @@ public class ReservationSaveOperator {
     public void saveReservation(ReservationForm resForm, String slotJSON, Principal principal) {
 
         AccountRedis accountRedis = accountRedisService.findByEmailLogin(principal.getName());
-        Company company = companyService.findById(accountRedis.getCompanyId());
         Slot slot = SlotMapper.createSlotObject(slotJSON);
         Reservation reservation = null;
 
         if (slot.getReservation() == null) {
             reservation = ReservationFactory.createReservation(resForm, slot);
-            Client client = new Client(resForm, company);
-            reservation.setClient(client);
-            client.setReservations(new ArrayList<>(List.of(reservation)));
+            Client newClient = new Client(resForm, accountRedis.getCompanyId());
+            Client clientSaved = clientService.saveClient(newClient);
+            reservation.setClientId(clientSaved.getId());
             reservation.setSourceReserve("default"); //TODO: source reserve
         } else {
             reservation = reservationService.getReserveById(slot.getReservation().getId());
-            Editor.editReservation(reservation, resForm);
+            Client client = clientService.findById(reservation.getClientId());
+            Editor.editReserveAndClient(reservation, client, resForm);
+            clientService.saveClient(client);
         }
 
         reservation.setTimeLastChange(LocalDateTime.now());
         reservation.setHistoryMessages("default"); //TODO: history message
 
-        Client client = reservation.getClient();
-
         try {
             reservationService.saveReservation(reservation);
 //            reservationRedisService.save(new ReservationRedis(reservation));
-            clientService.saveClient(client);
 //            clientRedisService.save(new ClientRedis(client), client.getReservations());
         } catch (Exception e) {
             throw new RuntimeException(e);

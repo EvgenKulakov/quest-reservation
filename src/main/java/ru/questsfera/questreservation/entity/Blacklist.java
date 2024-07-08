@@ -15,7 +15,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "blacklist", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"company"})
+@JsonIgnoreProperties({"companyId"})
 public class Blacklist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

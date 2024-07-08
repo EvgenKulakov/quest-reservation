@@ -4,12 +4,9 @@ import ru.questsfera.questreservation.dto.ReservationForm;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
 
-import java.util.Collections;
-
 public class Editor {
 
-    public static void editReservation(Reservation reservation, ReservationForm resForm) {
-        Client client = reservation.getClient();
+    public static void editReserveAndClient(Reservation reservation, Client client, ReservationForm resForm) {
 
         reservation.setStatusType(resForm.getStatusType());
         reservation.setCountPersons(resForm.getCountPersons());

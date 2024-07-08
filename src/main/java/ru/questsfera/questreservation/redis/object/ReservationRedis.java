@@ -53,7 +53,7 @@ public class ReservationRedis {
         this.sourceReserve = reservation.getSourceReserve();
         this.price = reservation.getPrice();
         this.changedPrice = reservation.getChangedPrice();
-        this.clientId = reservation.getClient() != null ? reservation.getClient().getId() : null;
+        this.clientId = reservation.getClientId();
         this.countPersons = reservation.getCountPersons();
         this.adminComment = reservation.getAdminComment();
         this.clientComment = reservation.getClientComment();

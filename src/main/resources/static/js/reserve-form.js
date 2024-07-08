@@ -78,7 +78,7 @@ function showReservation(slot, quest) {
         }
     } else if (slot.reservation) {
         const reservation = slot.reservation
-        const client = reservation.client
+        const client = reservation.client //TODO: client отдельно от reservation
 
         selectStatus.value = reservation.statusType
         firstName.value = client.firstName

@@ -1,6 +1,5 @@
 package ru.questsfera.questreservation.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,7 +14,7 @@ import java.util.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "clients", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"company", "reservations"})
+@JsonIgnoreProperties({"companyId"})
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,22 +36,18 @@ public class Client {
     @Column(name = "comments")
     private String comments;
 
-    @JoinColumn(name = "blacklist_id")
+    @Column(name = "blacklist_id")
     private Integer blacklistId;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @Column(name = "company_id")
+    private Integer companyId;
 
-    @OneToMany(mappedBy = "client")
-    private List<Reservation> reservations = new ArrayList<>();
-
-    public Client(ReservationForm resForm, Company company) {
+    public Client(ReservationForm resForm, Integer companyId) {
         this.firstName = resForm.getFirstName();
         this.lastName = resForm.getLastName();
         this.phones = resForm.getPhone();
         this.emails = resForm.getEmail();
-        this.company = company;
+        this.companyId = companyId;
     }
 
     @Override

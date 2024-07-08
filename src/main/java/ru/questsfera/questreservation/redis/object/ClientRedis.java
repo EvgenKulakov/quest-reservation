@@ -36,6 +36,6 @@ public class ClientRedis {
         this.phoneIds = new ArrayList<>(List.of(client.getPhones()));
         this.emailIds = new ArrayList<>(List.of(client.getEmails()));
         this.blacklistId = client.getBlacklistId();
-        this.companyId = client.getCompany().getId();
+        this.companyId = client.getCompanyId();
     }
 }

@@ -60,9 +60,8 @@ public class Reservation {
     @Column(name = "changed_price")
     private BigDecimal changedPrice;
 
-    @ManyToOne
     @JoinColumn(name = "client_id")
-    private Client client;
+    private Integer clientId;
 
     @Column(name = "count_persons")
     private Integer countPersons;

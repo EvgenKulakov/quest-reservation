@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -26,9 +25,6 @@ public class Company {
 
     @Column(name = "money")
     private BigDecimal money;
-
-    @OneToMany(mappedBy = "company")
-    private Set<Client> clients = new HashSet<>();
 
     @OneToMany(mappedBy = "company")
     private Set<Quest> quests = new TreeSet<>();
