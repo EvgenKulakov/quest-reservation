@@ -16,26 +16,24 @@ import java.util.Objects;
 @Entity
 @Table(name = "blacklist", schema = "quest_reservations_db")
 @JsonIgnoreProperties({"company"})
-public class BlackList {
+public class Blacklist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @Column(name = "client_id")
+    private Integer clientId;
 
     @Column(name = "messages")
     private String messages;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @Column(name = "company_id")
+    private Integer companyId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BlackList blackList)) return false;
+        if (!(o instanceof Blacklist blackList)) return false;
         return id != null && Objects.equals(getId(), blackList.getId());
     }
 

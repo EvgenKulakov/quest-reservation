@@ -31,9 +31,6 @@ public class Company {
     private Set<Client> clients = new HashSet<>();
 
     @OneToMany(mappedBy = "company")
-    private Set<BlackList> blackLists = new HashSet<>();
-
-    @OneToMany(mappedBy = "company")
     private Set<Quest> quests = new TreeSet<>();
 
     @Override

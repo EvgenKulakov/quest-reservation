@@ -37,9 +37,8 @@ public class Client {
     @Column(name = "comments")
     private String comments;
 
-    @OneToOne
     @JoinColumn(name = "blacklist_id")
-    private BlackList blackList;
+    private Integer blacklistId;
 
     @ManyToOne
     @JoinColumn(name = "company_id")

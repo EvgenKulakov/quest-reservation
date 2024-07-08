@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
-import ru.questsfera.questreservation.entity.BlackList;
 import ru.questsfera.questreservation.entity.Client;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class ClientRedis {
     private String lastName;
     private List<String> phoneIds;
     private List<String> emailIds;
-    private BlackList blackList;
+    private Integer blacklistId;
     private Integer companyId;
 
     public ClientRedis(Client client) {
@@ -36,7 +35,7 @@ public class ClientRedis {
         //TODO: phones and emails
         this.phoneIds = new ArrayList<>(List.of(client.getPhones()));
         this.emailIds = new ArrayList<>(List.of(client.getEmails()));
-        this.blackList = client.getBlackList();
+        this.blacklistId = client.getBlacklistId();
         this.companyId = client.getCompany().getId();
     }
 }
