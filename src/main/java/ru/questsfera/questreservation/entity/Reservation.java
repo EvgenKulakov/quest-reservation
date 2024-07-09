@@ -60,7 +60,7 @@ public class Reservation {
     @Column(name = "changed_price")
     private BigDecimal changedPrice;
 
-    @JoinColumn(name = "client_id")
+    @Column(name = "client_id")
     private Integer clientId;
 
     @Column(name = "count_persons")

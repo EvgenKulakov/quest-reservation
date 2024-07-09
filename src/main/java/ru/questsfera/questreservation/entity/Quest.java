@@ -40,9 +40,8 @@ public class Quest implements Comparable<Quest> {
     @Column(name = "slot_list")
     private String slotList;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @Column(name = "company_id")
+    private Integer companyId;
 
     @OneToMany(mappedBy = "quest")
     private Set<Reservation> reservations = new HashSet<>();
@@ -59,14 +58,14 @@ public class Quest implements Comparable<Quest> {
             inverseJoinColumns = @JoinColumn(name = "id_second_quest"))
     private Set<Quest> synchronizedQuests = new HashSet<>();
 
-    public Quest(QuestForm questForm, Company company) {
+    public Quest(QuestForm questForm, Integer companyId) {
         this.questName = questForm.getQuestName();
         this.minPersons = questForm.getMinPersons();
         this.maxPersons = questForm.getMaxPersons();
         this.autoBlock = questForm.getAutoBlock();
         this.slotList = SlotListMapper.createJSON(questForm.getSlotList());
         this.statuses = questForm.getStatuses();
-        this.company = company;
+        this.companyId = companyId;
     }
 
     public static void synchronizeQuests(Quest... quests) {
@@ -83,25 +82,25 @@ public class Quest implements Comparable<Quest> {
 
     private static boolean validatorToSynchronize(Set<Quest> questSet) {
         boolean check = true;
-        Company validCompany = questSet.iterator().next().getCompany();
-
-        if (questSet.size() < 2) {
-            throw new RuntimeException("Попытка синхронизировать меньше двух квестов");
-        }
-
-        for (Quest quest : questSet) {
-            if (!quest.getCompany().equals(validCompany)) {
-                throw new RuntimeException("Попытка синхронизировать " +
-                        "квесты у разных компаний");
-            }
-            if (!quest.getSynchronizedQuests().isEmpty() || !check) {
-                check = false;
-                if (!quest.getSynchronizedQuests().equals(questSet)) {
-                    throw new RuntimeException("Попытка синхронизировать " +
-                            "ранее синхронизированные квесты");
-                }
-            }
-        }
+//        Company validCompany = questSet.iterator().next().getCompany();
+//
+//        if (questSet.size() < 2) {
+//            throw new RuntimeException("Попытка синхронизировать меньше двух квестов");
+//        }
+//
+//        for (Quest quest : questSet) {
+//            if (!quest.getCompany().equals(validCompany)) {
+//                throw new RuntimeException("Попытка синхронизировать " +
+//                        "квесты у разных компаний");
+//            }
+//            if (!quest.getSynchronizedQuests().isEmpty() || !check) {
+//                check = false;
+//                if (!quest.getSynchronizedQuests().equals(questSet)) {
+//                    throw new RuntimeException("Попытка синхронизировать " +
+//                            "ранее синхронизированные квесты");
+//                }
+//            }
+//        }
         /* check == false, если был дублированный запрос */
         return check;
     }

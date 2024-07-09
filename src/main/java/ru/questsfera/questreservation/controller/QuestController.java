@@ -12,7 +12,6 @@ import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.SlotListTypeBuilder;
 import ru.questsfera.questreservation.dto.TimePrice;
 import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.converter.SlotListMapper;
@@ -119,9 +118,8 @@ public class QuestController {
             return "quests/add-quest-form";
         }
 
-        Company company = companyService.findById(account.getCompanyId());
         SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuilder());
-        Quest quest = new Quest(questForm, company);
+        Quest quest = new Quest(questForm, account.getCompanyId());
         questService.saveQuest(quest);
 
         for (Account acc : questForm.getAccounts()) {

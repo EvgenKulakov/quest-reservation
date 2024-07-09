@@ -91,9 +91,9 @@ public class ReservationService {
 
     @Transactional
     public void checkSecurityForReserve(Reservation reservation, Company company) {
-        if (!company.getQuests().contains(reservation.getQuest())) {
-            throw new SecurityException("Нет доступа для редактирования данного бронирования");
-        }
+//        if (!company.getQuests().contains(reservation.getQuest())) {
+//            throw new SecurityException("Нет доступа для редактирования данного бронирования");
+//        }
     }
 
     @Transactional

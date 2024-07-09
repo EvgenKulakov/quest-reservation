@@ -7,8 +7,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
 
 @Getter
 @Setter
@@ -25,9 +23,6 @@ public class Company {
 
     @Column(name = "money")
     private BigDecimal money;
-
-    @OneToMany(mappedBy = "company")
-    private Set<Quest> quests = new TreeSet<>();
 
     @Override
     public boolean equals(Object o) {
