@@ -15,7 +15,7 @@ public class ReservationFactory {
         reservation.setDateReserve(slot.getDate());
         reservation.setTimeReserve(slot.getTime());
         reservation.setDateAndTimeCreated(LocalDateTime.now());
-        reservation.setQuest(slot.getQuest());
+        reservation.setQuestId(slot.getQuest().getId());
         reservation.setStatusType(resForm.getStatusType());
         reservation.setPrice(new BigDecimal(slot.getPrice()));
         reservation.setCountPersons(resForm.getCountPersons());
@@ -29,7 +29,7 @@ public class ReservationFactory {
         reservation.setDateReserve(slot.getDate());
         reservation.setTimeReserve(slot.getTime());
         reservation.setDateAndTimeCreated(LocalDateTime.now());
-        reservation.setQuest(slot.getQuest());
+        reservation.setQuestId(slot.getQuest().getId());
         reservation.setStatusType(StatusType.BLOCK);
         return reservation;
     }

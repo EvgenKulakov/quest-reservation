@@ -45,7 +45,7 @@ public class ReservationRedis {
         this.timeToLive = RedisCalendar.getTimeToLive(reservation.getDateReserve());
         this.dateReserve = reservation.getDateReserve();
         this.timeReserve = reservation.getTimeReserve();
-        this.questId = reservation.getQuest().getId();
+        this.questId = reservation.getQuestId();
         this.dateAndTimeCreated = reservation.getDateAndTimeCreated();
         this.timeLastChange = reservation.getTimeLastChange();
         this.changedSlotTime = reservation.getChangedSlotTime();

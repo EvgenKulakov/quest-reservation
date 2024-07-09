@@ -38,13 +38,10 @@ public class Quest implements Comparable<Quest> {
     private String sms;
 
     @Column(name = "slot_list")
-    private String slotList;
+    private String slotList; //TODO: create new table
 
     @Column(name = "company_id")
     private Integer companyId;
-
-    @OneToMany(mappedBy = "quest")
-    private Set<Reservation> reservations = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "status_quest",
@@ -56,7 +53,7 @@ public class Quest implements Comparable<Quest> {
     @JoinTable(name = "synchronized_quests",
             joinColumns = @JoinColumn(name = "id_first_quest"),
             inverseJoinColumns = @JoinColumn(name = "id_second_quest"))
-    private Set<Quest> synchronizedQuests = new HashSet<>();
+    private Set<Quest> synchronizedQuests = new HashSet<>(); //TODO: изменить тип, удалить таблицу synchronized_quests
 
     public Quest(QuestForm questForm, Integer companyId) {
         this.questName = questForm.getQuestName();

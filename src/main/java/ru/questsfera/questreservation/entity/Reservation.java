@@ -21,7 +21,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "reservations", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"quest"})
+@JsonIgnoreProperties({"questId"})
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,9 +42,8 @@ public class Reservation {
     @Column(name = "changed_slot_time")
     private LocalTime changedSlotTime;
 
-    @ManyToOne
-    @JoinColumn(name = "quest_id")
-    private Quest quest;
+    @Column(name = "quest_id")
+    private Integer questId;
 
     //TODO: statuses
     @Enumerated(value = EnumType.STRING)

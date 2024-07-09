@@ -101,7 +101,7 @@ public class ReservationService {
 
         if (reservation.getId() == null) {
             boolean existsReservation = reservationRepository.existsByQuestAndDateReserveAndTimeReserve(
-                    reservation.getQuest(),
+                    reservation.getQuestId(),
                     reservation.getDateReserve(),
                     reservation.getTimeReserve()
             );

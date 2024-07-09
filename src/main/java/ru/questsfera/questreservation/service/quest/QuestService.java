@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.repository.AccountRepository;
 import ru.questsfera.questreservation.repository.QuestRepository;
 import ru.questsfera.questreservation.repository.ReservationRepository;
@@ -53,7 +52,7 @@ public class QuestService {
     //TODO: migration in reservationService
     @Transactional
     public boolean hasReservationsByQuest(Quest quest) {
-        return reservationRepository.existsByQuest(quest);
+        return reservationRepository.existsByQuestId(quest.getId());
     }
 
     @Transactional
@@ -70,17 +69,17 @@ public class QuestService {
 
         checkSecurityForQuest(quest, accountId);
 
-        reservationRepository.deleteByQuest(quest);
+        reservationRepository.deleteByQuestId(quest.getId());
 
         for (Account account : accountRepository.findAllByQuestId(quest.getId())) {
             account.getQuests().remove(quest);
             accountRepository.save(account);
         }
 
-        for (Status status : statusRepository.findAllByQuestId(quest.getId())) {
-            status.getQuests().remove(quest);
-            statusRepository.save(status);
-        }
+//        for (Status status : statusRepository.findAllByQuestId(quest.getId())) {
+//            status.getQuests().remove(quest);
+//            statusRepository.save(status);
+//        }
 
 //        if (!quest.getSynchronizedQuests().isEmpty()) {
 //            dontSynchronizeQuests(quest);

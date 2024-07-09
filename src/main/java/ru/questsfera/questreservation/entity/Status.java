@@ -27,10 +27,6 @@ public class Status {
     @Column(name = "text")
     private String text;
 
-    @ManyToMany(mappedBy = "statuses")
-    @JsonIgnore
-    private Set<Quest> quests = new HashSet<>();
-
     public Status(StatusType statusType) {
         this.id = statusType.getId();
         this.type = statusType;
