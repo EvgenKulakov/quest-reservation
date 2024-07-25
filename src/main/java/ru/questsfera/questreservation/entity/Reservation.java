@@ -47,7 +47,7 @@ public class Reservation {
 
     //TODO: statuses
     @Enumerated(value = EnumType.STRING)
-    @JoinColumn(name = "status_type")
+    @Column(name = "status_type")
     private StatusType statusType;
 
     @Column(name = "source_reserve")
