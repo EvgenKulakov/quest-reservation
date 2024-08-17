@@ -3,7 +3,6 @@ package ru.questsfera.questreservation.service.reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.redis.service.ReservationRedisService;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -15,12 +14,8 @@ import java.util.*;
 
 @Service
 public class ReservationService {
-
     @Autowired
     private ReservationRepository reservationRepository;
-    @Autowired
-    private ReservationRedisService reservationRedisService;
-
 
     @Transactional
     public Reservation getReserveById(Long id) {
@@ -86,7 +81,6 @@ public class ReservationService {
     public void deleteBlockedReservation(Long reservationId) {
 //        checkSecurityForReserve(reservation, account);
         reservationRepository.deleteById(reservationId);
-        reservationRedisService.deleteById(reservationId);
     }
 
     @Transactional

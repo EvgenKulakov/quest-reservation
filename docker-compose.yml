@@ -14,14 +14,5 @@ services:
     ports:
       - "3306:3306"
 
-  redis:
-    image: redis
-    container_name: redis-ports
-    command: ["redis-server", "--appendonly", "yes", "--requirepass", "12345"]
-    environment:
-      REDIS_PASSWORD: 12345
-    ports:
-      - "6379:6379"
-
 volumes:
   mysql_data:

@@ -3,12 +3,7 @@ package ru.questsfera.questreservation.service.reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.redis.object.AccountRedis;
-import ru.questsfera.questreservation.redis.object.ClientRedis;
-import ru.questsfera.questreservation.redis.object.ReservationRedis;
-import ru.questsfera.questreservation.redis.service.AccountRedisService;
-import ru.questsfera.questreservation.redis.service.ClientRedisService;
-import ru.questsfera.questreservation.redis.service.ReservationRedisService;
+import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.converter.SlotMapper;
 import ru.questsfera.questreservation.dto.ReservationForm;
 import ru.questsfera.questreservation.dto.Slot;
@@ -17,6 +12,7 @@ import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.processor.Editor;
 import ru.questsfera.questreservation.processor.ReservationFactory;
+import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.client.ClientService;
 import ru.questsfera.questreservation.service.company.CompanyService;
 
@@ -34,18 +30,12 @@ public class ReservationSaveOperator {
     @Autowired
     private CompanyService companyService;
     @Autowired
-    private AccountRedisService accountRedisService;
-    @Autowired
-    private ReservationRedisService reservationRedisService;
-    @Autowired
-    private ClientRedisService clientRedisService;
-
+    private AccountService accountService;
 
     @Transactional
     public void saveReservation(ReservationForm resForm, String slotJSON, Principal principal) {
-
-        AccountRedis accountRedis = accountRedisService.findByEmailLogin(principal.getName());
-        Company company = companyService.findById(accountRedis.getCompanyId());
+        Account account = accountService.getAccountByLogin(principal.getName());
+        Company company = companyService.findById(account.getCompany().getId());
         Slot slot = SlotMapper.createSlotObject(slotJSON);
         Reservation reservation = null;
 
@@ -67,9 +57,7 @@ public class ReservationSaveOperator {
 
         try {
             reservationService.saveReservation(reservation);
-            reservationRedisService.save(new ReservationRedis(reservation));
             clientService.saveClient(client);
-            clientRedisService.save(new ClientRedis(client), client.getReservations());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -77,7 +65,6 @@ public class ReservationSaveOperator {
 
     @Transactional
     public void saveBlockReservation(String slotJSON) {
-
         Slot slot = SlotMapper.createSlotObject(slotJSON);
         Reservation reservation = ReservationFactory.createBlockReservation(slot);
 
@@ -85,6 +72,5 @@ public class ReservationSaveOperator {
         reservation.setHistoryMessages("default"); //TODO: history message
 
         reservationService.saveReservation(reservation);
-        reservationRedisService.save(new ReservationRedis(reservation));
     }
 }

@@ -6,11 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.SlotList;
+import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.processor.SlotFactory;
-import ru.questsfera.questreservation.redis.object.AccountRedis;
-import ru.questsfera.questreservation.redis.service.AccountRedisService;
+import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
 import java.security.Principal;
@@ -25,7 +25,7 @@ public class ReservationGetOperator {
     @Autowired
     private QuestService questService;
     @Autowired
-    private AccountRedisService accountRedisService;
+    private AccountService accountService;
 
 
     @Transactional
@@ -33,8 +33,8 @@ public class ReservationGetOperator {
 
         Map<String, List<Slot>> questsAndSlots = new LinkedHashMap<>();
 
-        AccountRedis accountRedis = accountRedisService.findByEmailLogin(principal.getName());
-        Set<Quest> quests = new TreeSet<>(questService.findAllByAccountId(accountRedis.getId()));
+        Account account = accountService.getAccountByLogin(principal.getName());
+        Set<Quest> quests = new TreeSet<>(questService.findAllByAccountId(account.getId()));
 
         for (Quest quest : quests) {
             //TODO: query in cache

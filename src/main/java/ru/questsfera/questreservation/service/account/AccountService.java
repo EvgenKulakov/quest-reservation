@@ -7,8 +7,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.redis.object.AccountRedis;
-import ru.questsfera.questreservation.redis.service.AccountRedisService;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
@@ -23,8 +21,6 @@ public class AccountService implements UserDetailsService {
 
     @Autowired
     private AccountRepository accountRepository;
-    @Autowired
-    private AccountRedisService accountRedisService;
 
     @Override
     @Transactional
@@ -76,7 +72,6 @@ public class AccountService implements UserDetailsService {
     public void saveAccount(Account account) {
         try {
             accountRepository.save(account);
-            accountRedisService.save(new AccountRedis(account));
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
@@ -85,12 +80,11 @@ public class AccountService implements UserDetailsService {
     @Transactional
     public void delete(Account account) {
         accountRepository.delete(account);
-        accountRedisService.deleteByEmailLogin(account.getEmailLogin());
     }
 
     @Transactional
-    public void checkSecurityForAccount(Account changeAccount, AccountRedis myAccount) {
-        boolean existAccountByCompany = existAccountByCompanyId(changeAccount, myAccount.getCompanyId());
+    public void checkSecurityForAccount(Account changeAccount, Account myAccount) {
+        boolean existAccountByCompany = existAccountByCompanyId(changeAccount, myAccount.getCompany().getId());
 
         boolean haveAccess = myAccount.getRole() == Account.Role.ROLE_OWNER
                 || changeAccount.getRole() == Account.Role.ROLE_USER;

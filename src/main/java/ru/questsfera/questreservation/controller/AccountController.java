@@ -6,8 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.questsfera.questreservation.redis.object.AccountRedis;
-import ru.questsfera.questreservation.redis.service.AccountRedisService;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
@@ -30,8 +28,6 @@ public class AccountController {
     private QuestService questService;
     @Autowired
     private CompanyService companyService;
-    @Autowired
-    private AccountRedisService accountRedisService;
 
 
     @GetMapping("/")
@@ -51,8 +47,8 @@ public class AccountController {
     @GetMapping("/add-form")
     public String addAccount(Principal principal, Model model) {
 
-        AccountRedis myAccount = accountRedisService.findByEmailLogin(principal.getName());
-        Company company = companyService.findById(myAccount.getCompanyId());
+        Account myAccount = accountService.getAccountByLogin(principal.getName());
+        Company company = companyService.findById(myAccount.getCompany().getId());
         List<Quest> allQuests = questService.getQuestsByCompany(company);
 
         Account newAccount = new Account();
@@ -70,7 +66,7 @@ public class AccountController {
     @PostMapping("/update-form")
     public String updateAccount(@RequestParam("account") Account account, Principal principal, Model model) {
 
-        AccountRedis myAccount = accountRedisService.findByEmailLogin(principal.getName());
+        Account myAccount = accountService.getAccountByLogin(principal.getName());
         accountService.checkSecurityForAccount(account, myAccount);
 
         List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany());
@@ -89,16 +85,14 @@ public class AccountController {
                               Principal principal,
                               Model model) {
 
-        AccountRedis myAccount = accountRedisService.findByEmailLogin(principal.getName());
+        Account myAccount = accountService.getAccountByLogin(principal.getName());
         if (account.getId() != null) accountService.checkSecurityForAccount(account, myAccount);
 
         if (!account.getEmailLogin().equals(oldLogin)) {
-            boolean existsUsername = accountRedisService.existByEmailLogin(account.getEmailLogin());
+            boolean existsUsername = accountService.existAccountByLogin(account.getEmailLogin());
             if (existsUsername) {
                 String errorMessage = "Аккаунт " + account.getEmailLogin() + " уже существует";
                 bindingResult.rejectValue("emailLogin", "errorCode", errorMessage);
-            } else if (account.getId() != null) {
-                accountRedisService.deleteByEmailLogin(oldLogin);
             }
         }
 
@@ -129,7 +123,7 @@ public class AccountController {
     @PostMapping("/update-account-password")
     public String updatePassword(@RequestParam("account") Account account, Principal principal, Model model) {
 
-        AccountRedis myAccount = accountRedisService.findByEmailLogin(principal.getName());
+        Account myAccount = accountService.getAccountByLogin(principal.getName());
         accountService.checkSecurityForAccount(account, myAccount);
 
         model.addAttribute("account", account);
@@ -143,7 +137,7 @@ public class AccountController {
                                   @RequestParam("newPassword") String newPassword,
                                   Principal principal, Model model) {
 
-        AccountRedis myAccount = accountRedisService.findByEmailLogin(principal.getName());
+        Account myAccount = accountService.getAccountByLogin(principal.getName());
         accountService.checkSecurityForAccount(account, myAccount);
 
         //TODO: safe update password: *********
@@ -161,7 +155,7 @@ public class AccountController {
 
     @PostMapping("/delete")
     public String deleteAccount(@RequestParam("account") Account account, Principal principal) {
-        AccountRedis myAccount = accountRedisService.findByEmailLogin(principal.getName());
+        Account myAccount = accountService.getAccountByLogin(principal.getName());
         accountService.checkSecurityForAccount(account, myAccount);
         accountService.delete(account);
         return "redirect:/accounts/";
