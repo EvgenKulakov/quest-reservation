@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ru.questsfera.questreservation.dto.Slot;
 
 public class SlotMapper {
-
+    // TODO: object mapper; spging context?
     private static ObjectMapper mapper = new ObjectMapper();
     static {
         mapper.registerModule(new JavaTimeModule());

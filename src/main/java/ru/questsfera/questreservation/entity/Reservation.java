@@ -42,9 +42,8 @@ public class Reservation {
     @Column(name = "changed_slot_time")
     private LocalTime changedSlotTime;
 
-    @ManyToOne
-    @JoinColumn(name = "quest_id")
-    private Quest quest;
+    @Column(name = "quest_id")
+    private Integer questId;
 
     //TODO: statuses
     @Enumerated(value = EnumType.STRING)
@@ -73,7 +72,7 @@ public class Reservation {
     @Column(name = "client_comment")
     private String clientComment;
 
-    //TODO: new table historyMessages
+    // TODO: new table historyMessages
     @Column(name = "history_messages")
     private String historyMessages;
 

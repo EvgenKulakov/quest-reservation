@@ -1,6 +1,7 @@
 package ru.questsfera.questreservation.processor;
 
 import lombok.AllArgsConstructor;
+import ru.questsfera.questreservation.converter.SlotMapper;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.StatusType;
@@ -52,12 +53,10 @@ public class SlotFactory {
     }
 
     private Slot createSlotWithReserve(LocalTime time, Integer price, Reservation reserve) {
-        StatusType status = reserve.getStatusType();
-        LocalTime autoBlock = quest.getAutoBlock();
-        return new Slot(quest, status, reserve, date, time, price, autoBlock);
+        return new Slot(quest, reserve, date, time, price);
     }
 
     private Slot createEmptySlot(LocalTime time, Integer price) {
-        return new Slot(quest, StatusType.EMPTY, null, date, time, price, null);
+        return new Slot(quest, date, time, price);
     }
 }

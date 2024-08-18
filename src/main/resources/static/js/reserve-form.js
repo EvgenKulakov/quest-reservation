@@ -22,40 +22,33 @@ let errorMessages = document.querySelectorAll('.error-message')
 const changeStatus = document.querySelector('#change-status')
 const changeCountPersons = document.querySelector('#change-count-persons')
 
-const slotInfo = document.querySelector('#slotInfo')
+const selectedSlot = document.querySelector('#selected-slot')
 const errorSlot = document.querySelector('#error-slot')
 const saveButton = document.querySelector('#saveButton')
 const blockButton = document.querySelector('#blockButton')
 //TODO: unBlockButton при нажатии на Enter
 const unBlockButton = document.querySelector('#unBlockButton')
 
-function clickSlot(slotButton) {
+async function clickSlot(slotButton) {
     const slot = JSON.parse(slotButton)
-    const quest = slot.quest
+    selectedSlot.value = slotButton
 
     body.style.overflowY = 'hidden'
 
-    questName.textContent = quest.questName
+    questName.textContent = slot.questName
     slotDate.textContent = 'Дата: ' + slot.date
     slotTime.textContent = 'Время: ' + slot.time
     slotPrice.textContent = 'Стоимость: ' + slot.price + '₽'
 
     if (slot.statusType !== 'BLOCK') {
-        showReservation(slot, quest)
+        await showReservation(slot)
     } else {
         showBlockSlot()
     }
-
-    slotInfo.value = JSON.stringify(slot)
-
-    reserveModal.style.opacity = '1'
-    reserveModal.style.visibility = 'visible'
-    reserveContent.style.transform = 'translate(0px, 0px)'
-    reserveContent.style.opacity = '1'
 }
 
-function showReservation(slot, quest) {
-    const statuses = quest.statuses
+async function showReservation(slot) {
+    const statuses = slot.statuses
     for (let i = 0; i < statuses.length; i++) {
         const newOption = document.createElement("option")
         newOption.value = statuses[i].type
@@ -63,7 +56,7 @@ function showReservation(slot, quest) {
         selectStatus.appendChild(newOption);
     }
 
-    for (let i = quest.minPersons; i <= quest.maxPersons; i++) {
+    for (let i = slot.minPersons; i <= slot.maxPersons; i++) {
         const newOption = document.createElement("option")
         newOption.value = i
         newOption.textContent = i
@@ -71,23 +64,42 @@ function showReservation(slot, quest) {
     }
 
     if (errorMessages.length > 0) {
-        selectStatus.value = changeStatus.value
+        selectStatus.value = changeStatus.value // TODO: обращение к slot ?
         selectCountPersons.value = changeCountPersons.value
-        if (slot.reservation) {
+        if (slot.statusType !== 'EMPTY') {
             blockButton.style.display = 'none'
         }
-    } else if (slot.reservation) {
-        const reservation = slot.reservation
-        const client = reservation.client
+    } else if (slot.statusType !== 'EMPTY') {
+        const reservation = await getReservation(slot.reservationId)
+        if (!reservation) return // TODO: страница ошибки
 
         selectStatus.value = reservation.statusType
-        firstName.value = client.firstName
-        lastName.value = client.lastName
-        phone.value = client.phones
-        email.value = client.emails
+        firstName.value = reservation.firstName
+        lastName.value = reservation.lastName
+        phone.value = reservation.phone
+        email.value = reservation.email
         selectCountPersons.value = reservation.countPersons
         adminComment.value = reservation.adminComment
         blockButton.style.display = 'none'
+    }
+
+    reserveModal.style.opacity = '1'
+    reserveModal.style.visibility = 'visible'
+    reserveContent.style.transform = 'translate(0px, 0px)'
+    reserveContent.style.opacity = '1'
+}
+
+async function getReservation(reservationId) {
+    try {
+        const response = await fetch(`/reservation/${reservationId}`)
+        if (!response.ok) {
+            throw new Error('Ошибка сети')
+        }
+        const reservation = response.json()
+        console.log(reservation)
+        return reservation
+    } catch (error) {
+        console.error('Ошибка:', error)
     }
 }
 
@@ -108,6 +120,11 @@ function showBlockSlot() {
     saveButton.style.display = 'none'
     blockButton.style.display = 'none'
     unBlockButton.style.display = 'block'
+
+    reserveModal.style.opacity = '1'
+    reserveModal.style.visibility = 'visible'
+    reserveContent.style.transform = 'translate(0px, 0px)'
+    reserveContent.style.opacity = '1'
 }
 
 function closeSlot() {

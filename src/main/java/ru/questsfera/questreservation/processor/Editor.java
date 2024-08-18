@@ -1,14 +1,12 @@
 package ru.questsfera.questreservation.processor;
 
-import ru.questsfera.questreservation.dto.ReservationForm;
+import ru.questsfera.questreservation.dto.ResFormDTO;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
 
-import java.util.Collections;
-
 public class Editor {
 
-    public static void editReservation(Reservation reservation, ReservationForm resForm) {
+    public static void editReservation(Reservation reservation, ResFormDTO resForm) {
         Client client = reservation.getClient();
 
         reservation.setStatusType(resForm.getStatusType());

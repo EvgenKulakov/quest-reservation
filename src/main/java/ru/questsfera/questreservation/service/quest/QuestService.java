@@ -54,7 +54,7 @@ public class QuestService {
     //TODO: migration in reservationService
     @Transactional
     public boolean hasReservationsByQuest(Quest quest) {
-        return reservationRepository.existsByQuest(quest);
+        return reservationRepository.existsByQuestId(quest.getId());
     }
 
     @Transactional
@@ -71,7 +71,7 @@ public class QuestService {
 
         checkSecurityForQuest(quest, company);
 
-        reservationRepository.deleteByQuest(quest);
+        reservationRepository.deleteByQuestId(quest.getId());
 
         for (Account account : accountRepository.findAllByQuestId(quest.getId())) {
             account.getQuests().remove(quest);

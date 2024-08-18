@@ -1,6 +1,5 @@
 package ru.questsfera.questreservation.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,6 @@ import java.util.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "quests", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"autoBlock", "sms", "accounts", "slotList", "company", "reservations", "synchronizedQuests"})
 public class Quest implements Comparable<Quest> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,9 +41,6 @@ public class Quest implements Comparable<Quest> {
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
-
-    @OneToMany(mappedBy = "quest")
-    private Set<Reservation> reservations = new HashSet<>();
 
     @ManyToMany(mappedBy = "quests")
     private List<Account> accounts = new ArrayList<>();

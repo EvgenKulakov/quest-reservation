@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.SlotList;
+import ru.questsfera.questreservation.dto.SlotListPageDTO;
+import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -17,6 +19,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationGetOperator {
@@ -29,22 +32,30 @@ public class ReservationGetOperator {
 
 
     @Transactional
-    public Map<String, List<Slot>> getQuestsAndSlots(LocalDate date, Principal principal) {
-
-        Map<String, List<Slot>> questsAndSlots = new LinkedHashMap<>();
-
+    public SlotListPageDTO getQuestsAndSlots(LocalDate date, Principal principal) {
         Account account = accountService.getAccountByLogin(principal.getName());
         Set<Quest> quests = new TreeSet<>(questService.findAllByAccountId(account.getId()));
 
+        Map<String, List<Slot>> questsAndSlots = new LinkedHashMap<>();
+        Set<StatusType> useStatuses = new HashSet<>();
+
         for (Quest quest : quests) {
-            //TODO: query in cache
             Map<LocalTime, Reservation> reservations = reservationService.findActiveByQuestIdAndDate(quest.getId(), date);
+            Set<StatusType> statusTypes = getUniqueStatusTypes(reservations.values());
+            useStatuses.addAll(statusTypes);
             SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
             SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
             List<Slot> slots = slotFactory.getActualSlots();
             questsAndSlots.put(quest.getQuestName(), slots);
         }
 
-        return questsAndSlots;
+        return new SlotListPageDTO(questsAndSlots, useStatuses);
+    }
+
+    // TODO: оптимизировать поиск уникальных статусов
+    private Set<StatusType> getUniqueStatusTypes(Collection<Reservation> reservations) {
+        return reservations.stream()
+                .map(Reservation::getStatusType)
+                .collect(Collectors.toSet());
     }
 }

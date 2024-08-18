@@ -3,9 +3,10 @@ package ru.questsfera.questreservation.service.reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.converter.SlotMapper;
-import ru.questsfera.questreservation.dto.ReservationForm;
+import ru.questsfera.questreservation.dto.ResFormDTO;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Company;
@@ -33,21 +34,21 @@ public class ReservationSaveOperator {
     private AccountService accountService;
 
     @Transactional
-    public void saveReservation(ReservationForm resForm, String slotJSON, Principal principal) {
+    public void saveReservation(ResFormDTO resFormDTO, String slotJSON, Principal principal) {
         Account account = accountService.getAccountByLogin(principal.getName());
         Company company = companyService.findById(account.getCompany().getId());
         Slot slot = SlotMapper.createSlotObject(slotJSON);
         Reservation reservation = null;
 
-        if (slot.getReservation() == null) {
-            reservation = ReservationFactory.createReservation(resForm, slot);
-            Client client = new Client(resForm, company);
+        if (slot.getStatusType() == StatusType.EMPTY) {
+            reservation = ReservationFactory.createReservation(resFormDTO, slot);
+            Client client = new Client(resFormDTO, company);
             reservation.setClient(client);
             client.setReservations(new ArrayList<>(List.of(reservation)));
             reservation.setSourceReserve("default"); //TODO: source reserve
         } else {
-            reservation = reservationService.getReserveById(slot.getReservation().getId());
-            Editor.editReservation(reservation, resForm);
+            reservation = reservationService.getReserveById(slot.getReservationId());
+            Editor.editReservation(reservation, resFormDTO);
         }
 
         reservation.setTimeLastChange(LocalDateTime.now());
