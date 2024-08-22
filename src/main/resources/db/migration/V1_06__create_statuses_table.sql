@@ -2,7 +2,6 @@ CREATE TABLE IF NOT EXISTS statuses
 (
     id          int         NOT NULL AUTO_INCREMENT,
     status_type enum (
-        'EMPTY',
         'BLOCK',
         'MODIFIED',
         'NEW_RESERVE',
@@ -18,10 +17,9 @@ CREATE TABLE IF NOT EXISTS statuses
 
 LOCK TABLES `statuses` WRITE;
 INSERT INTO `statuses`
-VALUES (1, 'EMPTY', 'Без бронирования'),
-       (2, 'NEW_RESERVE', 'Новый'),
-       (3, 'CANCEL', 'Отменён'),
-       (4, 'CONFIRMED', 'Подтверждён'),
-       (5, 'NOT_COME', 'Не пришёл'),
-       (6, 'COMPLETED', 'Завершён');
+VALUES (1, 'NEW_RESERVE', 'Новый'),
+       (2, 'CANCEL', 'Отменён'),
+       (3, 'CONFIRMED', 'Подтверждён'),
+       (4, 'NOT_COME', 'Не пришёл'),
+       (5, 'COMPLETED', 'Завершён');
 UNLOCK TABLES;

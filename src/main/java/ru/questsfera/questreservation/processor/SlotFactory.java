@@ -1,10 +1,8 @@
 package ru.questsfera.questreservation.processor;
 
 import lombok.AllArgsConstructor;
-import ru.questsfera.questreservation.converter.SlotMapper;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.SlotList;
-import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.dto.TimePrice;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
