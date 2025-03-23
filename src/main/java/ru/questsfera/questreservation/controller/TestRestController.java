@@ -1,5 +1,6 @@
 package ru.questsfera.questreservation.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.entity.Account;
@@ -9,12 +10,12 @@ import ru.questsfera.questreservation.service.reservation.ReservationService;
 
 import java.security.Principal;
 
+@Slf4j
 @RestController
-@RequestMapping("/reserve")
+@RequestMapping("/test")
 public class TestRestController {
     @Autowired
     private ReservationService reservationService;
-
     @Autowired
     private AccountService accountService;
 
