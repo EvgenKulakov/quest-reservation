@@ -22,7 +22,7 @@ public class ReservationRestController {
     @GetMapping("/{id}")
     public ResponseEntity<ResFormDTO> getReserveById(@PathVariable("id") Long id, Principal principal) {
         Reservation reservation = reservationService.getReserveById(id);
-        ResFormDTO resFormDTO = ReservationFactory.createResFormDTO(reservation, reservation.getClient());
+        ResFormDTO resFormDTO = ReservationFactory.createResFormDTO(reservation);
         return ResponseEntity.ok(resFormDTO);
     }
 }

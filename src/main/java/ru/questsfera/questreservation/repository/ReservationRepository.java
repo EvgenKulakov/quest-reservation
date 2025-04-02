@@ -1,7 +1,7 @@
 package ru.questsfera.questreservation.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.questsfera.questreservation.entity.Quest;
+import org.springframework.data.jpa.repository.Query;
 import ru.questsfera.questreservation.entity.Reservation;
 
 import java.time.LocalDate;
@@ -16,18 +16,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     void deleteByQuestId(Integer questId);
 
-//    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END " +
-//            "FROM Reservation r " +
-//            "WHERE r.quest = :quest " +
-//            "AND r.dateReserve = :dateReserve " +
-//            "AND r.timeReserve = :timeReserve " +
-//            "AND r.statusType != 'CANCEL'")
-//    boolean existsByQuestAndDateReserveAndTimeReserve(
-//            @Param("quest") Quest quest,
-//            @Param("dateReserve") LocalDate dateReserve,
-//            @Param("timeReserve") LocalTime timeReserve
-//    );
-
+    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END " +
+            "FROM Reservation r " +
+            "WHERE r.questId = :questId " +
+            "AND r.dateReserve = :dateReserve " +
+            "AND r.timeReserve = :timeReserve " +
+            "AND r.statusType != 'CANCEL'")
     boolean existsByQuestIdAndDateReserveAndTimeReserve(Integer questId, LocalDate dateReserve, LocalTime timeReserve);
 
 //    List<Reservation> findAllByQuestAndDateReserveIn(Quest quest, List<LocalDate> dates);

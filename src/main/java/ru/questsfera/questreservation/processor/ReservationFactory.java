@@ -3,7 +3,6 @@ package ru.questsfera.questreservation.processor;
 import ru.questsfera.questreservation.dto.ResFormDTO;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.StatusType;
-import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
 
 import java.math.BigDecimal;
@@ -35,14 +34,14 @@ public class ReservationFactory {
         return reservation;
     }
 
-    public static ResFormDTO createResFormDTO(Reservation reservation, Client client) {
+    public static ResFormDTO createResFormDTO(Reservation reservation) {
         ResFormDTO resFormDTO = new ResFormDTO();
         resFormDTO.setId(reservation.getId());
         resFormDTO.setStatusType(reservation.getStatusType());
-        resFormDTO.setFirstName(client.getFirstName());
-        resFormDTO.setLastName(client.getLastName());
-        resFormDTO.setPhone(client.getPhones());
-        resFormDTO.setEmail(client.getEmails());
+        resFormDTO.setFirstName(reservation.getClient().getFirstName());
+        resFormDTO.setLastName(reservation.getClient().getLastName());
+        resFormDTO.setPhone(reservation.getClient().getPhones());
+        resFormDTO.setEmail(reservation.getClient().getEmails());
         resFormDTO.setCountPersons(reservation.getCountPersons());
         resFormDTO.setAdminComment(reservation.getAdminComment());
         resFormDTO.setClientComment(reservation.getClientComment());
