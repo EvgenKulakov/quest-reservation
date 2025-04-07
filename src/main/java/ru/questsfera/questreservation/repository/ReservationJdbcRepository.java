@@ -3,11 +3,9 @@ package ru.questsfera.questreservation.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
-import ru.questsfera.questreservation.dto.QuestDTO;
 import ru.questsfera.questreservation.dto.ReservationDTO;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Quest;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +22,7 @@ public class ReservationJdbcRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public ReservationDTO findReservationDtoById(Long id) { // TODO нейминг без quest
+    public ReservationDTO findReservationDtoById(Long id) {
         String sql =
                 "SELECT r.id AS reservation_id, cl.id AS client_id, r.*, cl.* " +
                         "FROM reservations r " +
@@ -34,25 +32,23 @@ public class ReservationJdbcRepository {
 
         return jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
             Client client = clientResultSetMapper(rs);
-            return reservationDtoResultSetMapper(rs, client, null);
+            return reservationDtoResultSetMapper(rs, client);
         });
     }
 
     public List<ReservationDTO> findActiveByQuestIdsAndDate(Collection<Integer> questIds, LocalDate dateReserve) {
         String sql =
-                "SELECT r.id AS reservation_id, qu.id AS quest_id, cl.id AS client_id, r.*, qu.*, cl.* " +
-                        "FROM reservations r " +
-                        "INNER JOIN quests qu ON r.quest_id = qu.id " +
-                        "LEFT JOIN clients cl ON r.client_id = cl.id " +
-                        "WHERE r.quest_id IN (:questIds) " +
-                        "AND r.date_reserve = :dateReserve " +
-                        "AND r.status_type != 'CANCEL'";
+                "SELECT res.id AS reservation_id, qu.id AS quest_id, cl.id AS client_id, res.*, cl.* " +
+                        "FROM (SELECT * FROM reservations r WHERE r.date_reserve = :dateReserve) AS res " +
+                        "INNER JOIN quests qu ON res.quest_id = qu.id " +
+                        "LEFT JOIN clients cl ON res.client_id = cl.id " +
+                        "WHERE res.quest_id IN (:questIds) " +
+                        "AND res.status_type != 'CANCEL'";
         Map<String, Object> params = Map.of("questIds", questIds, "dateReserve", dateReserve);
 
         return jdbcTemplate.query(sql, params, (rs, rowNum) -> {
             Client client = clientResultSetMapper(rs);
-            QuestDTO questDTO = questResultSetMapper(rs);
-            return reservationDtoResultSetMapper(rs, client, questDTO);
+            return reservationDtoResultSetMapper(rs, client);
         });
     }
 
@@ -69,25 +65,7 @@ public class ReservationJdbcRepository {
         );
     }
 
-    private QuestDTO questResultSetMapper(ResultSet rs) throws SQLException {
-        Quest quest = new Quest(
-                rs.getInt("quest_id"),
-                rs.getString("quest_name"),
-                rs.getInt("min_persons"),
-                rs.getInt("max_persons"),
-                rs.getObject("auto_block", LocalTime.class),
-                rs.getString("sms"),
-                rs.getString("slot_list"),
-                null, // TODO company optimisation
-                null, // TODO account optimisation
-                rs.getString("statuses"),
-                null // TODO synchronized quests
-        );
-
-        return new QuestDTO(quest);
-    }
-
-    private ReservationDTO reservationDtoResultSetMapper(ResultSet rs, Client client, QuestDTO questDTO) throws SQLException {
+    private ReservationDTO reservationDtoResultSetMapper(ResultSet rs, Client client) throws SQLException {
         String statusTypeStr = rs.getString("status_type");
         StatusType statusType = statusTypeStr != null ? StatusType.valueOf(statusTypeStr) : null;
 
@@ -98,7 +76,7 @@ public class ReservationJdbcRepository {
                 rs.getObject("time_created", LocalDateTime.class),
                 rs.getObject("time_last_change", LocalDateTime.class),
                 rs.getObject("changed_slot_time", LocalTime.class),
-                questDTO,
+                rs.getInt("quest_id"),
                 statusType,
                 rs.getString("source_reserve"),
                 rs.getBigDecimal("price"),

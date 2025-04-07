@@ -2,16 +2,15 @@ package ru.questsfera.questreservation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.questsfera.questreservation.converter.SlotMapper;
-import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.entity.Status;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -30,7 +29,7 @@ public class Slot {
     private Integer minPersons;
     private Integer maxPersons;
 
-    public Slot(QuestDTO quest, Reservation reservation, LocalDate date, LocalTime time, Integer price) {
+    public Slot(QuestDTO quest, ReservationDTO reservation, LocalDate date, LocalTime time, Integer price) {
         this.questId = quest.getId();
         this.questName = quest.getQuestName();
         this.reservationId = reservation.getId();

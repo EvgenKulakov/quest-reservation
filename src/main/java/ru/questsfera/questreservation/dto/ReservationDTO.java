@@ -2,7 +2,6 @@ package ru.questsfera.questreservation.dto;
 
 import lombok.Value;
 import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Quest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,7 +18,7 @@ public class ReservationDTO {
     LocalDateTime dateAndTimeCreated;
     LocalDateTime timeLastChange;
     LocalTime changedSlotTime;
-    QuestDTO questDTO;
+    Integer questId;
     StatusType statusType;
     String sourceReserve;
     BigDecimal price;

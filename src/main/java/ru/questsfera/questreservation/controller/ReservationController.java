@@ -1,6 +1,6 @@
 package ru.questsfera.questreservation.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -8,7 +8,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.questsfera.questreservation.converter.SlotMapper;
-import ru.questsfera.questreservation.dto.*;
+import ru.questsfera.questreservation.dto.ResFormDTO;
+import ru.questsfera.questreservation.dto.Slot;
+import ru.questsfera.questreservation.dto.SlotListPageDTO;
 import ru.questsfera.questreservation.service.reservation.ReservationGetOperator;
 import ru.questsfera.questreservation.service.reservation.ReservationSaveOperator;
 import ru.questsfera.questreservation.service.reservation.ReservationService;
@@ -18,14 +20,13 @@ import java.security.Principal;
 import java.time.LocalDate;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/reservations")
 public class ReservationController {
-    @Autowired
-    private ReservationService reservationService;
-    @Autowired
-    private ReservationSaveOperator reservationSaveOperator;
-    @Autowired
-    private ReservationGetOperator reservationGetOperator;
+
+    private final ReservationService reservationService;
+    private final ReservationSaveOperator reservationSaveOperator;
+    private final ReservationGetOperator reservationGetOperator;
 
     @GetMapping("/slot-list")
     public String showSlotList(@RequestParam(value = "date", required = false) LocalDate date,

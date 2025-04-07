@@ -57,7 +57,6 @@ public class Reservation {
     @Column(name = "changed_price")
     private BigDecimal changedPrice;
 
-//    @ManyToOne
     @Column(name = "client_id")
     private Integer clientId;
 

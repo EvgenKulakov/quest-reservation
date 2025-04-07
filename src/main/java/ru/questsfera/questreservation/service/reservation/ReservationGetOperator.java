@@ -1,12 +1,12 @@
 package ru.questsfera.questreservation.service.reservation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.dto.*;
 import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.processor.SlotFactory;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
@@ -16,6 +16,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationGetOperator {
@@ -25,32 +26,40 @@ public class ReservationGetOperator {
 
     @Transactional(readOnly = true)
     public SlotListPageDTO getQuestsAndSlotsByDate(LocalDate date, Principal principal) {
-        Set<Quest> quests = new TreeSet<>(questService.findAllByAccount_login(principal.getName()));
+        List<Quest> quests = questService.findAllByAccount_login(principal.getName());
 
-//        List<ReservationDTO> reservationDTOS = reservationService
-//                .findActiveByQuestIdsAndDateOrderByQuestAndTimeReserve(
-//                        quests.stream().map(Quest::getId).toList(), date);
+        List<ReservationDTO> reservationDTOs = reservationService.findActiveByQuestIdsAndDate(
+                quests.stream().map(Quest::getId).toList(), date);
+
+        Map<Integer, Map<LocalTime, ReservationDTO>> questIdsAndReservations = new HashMap<>();
+
+        for (ReservationDTO resDTO : reservationDTOs) {
+            Map<LocalTime, ReservationDTO> timeAndReserve = questIdsAndReservations.get(resDTO.getQuestId());
+            if (timeAndReserve != null) {
+                if (timeAndReserve.containsKey(resDTO.getTimeReserve())) {
+                    throw new RuntimeException(String.format("Double reservation: reservation_id=%s and reservation_id=%s",
+                            resDTO.getId(), timeAndReserve.get(resDTO.getTimeReserve())));
+                }
+                timeAndReserve.put(resDTO.getTimeReserve(), resDTO);
+            } else {
+                questIdsAndReservations.put(resDTO.getQuestId(), new HashMap<>(Map.of(resDTO.getTimeReserve(), resDTO)));
+            }
+        }
 
         Map<String, List<Slot>> questsAndSlots = new LinkedHashMap<>();
-        Set<StatusType> useStatuses = new HashSet<>();
 
         for (Quest quest : quests) {
-            Map<LocalTime, Reservation> reservations = reservationService.findActiveByQuestIdAndDate(quest.getId(), date);
-            Set<StatusType> statusTypes = getUniqueStatusTypes(reservations.values());
-            useStatuses.addAll(statusTypes);
+            Map<LocalTime, ReservationDTO> reservations = questIdsAndReservations.getOrDefault(quest.getId(), Collections.emptyMap());
             SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
             SlotFactory slotFactory = new SlotFactory(new QuestDTO(quest), date, slotList, reservations);
             List<Slot> slots = slotFactory.getActualSlots();
             questsAndSlots.put(quest.getQuestName(), slots);
         }
 
-        return new SlotListPageDTO(questsAndSlots, useStatuses);
-    }
-
-    // TODO: оптимизировать поиск уникальных статусов
-    private Set<StatusType> getUniqueStatusTypes(Collection<Reservation> reservations) {
-        return reservations.stream()
-                .map(Reservation::getStatusType)
+        Set<StatusType> useStatuses = reservationDTOs.stream()
+                .map(ReservationDTO::getStatusType)
                 .collect(Collectors.toSet());
+
+        return new SlotListPageDTO(questsAndSlots, useStatuses);
     }
 }
