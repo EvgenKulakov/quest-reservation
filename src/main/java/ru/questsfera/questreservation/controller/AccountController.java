@@ -49,7 +49,7 @@ public class AccountController {
 
         Account myAccount = accountService.getAccountByLogin(principal.getName());
         Company company = companyService.findById(myAccount.getCompany().getId());
-        List<Quest> allQuests = questService.getQuestsByCompany(company);
+        List<Quest> allQuests = questService.getQuestsByCompany(company.getId());
 
         Account newAccount = new Account();
         newAccount.setCompany(company);
@@ -69,7 +69,7 @@ public class AccountController {
         Account myAccount = accountService.getAccountByLogin(principal.getName());
         accountService.checkSecurityForAccount(account, myAccount);
 
-        List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany());
+        List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany().getId());
         Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 
         model.addAttribute("account", account);
@@ -97,7 +97,7 @@ public class AccountController {
         }
 
         if (bindingResult.hasErrors()) {
-            List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany());
+            List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany().getId());
             Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 
             model.addAttribute("account", account);

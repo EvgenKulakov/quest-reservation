@@ -1,46 +1,40 @@
 package ru.questsfera.questreservation.service.reservation;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.dto.StatusType;
-import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.converter.SlotMapper;
 import ru.questsfera.questreservation.dto.ResFormDTO;
 import ru.questsfera.questreservation.dto.Slot;
+import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Company;
+import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.processor.Editor;
 import ru.questsfera.questreservation.processor.ReservationFactory;
-import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.client.ClientService;
-import ru.questsfera.questreservation.service.company.CompanyService;
+import ru.questsfera.questreservation.service.quest.QuestService;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class ReservationSaveOperator {
-    @Autowired
-    private ReservationService reservationService;
-    @Autowired
-    private ClientService clientService;
-    @Autowired
-    private CompanyService companyService;
-    @Autowired
-    private AccountService accountService;
+
+    private final ReservationService reservationService;
+    private final ClientService clientService;
+    private final QuestService questService;
 
     @Transactional
     public void saveReservation(ResFormDTO resFormDTO, String slotJSON, Principal principal) {
-        Account account = accountService.getAccountByLogin(principal.getName());
-        Company company = companyService.findById(account.getCompany().getId());
         Slot slot = SlotMapper.createSlotObject(slotJSON);
         Reservation reservation = null;
 
         if (slot.getStatusType() == StatusType.EMPTY) {
             reservation = ReservationFactory.createReservation(resFormDTO, slot);
-            Client newClient = new Client(resFormDTO, company);
+            Quest quest = questService.findById(slot.getQuestId()).orElseThrow();
+            Client newClient = new Client(resFormDTO, quest.getCompanyId());
             Client clientSaved = clientService.saveClient(newClient);
             reservation.setClientId(clientSaved.getId());
             reservation.setSourceReserve("default"); //TODO: source reserve
@@ -48,16 +42,13 @@ public class ReservationSaveOperator {
             reservation = reservationService.findById(slot.getReservationId());
             Client client = clientService.findById(reservation.getClientId());
             Editor.editReservationAndClient(reservation, client, resFormDTO);
+            clientService.saveClient(client);
         }
 
         reservation.setTimeLastChange(LocalDateTime.now());
         reservation.setHistoryMessages("default"); //TODO: history message
 
-        try {
-            reservationService.saveReservation(reservation);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        reservationService.saveReservation(reservation);
     }
 
     @Transactional

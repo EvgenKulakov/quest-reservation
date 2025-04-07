@@ -1,9 +1,10 @@
 package ru.questsfera.questreservation.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.questsfera.questreservation.dto.StatusType;
 
 import java.math.BigDecimal;
@@ -14,12 +15,10 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "reservations", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"questId"})
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +42,6 @@ public class Reservation {
     @Column(name = "quest_id")
     private Integer questId;
 
-    //TODO: statuses
     @Enumerated(value = EnumType.STRING)
     @JoinColumn(name = "status_type")
     private StatusType statusType;

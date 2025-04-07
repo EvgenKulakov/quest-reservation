@@ -1,20 +1,20 @@
 package ru.questsfera.questreservation.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.questsfera.questreservation.dto.ResFormDTO;
 
-import java.util.*;
+import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "clients", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"company", "reservations"})
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,19 +40,15 @@ public class Client {
     @JoinColumn(name = "blacklist_id")
     private BlackList blackList;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @Column(name = "company_id")
+    private Integer companyId;
 
-//    @OneToMany(mappedBy = "client")
-//    private List<Reservation> reservations = new ArrayList<>();
-
-    public Client(ResFormDTO resForm, Company company) {
+    public Client(ResFormDTO resForm, Integer companyId) {
         this.firstName = resForm.getFirstName();
         this.lastName = resForm.getLastName();
         this.phones = resForm.getPhone();
         this.emails = resForm.getEmail();
-        this.company = company;
+        this.companyId = companyId;
     }
 
     @Override

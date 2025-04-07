@@ -39,17 +39,12 @@ public class Quest implements Comparable<Quest> {
     @Column(name = "slot_list")
     private String slotList;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @Column(name = "company_id")
+    private Integer companyId;
 
     @ManyToMany(mappedBy = "quests")
     private List<Account> accounts = new ArrayList<>();
 
-//    @ManyToMany
-//    @JoinTable(name = "status_quest",
-//            joinColumns = @JoinColumn(name = "quest_id"),
-//            inverseJoinColumns = @JoinColumn(name = "status_id"))
     @Column(name = "statuses")
     private String statuses;
 
@@ -59,7 +54,7 @@ public class Quest implements Comparable<Quest> {
             inverseJoinColumns = @JoinColumn(name = "id_second_quest"))
     private Set<Quest> synchronizedQuests = new HashSet<>();
 
-    public Quest(QuestForm questForm, Company company) {
+    public Quest(QuestForm questForm, Integer companyId) {
         this.questName = questForm.getQuestName();
         this.minPersons = questForm.getMinPersons();
         this.maxPersons = questForm.getMaxPersons();
@@ -68,7 +63,7 @@ public class Quest implements Comparable<Quest> {
         this.accounts = questForm.getAccounts();
         this.statuses = questForm.getStatuses().stream()
                 .map(s -> s.getType().name()).collect(Collectors.joining(","));
-        this.company = company;
+        this.companyId = companyId;
     }
 
     public static void synchronizeQuests(Quest... quests) {
@@ -85,14 +80,14 @@ public class Quest implements Comparable<Quest> {
 
     private static boolean validatorToSynchronize(Set<Quest> questSet) {
         boolean check = true;
-        Company validCompany = questSet.iterator().next().getCompany();
+        Integer validCompanyId = questSet.iterator().next().getCompanyId();
 
         if (questSet.size() < 2) {
             throw new RuntimeException("Попытка синхронизировать меньше двух квестов");
         }
 
         for (Quest quest : questSet) {
-            if (!quest.getCompany().equals(validCompany)) {
+            if (!quest.getCompanyId().equals(validCompanyId)) {
                 throw new RuntimeException("Попытка синхронизировать " +
                         "квесты у разных компаний");
             }

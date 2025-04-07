@@ -28,13 +28,7 @@ public class Company {
     private BigDecimal money;
 
     @OneToMany(mappedBy = "company")
-    private Set<Client> clients = new HashSet<>();
-
-    @OneToMany(mappedBy = "company")
     private Set<BlackList> blackLists = new HashSet<>();
-
-    @OneToMany(mappedBy = "company")
-    private Set<Quest> quests = new TreeSet<>();
 
     @OneToMany(mappedBy = "company")
     private Set<Account> accounts = new HashSet<>();

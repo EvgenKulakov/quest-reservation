@@ -11,6 +11,7 @@ import ru.questsfera.questreservation.repository.QuestRepository;
 import ru.questsfera.questreservation.repository.ReservationRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuestService {
@@ -22,9 +23,14 @@ public class QuestService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Transactional(readOnly = true)
+    public Optional<Quest> findById(Integer id) {
+        return questRepository.findById(id);
+    }
+
     @Transactional
-    public List<Quest> getQuestsByCompany(Company company) {
-        return questRepository.findAllByCompanyOrderByQuestName(company);
+    public List<Quest> getQuestsByCompany(Integer companyId) {
+        return questRepository.findAllByCompanyIdOrderByQuestName(companyId);
     }
 
     @Transactional
@@ -43,13 +49,13 @@ public class QuestService {
     }
 
     @Transactional
-    public boolean existQuestNameByCompany(String questName, Company company) {
-        return questRepository.existsQuestByQuestNameAndCompany(questName, company);
+    public boolean existQuestNameByCompany(String questName, Integer companyId) {
+        return questRepository.existsQuestByQuestNameAndCompanyId(questName, companyId);
     }
 
     @Transactional
-    public boolean existQuestByCompany(Quest quest, Company company) {
-        return questRepository.existsQuestByIdAndCompany(quest.getId(), company);
+    public boolean existQuestByCompany(Quest quest, Integer companyId) {
+        return questRepository.existsQuestByIdAndCompanyId(quest.getId(), companyId);
     }
 
     //TODO: migration in reservationService
@@ -68,9 +74,9 @@ public class QuestService {
     }
 
     @Transactional
-    public void deleteQuest(Quest quest, Company company) {
+    public void deleteQuest(Quest quest, Integer companyId) {
 
-        checkSecurityForQuest(quest, company);
+        checkSecurityForQuest(quest, companyId);
 
         reservationRepository.deleteByQuestId(quest.getId());
 
@@ -93,8 +99,8 @@ public class QuestService {
     }
 
     @Transactional
-    public void checkSecurityForQuest(Quest quest, Company company) {
-        boolean existQuestByCompany = existQuestByCompany(quest, company);
+    public void checkSecurityForQuest(Quest quest, Integer companyId) {
+        boolean existQuestByCompany = existQuestByCompany(quest, companyId);
         if (!existQuestByCompany) {
             throw new SecurityException("Нет доступа для изменения данного квеста");
         }

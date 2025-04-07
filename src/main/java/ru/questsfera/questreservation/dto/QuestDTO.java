@@ -6,18 +6,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
 
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@ToString
 public class QuestDTO implements Comparable<QuestDTO> {
 
     private Integer id;
@@ -27,12 +28,12 @@ public class QuestDTO implements Comparable<QuestDTO> {
     private LocalTime autoBlock;
     private String sms;
     private String slotList;
-    private Company company;
+    private Integer companyId;
     private List<Account> accounts;
     private List<Status> statuses;
     private Set<Quest> synchronizedQuests;
 
-    public QuestDTO(QuestForm questForm, Company company) {
+    public QuestDTO(QuestForm questForm, Integer companyId) {
         this.questName = questForm.getQuestName();
         this.minPersons = questForm.getMinPersons();
         this.maxPersons = questForm.getMaxPersons();
@@ -40,7 +41,7 @@ public class QuestDTO implements Comparable<QuestDTO> {
         this.slotList = SlotListMapper.createJSON(questForm.getSlotList());
         this.accounts = questForm.getAccounts();
         this.statuses = questForm.getStatuses();
-        this.company = company;
+        this.companyId = companyId;
     }
 
     public QuestDTO(Quest quest) { // TODO слой парсинга ДТО
@@ -51,7 +52,7 @@ public class QuestDTO implements Comparable<QuestDTO> {
         this.autoBlock = quest.getAutoBlock();
         this.sms = quest.getSms();
         this.slotList = quest.getSlotList();
-        this.company = quest.getCompany();
+        this.companyId = quest.getCompanyId();
         this.accounts = quest.getAccounts();
         this.statuses = Arrays.stream(quest.getStatuses().split(",")).map(Status::createStatusFromStatusTypeName).toList();
         this.synchronizedQuests = quest.getSynchronizedQuests();

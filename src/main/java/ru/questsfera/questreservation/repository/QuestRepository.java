@@ -3,18 +3,17 @@ package ru.questsfera.questreservation.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 
 import java.util.List;
 
 public interface QuestRepository extends JpaRepository<Quest, Integer> {
 
-    boolean existsQuestByQuestNameAndCompany(String questName, Company company);
+    boolean existsQuestByQuestNameAndCompanyId(String questName, Integer companyId);
 
-    boolean existsQuestByIdAndCompany(Integer id, Company company);
+    boolean existsQuestByIdAndCompanyId(Integer id, Integer companyId);
 
-    List<Quest> findAllByCompanyOrderByQuestName(Company company);
+    List<Quest> findAllByCompanyIdOrderByQuestName(Integer companyId);
 
     @Query("SELECT qu FROM Quest qu JOIN qu.accounts ac WHERE ac.id = :accountId")
     List<Quest> findAllByAccountId(@Param("accountId") Integer accountId);

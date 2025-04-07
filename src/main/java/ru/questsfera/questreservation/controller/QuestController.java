@@ -78,7 +78,7 @@ public class QuestController {
 
         accountService.checkSecurityForAccounts(questForm.getAccounts(), account);
 
-        boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompany());
+        boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompany().getId());
         String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuilder());
 
         if (binding.hasErrors() || questForm.getMinPersons() > questForm.getMaxPersons()
@@ -113,7 +113,7 @@ public class QuestController {
         }
 
         SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuilder());
-        Quest quest = new Quest(questForm, account.getCompany());
+        Quest quest = new Quest(questForm, account.getCompany().getId());
         questService.saveQuest(quest);
 
         for (Account acc : quest.getAccounts()) {
@@ -151,14 +151,14 @@ public class QuestController {
             return "quests/question-delete-quest";
         }
 
-        questService.deleteQuest(quest, account.getCompany());
+        questService.deleteQuest(quest, account.getCompany().getId());
         return "redirect:/quests/";
     }
 
     @PostMapping("/delete-final")
     public String deleteQuestFinal(@RequestParam("quest") Quest quest, Principal principal) {
         Account account = accountService.getAccountByLogin(principal.getName());
-        questService.deleteQuest(quest, account.getCompany());
+        questService.deleteQuest(quest, account.getCompany().getId());
         return "redirect:/quests/";
     }
 }
