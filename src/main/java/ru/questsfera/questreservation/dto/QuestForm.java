@@ -35,7 +35,7 @@ public class QuestForm {
 
     private Boolean onlySecondPageError;
 
-    private Set<Status> statuses;
+    private List<Status> statuses;
 
     @NotNull(message = "*Обязательное поле")
     private LocalTime autoBlock;

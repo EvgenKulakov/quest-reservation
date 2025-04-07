@@ -19,8 +19,6 @@ import ru.questsfera.questreservation.service.company.CompanyService;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ReservationSaveOperator {
@@ -42,23 +40,21 @@ public class ReservationSaveOperator {
 
         if (slot.getStatusType() == StatusType.EMPTY) {
             reservation = ReservationFactory.createReservation(resFormDTO, slot);
-            Client client = new Client(resFormDTO, company);
-            reservation.setClient(client);
-            client.setReservations(new ArrayList<>(List.of(reservation)));
+            Client newClient = new Client(resFormDTO, company);
+            Client clientSaved = clientService.saveClient(newClient);
+            reservation.setClientId(clientSaved.getId());
             reservation.setSourceReserve("default"); //TODO: source reserve
         } else {
-            reservation = reservationService.getReserveById(slot.getReservationId());
-            Editor.editReservation(reservation, resFormDTO);
+            reservation = reservationService.findById(slot.getReservationId());
+            Client client = clientService.findById(reservation.getClientId());
+            Editor.editReservationAndClient(reservation, client, resFormDTO);
         }
 
         reservation.setTimeLastChange(LocalDateTime.now());
         reservation.setHistoryMessages("default"); //TODO: history message
 
-        Client client = reservation.getClient();
-
         try {
             reservationService.saveReservation(reservation);
-            clientService.saveClient(client);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -5,9 +5,10 @@ CREATE TABLE IF NOT EXISTS quests
     min_persons int          NOT NULL,
     max_persons int          NOT NULL,
     auto_block  time         NOT NULL,
-    sms         varchar(70) DEFAULT NULL,
+    sms         varchar(70)  DEFAULT NULL,
     slot_list   text         NOT NULL,
     company_id  int          NOT NULL,
+    statuses    text         NOT NULL,
     PRIMARY KEY (id),
     KEY quests_company_id_fk (company_id),
     CONSTRAINT quests_company_id_fk FOREIGN KEY (company_id) REFERENCES companies (id)

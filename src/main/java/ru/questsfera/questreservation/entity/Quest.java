@@ -1,18 +1,19 @@
 package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.dto.QuestForm;
 
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+//@ToString
 @Entity
 @Table(name = "quests", schema = "quest_reservations_db")
 public class Quest implements Comparable<Quest> {
@@ -45,11 +46,12 @@ public class Quest implements Comparable<Quest> {
     @ManyToMany(mappedBy = "quests")
     private List<Account> accounts = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(name = "status_quest",
-            joinColumns = @JoinColumn(name = "quest_id"),
-            inverseJoinColumns = @JoinColumn(name = "status_id"))
-    private Set<Status> statuses = new HashSet<>();
+//    @ManyToMany
+//    @JoinTable(name = "status_quest",
+//            joinColumns = @JoinColumn(name = "quest_id"),
+//            inverseJoinColumns = @JoinColumn(name = "status_id"))
+    @Column(name = "statuses")
+    private String statuses;
 
     @ManyToMany
     @JoinTable(name = "synchronized_quests",
@@ -64,7 +66,8 @@ public class Quest implements Comparable<Quest> {
         this.autoBlock = questForm.getAutoBlock();
         this.slotList = SlotListMapper.createJSON(questForm.getSlotList());
         this.accounts = questForm.getAccounts();
-        this.statuses = questForm.getStatuses();
+        this.statuses = questForm.getStatuses().stream()
+                .map(s -> s.getType().name()).collect(Collectors.joining(","));
         this.company = company;
     }
 

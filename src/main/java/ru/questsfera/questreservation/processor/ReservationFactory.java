@@ -1,6 +1,7 @@
 package ru.questsfera.questreservation.processor;
 
 import ru.questsfera.questreservation.dto.ResFormDTO;
+import ru.questsfera.questreservation.dto.ReservationDTO;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -34,17 +35,17 @@ public class ReservationFactory {
         return reservation;
     }
 
-    public static ResFormDTO createResFormDTO(Reservation reservation) {
+    public static ResFormDTO createResFormDTO(ReservationDTO reservationDTO) {
         ResFormDTO resFormDTO = new ResFormDTO();
-        resFormDTO.setId(reservation.getId());
-        resFormDTO.setStatusType(reservation.getStatusType());
-        resFormDTO.setFirstName(reservation.getClient().getFirstName());
-        resFormDTO.setLastName(reservation.getClient().getLastName());
-        resFormDTO.setPhone(reservation.getClient().getPhones());
-        resFormDTO.setEmail(reservation.getClient().getEmails());
-        resFormDTO.setCountPersons(reservation.getCountPersons());
-        resFormDTO.setAdminComment(reservation.getAdminComment());
-        resFormDTO.setClientComment(reservation.getClientComment());
+        resFormDTO.setId(reservationDTO.getId());
+        resFormDTO.setStatusType(reservationDTO.getStatusType());
+        resFormDTO.setFirstName(reservationDTO.getClient().getFirstName());
+        resFormDTO.setLastName(reservationDTO.getClient().getLastName());
+        resFormDTO.setPhone(reservationDTO.getClient().getPhones());
+        resFormDTO.setEmail(reservationDTO.getClient().getEmails());
+        resFormDTO.setCountPersons(reservationDTO.getCountPersons());
+        resFormDTO.setAdminComment(reservationDTO.getAdminComment());
+        resFormDTO.setClientComment(reservationDTO.getClientComment());
         return resFormDTO;
     }
 }

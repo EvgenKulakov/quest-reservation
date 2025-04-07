@@ -7,10 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import ru.questsfera.questreservation.dto.QuestForm;
-import ru.questsfera.questreservation.dto.SlotList;
-import ru.questsfera.questreservation.dto.SlotListTypeBuilder;
-import ru.questsfera.questreservation.dto.TimePrice;
+import ru.questsfera.questreservation.dto.*;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
@@ -130,13 +127,13 @@ public class QuestController {
     @PostMapping("/quest-info")
     public String showQuest(@RequestParam("quest") Quest quest, Model model) {
 
-        Set<Account> accounts = new TreeSet<>((u1, u2) -> u1.getEmailLogin().compareToIgnoreCase(u2.getEmailLogin()));
+        Set<Account> accounts = new TreeSet<>((u1, u2) -> u1.getLogin().compareToIgnoreCase(u2.getLogin()));
         accounts.addAll(accountService.getAccountsByQuest(quest));
 
         SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
         List<List<TimePrice>> allDays = slotList.getAllDays();
 
-        model.addAttribute("quest", quest);
+        model.addAttribute("quest", new QuestDTO(quest));
         model.addAttribute("accounts", accounts);
         model.addAttribute("allSlotList", allDays);
 

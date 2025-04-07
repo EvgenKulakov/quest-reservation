@@ -2,16 +2,16 @@ package ru.questsfera.questreservation.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.questsfera.questreservation.dto.ResFormDTO;
 
 import java.util.*;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "clients", schema = "quest_reservations_db")
 @JsonIgnoreProperties({"company", "reservations"})
@@ -44,8 +44,8 @@ public class Client {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @OneToMany(mappedBy = "client")
-    private List<Reservation> reservations = new ArrayList<>();
+//    @OneToMany(mappedBy = "client")
+//    private List<Reservation> reservations = new ArrayList<>();
 
     public Client(ResFormDTO resForm, Company company) {
         this.firstName = resForm.getFirstName();

@@ -6,11 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.repository.AccountRepository;
 import ru.questsfera.questreservation.repository.QuestRepository;
 import ru.questsfera.questreservation.repository.ReservationRepository;
-import ru.questsfera.questreservation.repository.StatusRepository;
 
 import java.util.List;
 
@@ -23,8 +21,6 @@ public class QuestService {
     private ReservationRepository reservationRepository;
     @Autowired
     private AccountRepository accountRepository;
-    @Autowired
-    private StatusRepository statusRepository;
 
     @Transactional
     public List<Quest> getQuestsByCompany(Company company) {
@@ -34,6 +30,11 @@ public class QuestService {
     @Transactional
     public List<Quest> findAllByAccountId(Integer accountId) {
         return questRepository.findAllByAccountId(accountId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Quest> findAllByAccount_login(String login) {
+        return questRepository.findAllByAccount_login(login);
     }
 
     @Transactional
@@ -78,10 +79,10 @@ public class QuestService {
             accountRepository.save(account);
         }
 
-        for (Status status : statusRepository.findAllByQuestId(quest.getId())) {
-//            status.getQuests().remove(quest);
-            statusRepository.save(status);
-        }
+//        for (Status status : statusRepository.findAllByQuestId(quest.getId())) {
+////            status.getQuests().remove(quest);
+//            statusRepository.save(status);
+//        }
 
 //        if (!quest.getSynchronizedQuests().isEmpty()) {
 //            dontSynchronizeQuests(quest);

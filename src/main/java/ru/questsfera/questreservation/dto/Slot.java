@@ -10,6 +10,7 @@ import ru.questsfera.questreservation.entity.Status;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,13 +24,13 @@ public class Slot {
     private LocalDate date;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
-    private Integer price;
-    private Set<Status> statuses;
+    private Integer price; // TODO BigDecimal
+    private List<Status> statuses;
     private StatusType statusType;
     private Integer minPersons;
     private Integer maxPersons;
 
-    public Slot(Quest quest, Reservation reservation, LocalDate date, LocalTime time, Integer price) {
+    public Slot(QuestDTO quest, Reservation reservation, LocalDate date, LocalTime time, Integer price) {
         this.questId = quest.getId();
         this.questName = quest.getQuestName();
         this.reservationId = reservation.getId();
@@ -42,7 +43,7 @@ public class Slot {
         this.maxPersons = quest.getMaxPersons();
     }
 
-    public Slot(Quest quest, LocalDate date, LocalTime time, Integer price) {
+    public Slot(QuestDTO quest, LocalDate date, LocalTime time, Integer price) {
         this.questId = quest.getId();
         this.questName = quest.getQuestName();
         this.date = date;

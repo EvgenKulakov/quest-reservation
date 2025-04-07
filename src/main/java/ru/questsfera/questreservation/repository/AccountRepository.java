@@ -11,13 +11,13 @@ import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
-    Optional<Account> findAccountByEmailLogin(String emailLogin);
+    Optional<Account> findAccountByLogin(String emailLogin);
 
-    boolean existsAccountByEmailLogin(String emailLogin);
+    boolean existsAccountByLogin(String emailLogin);
 
     boolean existsAccountByIdAndCompanyId(Integer accountd, Integer companyId);
 
-    List<Account> findAllByCompanyOrderByEmailLogin(Company company);
+    List<Account> findAllByCompanyOrderByLogin(Company company);
 
     @Query("SELECT ac FROM Account ac JOIN ac.quests qu WHERE qu.id = :questId")
     List<Account> findAllByQuestId(@Param("questId") Integer questId);

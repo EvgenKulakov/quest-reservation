@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS accounts
 (
     id          int                                           NOT NULL AUTO_INCREMENT,
-    email_login varchar(100)                                  NOT NULL,
+    login       varchar(100)                                  NOT NULL,
     password    varchar(68)                                   NOT NULL,
     first_name  varchar(25) DEFAULT NULL,
     last_name   varchar(30) DEFAULT NULL,

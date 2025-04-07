@@ -1,7 +1,5 @@
 package ru.questsfera.questreservation.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,29 +10,24 @@ import java.util.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@Table(name = "statuses", schema = "quest_reservations_db")
-public class Status {
+public class Status { // TODO DTO
 
-    @Id
-    @Column(name = "id")
     private Integer id;
-
-    @Column(name = "status_type")
-    @Enumerated(value = EnumType.STRING)
     private StatusType type;
-
-    @Column(name = "text")
     private String text;
-
-    @ManyToMany(mappedBy = "statuses")
-    @JsonIgnore
-    private Set<Quest> quests = new HashSet<>();
 
     public Status(StatusType statusType) {
         this.id = statusType.getId();
         this.type = statusType;
         this.text = statusType.getText();
+    }
+
+    public Status(String id) {
+        this(StatusType.values()[Integer.parseInt(id)]);
+    }
+
+    public static Status createStatusFromStatusTypeName(String name) {
+        return new Status(StatusType.valueOf(name));
     }
 
     public static List<Status> getUserStatuses() {
@@ -47,8 +40,8 @@ public class Status {
         return userStatuses;
     }
 
-    public static Set<Status> getDefaultStatuses() {
-        Set<Status> defaultStatuses = new HashSet<>();
+    public static List<Status> getDefaultStatuses() {
+        List<Status> defaultStatuses = new ArrayList<>();
         defaultStatuses.add(new Status(StatusType.NEW_RESERVE));
         defaultStatuses.add(new Status(StatusType.CANCEL));
         return defaultStatuses;

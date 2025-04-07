@@ -18,4 +18,7 @@ public interface QuestRepository extends JpaRepository<Quest, Integer> {
 
     @Query("SELECT qu FROM Quest qu JOIN qu.accounts ac WHERE ac.id = :accountId")
     List<Quest> findAllByAccountId(@Param("accountId") Integer accountId);
+
+    @Query("SELECT qu FROM Quest qu JOIN qu.accounts ac WHERE ac.login = :login")
+    List<Quest> findAllByAccount_login(String login);
 }

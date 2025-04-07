@@ -23,28 +23,28 @@ public class AccountService implements UserDetailsService {
     private AccountRepository accountRepository;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = getAccountByLogin(username);
         return new org.springframework.security.core.userdetails.User(
-                account.getEmailLogin(),
+                account.getLogin(),
                 account.getPassword(),
                 Collections.singleton(new SimpleGrantedAuthority(account.getRole().name()))
         );
     }
 
     @Transactional
-    public Account getAccountByLogin(String emailLogin) {
-        Optional<Account> accountOptional = accountRepository.findAccountByEmailLogin(emailLogin);
+    public Account getAccountByLogin(String login) {
+        Optional<Account> accountOptional = accountRepository.findAccountByLogin(login);
         if (accountOptional.isPresent()) {
             return accountOptional.get();
         }
-        throw new UsernameNotFoundException(String.format("Пользователь %s не найден", emailLogin));
+        throw new UsernameNotFoundException(String.format("Пользователь %s не найден", login));
     }
 
     @Transactional
     public List<Account> getAccountsByCompany(Company company) {
-        return accountRepository.findAllByCompanyOrderByEmailLogin(company);
+        return accountRepository.findAllByCompanyOrderByLogin(company);
     }
 
     @Transactional
@@ -58,9 +58,9 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public boolean existAccountByLogin(String emailLogin) {
-        if (emailLogin.isEmpty()) return false;
-        return accountRepository.existsAccountByEmailLogin(emailLogin);
+    public boolean existAccountByLogin(String login) {
+        if (login.isEmpty()) return false;
+        return accountRepository.existsAccountByLogin(login);
     }
 
     @Transactional

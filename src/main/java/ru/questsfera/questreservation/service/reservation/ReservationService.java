@@ -1,28 +1,39 @@
 package ru.questsfera.questreservation.service.reservation;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.questsfera.questreservation.dto.ReservationDTO;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Reservation;
+import ru.questsfera.questreservation.repository.ReservationJdbcRepository;
 import ru.questsfera.questreservation.repository.ReservationRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
-    @Autowired
-    private ReservationRepository reservationRepository;
 
-    @Transactional
-    public Reservation getReserveById(Long id) {
+    private final ReservationRepository reservationRepository;
+    private final ReservationJdbcRepository reservationJdbcRepository;
+
+    @Transactional(readOnly = true)
+    public Reservation findById(Long id) {
         return reservationRepository.findById(id).orElseThrow();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    public ReservationDTO findReservationDtoById(Long id) {
+        return reservationJdbcRepository.findReservationDtoById(id);
+    }
+
+    @Transactional(readOnly = true)
     public Map<LocalTime, Reservation> findActiveByQuestIdAndDate(Integer questId, LocalDate date) {
 
         Map<LocalTime, Reservation> reservationMap = new HashMap<>();
@@ -38,6 +49,11 @@ public class ReservationService {
         }
 
         return reservationMap;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservationDTO> findActiveByQuestIdsAndDate(List<Integer> questIds, LocalDate dateReserve) {
+        return reservationJdbcRepository.findActiveByQuestIdsAndDate(questIds, dateReserve);
     }
 
     @Transactional

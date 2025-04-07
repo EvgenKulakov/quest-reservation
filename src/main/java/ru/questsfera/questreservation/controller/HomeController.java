@@ -39,8 +39,8 @@ public class HomeController {
                                  @RequestParam("duplicate-pass") String duplicatePass,
                                  Model model) {
 
-        if (accountService.existAccountByLogin(account.getEmailLogin())) {
-            bindingResult.rejectValue("emailLogin", "errorCode",
+        if (accountService.existAccountByLogin(account.getLogin())) {
+            bindingResult.rejectValue("login", "errorCode",
                     "*Такой пользователь уже зарегистрирован");
         }
 
@@ -60,7 +60,7 @@ public class HomeController {
         }
 
         Company company = account.getCompany();
-        company.setMoney(new BigDecimal("10000.00")); //default
+        company.setMoney(new BigDecimal("10000.00")); //TODO default
         companyService.saveCompany(company);
 
         String passwordHash = PasswordGenerator.createBCrypt(account.getPassword());

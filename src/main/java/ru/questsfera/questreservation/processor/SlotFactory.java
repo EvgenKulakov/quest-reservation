@@ -1,6 +1,7 @@
 package ru.questsfera.questreservation.processor;
 
 import lombok.AllArgsConstructor;
+import ru.questsfera.questreservation.dto.QuestDTO;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.SlotList;
 import ru.questsfera.questreservation.dto.TimePrice;
@@ -13,7 +14,7 @@ import java.util.*;
 
 @AllArgsConstructor
 public class SlotFactory {
-    private Quest quest;
+    private QuestDTO quest;
     private LocalDate date;
     private SlotList slotList;
     private Map<LocalTime, Reservation> reservations;

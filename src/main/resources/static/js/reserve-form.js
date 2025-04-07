@@ -96,7 +96,6 @@ async function getReservation(reservationId) {
             throw new Error('Ошибка сети')
         }
         const reservation = response.json()
-        console.log(reservation)
         return reservation
     } catch (error) {
         console.error('Ошибка:', error)

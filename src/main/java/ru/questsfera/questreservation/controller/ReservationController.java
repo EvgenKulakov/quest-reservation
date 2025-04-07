@@ -32,7 +32,7 @@ public class ReservationController {
                                Principal principal, Model model) {
 
         if (date == null) date = LocalDate.now();
-        SlotListPageDTO slotListPageDTO = reservationGetOperator.getQuestsAndSlots(date, principal);
+        SlotListPageDTO slotListPageDTO = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
 
         model.addAttribute("res_form", new ResFormDTO());
         model.addAttribute("quests_and_slots", slotListPageDTO.getQuestsAndSlots());
@@ -94,7 +94,7 @@ public class ReservationController {
     private String errorSlotListRendering(LocalDate date, Principal principal,
                                           String errorSlotJson, ResFormDTO resForm, Model model) {
 
-        SlotListPageDTO slotListPageDTO = reservationGetOperator.getQuestsAndSlots(date, principal);
+        SlotListPageDTO slotListPageDTO = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
 
         model.addAttribute("res_form", resForm);
         model.addAttribute("quests_and_slots", slotListPageDTO.getQuestsAndSlots());

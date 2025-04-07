@@ -24,9 +24,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "AND r.statusType != 'CANCEL'")
     boolean existsByQuestIdAndDateReserveAndTimeReserve(Integer questId, LocalDate dateReserve, LocalTime timeReserve);
 
-//    List<Reservation> findAllByQuestAndDateReserveIn(Quest quest, List<LocalDate> dates);
-
-    List<Reservation> findAllByIdIn(List<Long> ids);
+    List<Reservation> findAllByQuestIdAndDateReserveIn(Integer questId, List<LocalDate> dates);
 
     List<Reservation> findAllByDateReserveIn(List<LocalDate> dates);
 

@@ -6,9 +6,7 @@ import ru.questsfera.questreservation.entity.Reservation;
 
 public class Editor {
 
-    public static void editReservation(Reservation reservation, ResFormDTO resForm) {
-        Client client = reservation.getClient();
-
+    public static void editReservationAndClient(Reservation reservation, Client client, ResFormDTO resForm) {
         reservation.setStatusType(resForm.getStatusType());
         reservation.setCountPersons(resForm.getCountPersons());
         reservation.setAdminComment(resForm.getAdminComment());

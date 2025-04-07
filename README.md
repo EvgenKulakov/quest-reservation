@@ -10,16 +10,9 @@
 
 ## Stack:
 ```
-Java 17, MySQL, Spring Boot 3, Spring Data JPA, FlyWay, Spring Security 6, 
-Spring MVC, Hibernate Validator, Thymeleaf, BootStrap 5, Docker
+Java 17, Spring Boot 3, MySQL, Spring Data JPA, Hibernate ORM, FlyWay,
+Spring Security 6, Spring MVC, Hibernate Validator, Thymeleaf, BootStrap 5, Docker
 ```
-***
-
-### Сделанная часть: 
-Взаимодействие с БД, часть view, валидация, security
-
-### В разработке: 
-View, refactoring, внешний виджет
 ***
 
 ## Схема Database:
@@ -29,7 +22,7 @@ View, refactoring, внешний виджет
 
 ### Сервер:
 >__Сборка:__
-MySQL, Redis и Spring Boot в Docker контейнерах
+MySQL, Redis и Spring Boot через Docker-compose
 > 
 >__Ссылка на сервер:__ 
 > <a href="http://99152dd5cacb.vps.myjino.ru" target="_blank">http://99152dd5cacb.vps.myjino.ru</a>

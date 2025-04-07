@@ -88,11 +88,11 @@ public class AccountController {
         Account myAccount = accountService.getAccountByLogin(principal.getName());
         if (account.getId() != null) accountService.checkSecurityForAccount(account, myAccount);
 
-        if (!account.getEmailLogin().equals(oldLogin)) {
-            boolean existsUsername = accountService.existAccountByLogin(account.getEmailLogin());
+        if (!account.getLogin().equals(oldLogin)) {
+            boolean existsUsername = accountService.existAccountByLogin(account.getLogin());
             if (existsUsername) {
-                String errorMessage = "Аккаунт " + account.getEmailLogin() + " уже существует";
-                bindingResult.rejectValue("emailLogin", "errorCode", errorMessage);
+                String errorMessage = "Аккаунт " + account.getLogin() + " уже существует";
+                bindingResult.rejectValue("login", "errorCode", errorMessage);
             }
         }
 

@@ -26,8 +26,8 @@ public class Account {
     private Integer id;
 
     @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание Email")
-    @Column(name = "email_login")
-    private String emailLogin;
+    @Column(name = "login")
+    private String login;
 
     @Pattern(regexp = Patterns.PASSWORD, message = "*Пароль минимум 8 символов без пробелов")
     @Column(name = "password")
