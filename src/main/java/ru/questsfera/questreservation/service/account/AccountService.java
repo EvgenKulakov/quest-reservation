@@ -1,6 +1,6 @@
 package ru.questsfera.questreservation.service.account;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,19 +8,20 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.repository.AccountRepository;
+import ru.questsfera.questreservation.repository.jdbc.AccountJdbcRepository;
+import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
+    private final AccountJdbcRepository accountJdbcRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -33,7 +34,7 @@ public class AccountService implements UserDetailsService {
         );
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Account getAccountByLogin(String login) {
         Optional<Account> accountOptional = accountRepository.findAccountByLogin(login);
         if (accountOptional.isPresent()) {
@@ -42,9 +43,15 @@ public class AccountService implements UserDetailsService {
         throw new UsernameNotFoundException(String.format("Пользователь %s не найден", login));
     }
 
-    @Transactional
-    public List<Account> getAccountsByCompany(Company company) {
-        return accountRepository.findAllByCompanyOrderByLogin(company);
+    @Transactional(readOnly = true)
+    public List<Account> getAccountsByCompanyId(Integer companyId) {
+        return accountRepository.findAllByCompanyIdOrderByLogin(companyId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Account> findAllByMyAccountName(String accountName) {
+        Account myAccount = getAccountByLogin(accountName);
+        return accountJdbcRepository.findAllByAccountOrderByName(myAccount);
     }
 
     @Transactional
@@ -84,7 +91,7 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public void checkSecurityForAccount(Account changeAccount, Account myAccount) {
-        boolean existAccountByCompany = existAccountByCompanyId(changeAccount, myAccount.getCompany().getId());
+        boolean existAccountByCompany = existAccountByCompanyId(changeAccount, myAccount.getCompanyId());
 
         boolean haveAccess = myAccount.getRole() == Account.Role.ROLE_OWNER
                 || changeAccount.getRole() == Account.Role.ROLE_USER;
@@ -96,7 +103,7 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public void checkSecurityForAccounts(List<Account> changeAccounts, Account myAccount) {
-        List<Account> usersByAdmin = getAccountsByCompany(myAccount.getCompany());
+        List<Account> usersByAdmin = getAccountsByCompanyId(myAccount.getCompanyId());
         if (!usersByAdmin.containsAll(changeAccounts)) {
             throw new SecurityException("Нет доступа для изменения данных пользователей");
         }

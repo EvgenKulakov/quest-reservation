@@ -7,7 +7,7 @@ import ru.questsfera.questreservation.dto.SlotList;
 
 public class SlotListMapper {
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
     static {
         mapper.registerModule(new JavaTimeModule());
     }

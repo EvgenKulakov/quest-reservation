@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.dto.ReservationDTO;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Reservation;
-import ru.questsfera.questreservation.repository.ReservationJdbcRepository;
-import ru.questsfera.questreservation.repository.ReservationRepository;
+import ru.questsfera.questreservation.repository.jdbc.ReservationJdbcRepository;
+import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
 
 import java.time.LocalDate;
 import java.util.Collection;

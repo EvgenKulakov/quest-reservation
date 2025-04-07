@@ -1,13 +1,10 @@
 package ru.questsfera.questreservation.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import ru.questsfera.questreservation.dto.AccountDTO;
 import ru.questsfera.questreservation.validator.Patterns;
 
 import java.util.Objects;
@@ -17,9 +14,9 @@ import java.util.TreeSet;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "accounts", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"emailAndLogin", "password", "firstName", "lastName", "phone", "role", "company", "quests"})
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,9 +44,8 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @Column(name = "company_id")
+    private Integer companyId;
 
     @ManyToMany
     @JoinTable(name = "account_quest",
@@ -57,8 +53,20 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "quest_id"))
     private Set<Quest> quests = new TreeSet<>();
 
+    public Account(AccountDTO accountDTO) {
+        this.id = accountDTO.getId();
+        this.login = accountDTO.getLogin();
+        this.firstName = accountDTO.getFirstName();
+        this.password = accountDTO.getPassword();
+        this.lastName = accountDTO.getLastName();
+        this.phone = accountDTO.getPhone();
+        this.role = accountDTO.getRole();
+        this.companyId = accountDTO.getCompany().getId();
+        this.quests = accountDTO.getQuests();
+    }
+
     @Getter
-    @AllArgsConstructor
+    @RequiredArgsConstructor
     public enum Role {
         ROLE_OWNER("Владелец"),
         ROLE_ADMIN("Админ"),

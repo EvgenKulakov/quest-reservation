@@ -1,7 +1,7 @@
 package ru.questsfera.questreservation.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,28 +19,19 @@ import java.security.Principal;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/accounts")
 public class AccountController {
 
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private QuestService questService;
-    @Autowired
-    private CompanyService companyService;
+    private final AccountService accountService;
+    private final QuestService questService;
+    private final CompanyService companyService;
 
 
     @GetMapping("/")
     public String showAccountsList(Principal principal, Model model) {
-
-        Account account = accountService.getAccountByLogin(principal.getName());
-        List<Account> accounts = accountService.getAccountsByCompany(account.getCompany());
-        if (account.getRole() != Account.Role.ROLE_OWNER) {
-             accounts.removeIf(acc -> !acc.getRole().equals(Account.Role.ROLE_USER));
-        }
-
+        List<Account> accounts = accountService.findAllByMyAccountName(principal.getName());
         model.addAttribute("accounts", accounts);
-        model.addAttribute("myAccount", account);
         return "accounts/accounts-list";
     }
 
@@ -48,11 +39,11 @@ public class AccountController {
     public String addAccount(Principal principal, Model model) {
 
         Account myAccount = accountService.getAccountByLogin(principal.getName());
-        Company company = companyService.findById(myAccount.getCompany().getId());
+        Company company = companyService.findById(myAccount.getCompanyId());
         List<Quest> allQuests = questService.getQuestsByCompany(company.getId());
 
         Account newAccount = new Account();
-        newAccount.setCompany(company);
+        newAccount.setCompanyId(company.getId());
         newAccount.setPassword(PasswordGenerator.createRandomPassword());
 
         Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
@@ -69,7 +60,7 @@ public class AccountController {
         Account myAccount = accountService.getAccountByLogin(principal.getName());
         accountService.checkSecurityForAccount(account, myAccount);
 
-        List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany().getId());
+        List<Quest> allQuests = questService.getQuestsByCompany(account.getCompanyId());
         Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 
         model.addAttribute("account", account);
@@ -97,7 +88,7 @@ public class AccountController {
         }
 
         if (bindingResult.hasErrors()) {
-            List<Quest> allQuests = questService.getQuestsByCompany(account.getCompany().getId());
+            List<Quest> allQuests = questService.getQuestsByCompany(account.getCompanyId());
             Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 
             model.addAttribute("account", account);

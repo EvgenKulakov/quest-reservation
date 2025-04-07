@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@ToString
 @Entity
 @Table(name = "quests", schema = "quest_reservations_db")
 public class Quest implements Comparable<Quest> {

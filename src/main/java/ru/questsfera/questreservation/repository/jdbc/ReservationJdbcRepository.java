@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.repository;
+package ru.questsfera.questreservation.repository.jdbc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

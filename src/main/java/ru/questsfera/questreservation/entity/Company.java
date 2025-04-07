@@ -30,9 +30,6 @@ public class Company {
     @OneToMany(mappedBy = "company")
     private Set<BlackList> blackLists = new HashSet<>();
 
-    @OneToMany(mappedBy = "company")
-    private Set<Account> accounts = new HashSet<>();
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

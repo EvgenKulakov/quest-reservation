@@ -4,11 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.repository.AccountRepository;
-import ru.questsfera.questreservation.repository.QuestRepository;
-import ru.questsfera.questreservation.repository.ReservationRepository;
+import ru.questsfera.questreservation.repository.jpa.AccountRepository;
+import ru.questsfera.questreservation.repository.jpa.QuestRepository;
+import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
 
 import java.util.List;
 import java.util.Optional;

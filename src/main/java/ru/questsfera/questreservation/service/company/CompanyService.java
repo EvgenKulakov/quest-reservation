@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.service.company;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.questsfera.questreservation.entity.Company;
-import ru.questsfera.questreservation.repository.CompanyRepository;
+import ru.questsfera.questreservation.repository.jpa.CompanyRepository;
 
 @Service
 public class CompanyService {
