@@ -2,7 +2,7 @@ package ru.questsfera.questreservation.repository.jdbc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import ru.questsfera.questreservation.dto.ReservationDTO;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Client;
@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Repository
 @RequiredArgsConstructor
 public class ReservationJdbcRepository {
 
@@ -24,10 +24,9 @@ public class ReservationJdbcRepository {
 
     public ReservationDTO findReservationDtoById(Long id) {
         String sql =
-                "SELECT r.id AS reservation_id, cl.id AS client_id, r.*, cl.* " +
-                        "FROM reservations r " +
-                        "LEFT JOIN clients cl ON r.client_id = cl.id " +
-                        "WHERE r.id = :id";
+                "SELECT res.id AS reservation_id, cl.id AS client_id, res.*, cl.* " +
+                        "FROM (SELECT * FROM reservations r WHERE r.id = :id) AS res " +
+                        "LEFT JOIN clients cl ON res.client_id = cl.id";
         Map<String, Object> params = Map.of("id", id);
 
         return jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
@@ -38,17 +37,20 @@ public class ReservationJdbcRepository {
 
     public List<ReservationDTO> findActiveByQuestIdsAndDate(Collection<Integer> questIds, LocalDate dateReserve) {
         String sql =
-                "SELECT res.id AS reservation_id, qu.id AS quest_id, cl.id AS client_id, res.*, cl.* " +
-                        "FROM (SELECT * FROM reservations r WHERE r.date_reserve = :dateReserve) AS res " +
-                        "INNER JOIN quests qu ON res.quest_id = qu.id " +
-                        "LEFT JOIN clients cl ON res.client_id = cl.id " +
-                        "WHERE res.quest_id IN (:questIds) " +
+                "SELECT res.id, res.time_reserve, res.quest_id, res.status_type " +
+                        "FROM reservations res " +
+                        "WHERE res.date_reserve = :dateReserve " +
+                        "AND res.quest_id IN (:questIds) " +
                         "AND res.status_type != 'CANCEL'";
         Map<String, Object> params = Map.of("questIds", questIds, "dateReserve", dateReserve);
 
         return jdbcTemplate.query(sql, params, (rs, rowNum) -> {
-            Client client = clientResultSetMapper(rs);
-            return reservationDtoResultSetMapper(rs, client);
+            return ReservationDTO.builder()
+                    .id(rs.getLong("id"))
+                    .timeReserve(rs.getObject("time_reserve", LocalTime.class))
+                    .questId(rs.getInt("quest_id"))
+                    .statusType(StatusType.valueOf(rs.getString("status_type")))
+                    .build();
         });
     }
 
@@ -66,9 +68,6 @@ public class ReservationJdbcRepository {
     }
 
     private ReservationDTO reservationDtoResultSetMapper(ResultSet rs, Client client) throws SQLException {
-        String statusTypeStr = rs.getString("status_type");
-        StatusType statusType = statusTypeStr != null ? StatusType.valueOf(statusTypeStr) : null;
-
         return new ReservationDTO(
                 rs.getLong("reservation_id"),
                 rs.getObject("date_reserve", LocalDate.class),
@@ -77,7 +76,7 @@ public class ReservationJdbcRepository {
                 rs.getObject("time_last_change", LocalDateTime.class),
                 rs.getObject("changed_slot_time", LocalTime.class),
                 rs.getInt("quest_id"),
-                statusType,
+                StatusType.valueOf(rs.getString("status_type")),
                 rs.getString("source_reserve"),
                 rs.getBigDecimal("price"),
                 rs.getBigDecimal("changed_price"),

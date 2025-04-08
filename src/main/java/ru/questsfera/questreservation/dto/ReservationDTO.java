@@ -1,5 +1,8 @@
 package ru.questsfera.questreservation.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.Value;
 import ru.questsfera.questreservation.entity.Client;
 
@@ -9,25 +12,27 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
-@Value
+@Getter
+@AllArgsConstructor
+@Builder
 public class ReservationDTO {
 
-    Long id;
-    LocalDate dateReserve;
-    LocalTime timeReserve;
-    LocalDateTime dateAndTimeCreated;
-    LocalDateTime timeLastChange;
-    LocalTime changedSlotTime;
-    Integer questId;
-    StatusType statusType;
-    String sourceReserve;
-    BigDecimal price;
-    BigDecimal changedPrice;
-    Client client;
-    Integer countPersons;
-    String adminComment;
-    String clientComment;
-    String historyMessages;
+    private Long id;
+    private LocalDate dateReserve;
+    private LocalTime timeReserve;
+    private LocalDateTime dateAndTimeCreated;
+    private LocalDateTime timeLastChange;
+    private LocalTime changedSlotTime;
+    private Integer questId;
+    private StatusType statusType;
+    private String sourceReserve;
+    private BigDecimal price;
+    private BigDecimal changedPrice;
+    private Client client;
+    private Integer countPersons;
+    private String adminComment;
+    private String clientComment;
+    private String historyMessages;
 
     @Override
     public boolean equals(Object o) {

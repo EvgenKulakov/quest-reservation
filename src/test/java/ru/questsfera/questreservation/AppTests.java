@@ -41,7 +41,7 @@ class AppTests {
 
     @Test
     void hotTest() {
-        List<Integer> questsIds = List.of(3, 2);
+        List<Integer> questsIds = List.of(3, 4);
         String accountName = "admin@yandex.ru";
         LocalDate date = LocalDate.of(2025, 4, 7);
 

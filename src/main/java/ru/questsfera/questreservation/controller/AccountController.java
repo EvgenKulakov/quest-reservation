@@ -27,7 +27,6 @@ public class AccountController {
     private final QuestService questService;
     private final CompanyService companyService;
 
-
     @GetMapping("/")
     public String showAccountsList(Principal principal, Model model) {
         List<Account> accounts = accountService.findAllByMyAccountName(principal.getName());
