@@ -64,29 +64,20 @@ public class AccountService implements UserDetailsService {
         return accountRepository.findAllByQuestId(quest.getId());
     }
 
-    @Transactional
-    public List<Account> findAll() {
-        return accountRepository.findAll();
-    }
-
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean existAccountByLogin(String login) {
         if (login.isEmpty()) return false;
         return accountRepository.existsAccountByLogin(login);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean existAccountByCompanyId(Account account, Integer companyId) {
         return accountRepository.existsAccountByIdAndCompanyId(account.getId(), companyId);
     }
 
     @Transactional
     public void saveAccount(Account account) {
-        try {
-            accountRepository.save(account);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
+        accountRepository.save(account);
     }
 
     @Transactional

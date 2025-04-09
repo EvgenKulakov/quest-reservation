@@ -1,6 +1,6 @@
 package ru.questsfera.questreservation.service.quest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.entity.Account;
@@ -13,21 +13,19 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class QuestService {
 
-    @Autowired
-    private QuestRepository questRepository;
-    @Autowired
-    private ReservationRepository reservationRepository;
-    @Autowired
-    private AccountRepository accountRepository;
+    private final QuestRepository questRepository;
+    private final ReservationRepository reservationRepository;
+    private final AccountRepository accountRepository;
 
     @Transactional(readOnly = true)
     public Optional<Quest> findById(Integer id) {
         return questRepository.findById(id);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Quest> getQuestsByCompany(Integer companyId) {
         return questRepository.findAllByCompanyIdOrderByQuestName(companyId);
     }

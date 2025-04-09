@@ -53,8 +53,8 @@ public class AccountController {
     @PostMapping("/update-form")
     public String updateAccount(@RequestParam("account") Account account, Principal principal, Model model) {
 
-        Account myAccount = accountService.getAccountByLogin(principal.getName());
-        accountService.checkSecurityForAccount(account, myAccount);
+//        Account myAccount = accountService.getAccountByLogin(principal.getName());
+//        accountService.checkSecurityForAccount(account, myAccount); // TODO security
 
         List<Quest> allQuests = questService.getQuestsByCompany(account.getCompanyId());
         Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
@@ -72,8 +72,8 @@ public class AccountController {
                               Principal principal,
                               Model model) {
 
-        Account myAccount = accountService.getAccountByLogin(principal.getName());
-        if (account.getId() != null) accountService.checkSecurityForAccount(account, myAccount);
+//        Account myAccount = accountService.getAccountByLogin(principal.getName()); // TODO security
+//        if (account.getId() != null) accountService.checkSecurityForAccount(account, myAccount);
 
         if (!account.getLogin().equals(oldLogin)) {
             boolean existsUsername = accountService.existAccountByLogin(account.getLogin());
@@ -98,11 +98,6 @@ public class AccountController {
             account.setPassword(passwordHash);
         }
 
-        for (Quest quest : account.getQuests()) {
-            quest.getAccounts().add(account);
-            questService.saveQuest(quest);
-        }
-
         accountService.saveAccount(account);
         return "redirect:/accounts/";
     }
@@ -110,8 +105,8 @@ public class AccountController {
     @PostMapping("/update-account-password")
     public String updatePassword(@RequestParam("account") Account account, Principal principal, Model model) {
 
-        Account myAccount = accountService.getAccountByLogin(principal.getName());
-        accountService.checkSecurityForAccount(account, myAccount);
+//        Account myAccount = accountService.getAccountByLogin(principal.getName());
+//        accountService.checkSecurityForAccount(account, myAccount); // TODO security
 
         model.addAttribute("account", account);
         model.addAttribute("newPassword", "");
@@ -124,8 +119,8 @@ public class AccountController {
                                   @RequestParam("newPassword") String newPassword,
                                   Principal principal, Model model) {
 
-        Account myAccount = accountService.getAccountByLogin(principal.getName());
-        accountService.checkSecurityForAccount(account, myAccount);
+//        Account myAccount = accountService.getAccountByLogin(principal.getName());
+//        accountService.checkSecurityForAccount(account, myAccount); // TODO security
 
         //TODO: safe update password: *********
         if (!newPassword.matches(Patterns.PASSWORD)) {
@@ -142,8 +137,8 @@ public class AccountController {
 
     @PostMapping("/delete")
     public String deleteAccount(@RequestParam("account") Account account, Principal principal) {
-        Account myAccount = accountService.getAccountByLogin(principal.getName());
-        accountService.checkSecurityForAccount(account, myAccount);
+//        Account myAccount = accountService.getAccountByLogin(principal.getName());
+//        accountService.checkSecurityForAccount(account, myAccount); // TODO security
         accountService.delete(account);
         return "redirect:/accounts/";
     }
