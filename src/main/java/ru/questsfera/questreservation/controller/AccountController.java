@@ -7,16 +7,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.processor.PasswordGenerator;
 import ru.questsfera.questreservation.service.account.AccountService;
-import ru.questsfera.questreservation.service.company.CompanyService;
 import ru.questsfera.questreservation.service.quest.QuestService;
 import ru.questsfera.questreservation.validator.Patterns;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,7 +24,6 @@ public class AccountController {
 
     private final AccountService accountService;
     private final QuestService questService;
-    private final CompanyService companyService;
 
     @GetMapping("/")
     public String showAccountsList(Principal principal, Model model) {
@@ -37,12 +35,11 @@ public class AccountController {
     @GetMapping("/add-form")
     public String addAccount(Principal principal, Model model) {
 
-        Account myAccount = accountService.getAccountByLogin(principal.getName());
-        Company company = companyService.findById(myAccount.getCompanyId());
-        List<Quest> allQuests = questService.getQuestsByCompany(company.getId());
+        Account myAccount = accountService.findAccountByLoginWithQuests(principal.getName());
+        Set<Quest> allQuests = myAccount.getQuests();
 
         Account newAccount = new Account();
-        newAccount.setCompanyId(company.getId());
+        newAccount.setCompanyId(myAccount.getCompanyId());
         newAccount.setPassword(PasswordGenerator.createRandomPassword());
 
         Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};

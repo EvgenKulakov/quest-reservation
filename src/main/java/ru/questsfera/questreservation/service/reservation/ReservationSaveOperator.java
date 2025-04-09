@@ -8,12 +8,10 @@ import ru.questsfera.questreservation.dto.ResFormDTO;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.processor.Editor;
 import ru.questsfera.questreservation.processor.ReservationFactory;
 import ru.questsfera.questreservation.service.client.ClientService;
-import ru.questsfera.questreservation.service.quest.QuestService;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -24,7 +22,6 @@ public class ReservationSaveOperator {
 
     private final ReservationService reservationService;
     private final ClientService clientService;
-    private final QuestService questService;
 
     @Transactional
     public void saveReservation(ResFormDTO resFormDTO, String slotJSON, Principal principal) {
@@ -33,8 +30,7 @@ public class ReservationSaveOperator {
 
         if (slot.getStatusType() == StatusType.EMPTY) {
             reservation = ReservationFactory.createReservation(resFormDTO, slot);
-            Quest quest = questService.findById(slot.getQuestId()).orElseThrow();
-            Client newClient = new Client(resFormDTO, quest.getCompanyId());
+            Client newClient = new Client(resFormDTO, slot.getCompanyId());
             Client clientSaved = clientService.saveClient(newClient);
             reservation.setClientId(clientSaved.getId());
             reservation.setSourceReserve("default"); //TODO: source reserve

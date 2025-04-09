@@ -16,6 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class Slot {
+    private Integer companyId;
     private Integer questId;
     private String questName;
     private Long reservationId;
@@ -30,6 +31,7 @@ public class Slot {
     private Integer maxPersons;
 
     public Slot(QuestDTO quest, ReservationDTO reservation, LocalDate date, LocalTime time, Integer price) {
+        this.companyId = quest.getCompanyId();
         this.questId = quest.getId();
         this.questName = quest.getQuestName();
         this.reservationId = reservation.getId();
@@ -43,6 +45,7 @@ public class Slot {
     }
 
     public Slot(QuestDTO quest, LocalDate date, LocalTime time, Integer price) {
+        this.companyId = quest.getCompanyId();
         this.questId = quest.getId();
         this.questName = quest.getQuestName();
         this.date = date;

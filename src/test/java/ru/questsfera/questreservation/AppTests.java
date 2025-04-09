@@ -6,8 +6,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.dto.ReservationDTO;
+import ru.questsfera.questreservation.entity.Account;
+import ru.questsfera.questreservation.entity.Quest;
+import ru.questsfera.questreservation.repository.jdbc.AccountJdbcRepository;
 import ru.questsfera.questreservation.repository.jdbc.ReservationJdbcRepository;
+import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
@@ -16,6 +21,7 @@ import ru.questsfera.questreservation.service.reservation.ReservationGetOperator
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 
 @SpringBootTest
@@ -30,6 +36,10 @@ class AppTests {
     ReservationJdbcRepository reservationJdbcRepository;
     @Autowired
     ReservationGetOperator reservationGetOperator;
+    @Autowired
+    AccountJdbcRepository accountJdbcRepository;
+    @Autowired
+    AccountRepository accountRepository;
 
     @Mock
     Principal principal;
@@ -40,20 +50,18 @@ class AppTests {
     }
 
     @Test
+//    @Transactional
     void hotTest() {
         List<Integer> questsIds = List.of(3, 4);
         String accountName = "admin@yandex.ru";
         LocalDate date = LocalDate.of(2025, 4, 7);
 
-        List<ReservationDTO> excFromJdbc =
-                reservationJdbcRepository.findActiveByQuestIdsAndDate(questsIds, date);
+//        Account account = accountService.getAccountByLogin(accountName);
+        Account account = accountRepository.findAccountByLoginWithQuests(accountName).get();
+        Set<Quest> quests = account.getQuests();
+        System.out.println(quests);
 
-//        ReservationDTO reservationDTO = reservationJdbcRepository.findReservationDtoById(1L);
-//        System.out.println(reservationDTO);
-
-//        SlotListPageDTO questsAndSlotsByDate = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
-
-        System.out.println(excFromJdbc);
+        System.out.println(account);
 
     }
 }

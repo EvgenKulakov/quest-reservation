@@ -11,6 +11,7 @@ import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -32,6 +33,7 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public List<ReservationDTO> findActiveByQuestIdsAndDate(Collection<Integer> questIds, LocalDate dateReserve) {
+        if (questIds.isEmpty()) return Collections.emptyList();
         return reservationJdbcRepository.findActiveByQuestIdsAndDate(questIds, dateReserve);
     }
 

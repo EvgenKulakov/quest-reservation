@@ -44,6 +44,11 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
+    public Account findAccountByLoginWithQuests(String login) {
+        return accountRepository.findAccountByLoginWithQuests(login).orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
     public List<Account> getAccountsByCompanyId(Integer companyId) {
         return accountRepository.findAllByCompanyIdOrderByLogin(companyId);
     }

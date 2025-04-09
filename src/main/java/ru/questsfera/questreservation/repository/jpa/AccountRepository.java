@@ -12,6 +12,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     Optional<Account> findAccountByLogin(String login);
 
+    @Query("SELECT ac FROM Account ac LEFT JOIN FETCH ac.quests WHERE ac.login = :login")
+    Optional<Account> findAccountByLoginWithQuests(@Param("login") String login);
+
     boolean existsAccountByLogin(String login);
 
     boolean existsAccountByIdAndCompanyId(Integer accountId, Integer companyId);

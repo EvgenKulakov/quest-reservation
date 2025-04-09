@@ -44,14 +44,13 @@ public class ReservationJdbcRepository {
                         "AND res.status_type != 'CANCEL'";
         Map<String, Object> params = Map.of("questIds", questIds, "dateReserve", dateReserve);
 
-        return jdbcTemplate.query(sql, params, (rs, rowNum) -> {
-            return ReservationDTO.builder()
-                    .id(rs.getLong("id"))
-                    .timeReserve(rs.getObject("time_reserve", LocalTime.class))
-                    .questId(rs.getInt("quest_id"))
-                    .statusType(StatusType.valueOf(rs.getString("status_type")))
-                    .build();
-        });
+        return jdbcTemplate.query(sql, params, (rs, rowNum) ->
+                ReservationDTO.builder()
+                        .id(rs.getLong("id"))
+                        .timeReserve(rs.getObject("time_reserve", LocalTime.class))
+                        .questId(rs.getInt("quest_id"))
+                        .statusType(StatusType.valueOf(rs.getString("status_type")))
+                        .build());
     }
 
     private Client clientResultSetMapper(ResultSet rs) throws SQLException {
