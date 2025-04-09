@@ -1,21 +1,19 @@
 package ru.questsfera.questreservation.service.company;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.entity.Company;
 import ru.questsfera.questreservation.repository.jpa.CompanyRepository;
 
 @Service
+@RequiredArgsConstructor
 public class CompanyService {
 
-    @Autowired
-    private CompanyRepository companyRepository;
+    private final CompanyRepository companyRepository;
 
+    @Transactional
     public void saveCompany(Company company) {
         companyRepository.save(company);
-    }
-
-    public Company findById(Integer id) {
-        return companyRepository.findById(id).orElse(null);
     }
 }

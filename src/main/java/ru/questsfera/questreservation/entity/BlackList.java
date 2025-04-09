@@ -21,16 +21,14 @@ public class BlackList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @Column(name = "client_id")
+    private Integer clientId;
 
     @Column(name = "messages")
     private String messages;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @Column(name = "company_id")
+    private Integer companyId;
 
     @Override
     public boolean equals(Object o) {

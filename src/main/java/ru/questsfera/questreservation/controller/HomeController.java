@@ -1,7 +1,7 @@
 package ru.questsfera.questreservation.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,12 +16,11 @@ import ru.questsfera.questreservation.service.company.CompanyService;
 import java.math.BigDecimal;
 
 @Controller
+@RequiredArgsConstructor
 public class HomeController {
 
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private CompanyService companyService;
+    private final AccountService accountService;
+    private final CompanyService companyService;
 
     @RequestMapping("/login")
     public String login() {
