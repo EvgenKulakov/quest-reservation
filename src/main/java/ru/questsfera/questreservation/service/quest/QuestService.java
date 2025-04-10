@@ -11,6 +11,7 @@ import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class QuestService {
     }
 
     @Transactional(readOnly = true)
-    public List<Quest> findAllByAccount_login(String login) {
+    public Set<Quest> findAllByAccount_login(String login) {
         return questRepository.findAllByAccount_login(login);
     }
 

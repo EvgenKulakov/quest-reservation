@@ -30,8 +30,8 @@ public class ReservationJdbcRepository {
         Map<String, Object> params = Map.of("id", id);
 
         return jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
-            Client client = clientResultSetMapper(rs);
-            return reservationDtoResultSetMapper(rs, client);
+            Client client = clientResultSetMapping(rs);
+            return reservationDtoResultSetMapping(rs, client);
         });
     }
 
@@ -53,7 +53,7 @@ public class ReservationJdbcRepository {
                         .build());
     }
 
-    private Client clientResultSetMapper(ResultSet rs) throws SQLException {
+    private Client clientResultSetMapping(ResultSet rs) throws SQLException {
         return new Client(
                 rs.getInt("client_id"),
                 rs.getString("first_name"),
@@ -61,12 +61,12 @@ public class ReservationJdbcRepository {
                 rs.getString("phone"),
                 rs.getString("email"),
                 rs.getString("comments"),
-                null, // TODO blacklist optimisation
-                null // TODO company optimisation
+                rs.getInt("blacklist_id"),
+                rs.getInt("company_id")
         );
     }
 
-    private ReservationDTO reservationDtoResultSetMapper(ResultSet rs, Client client) throws SQLException {
+    private ReservationDTO reservationDtoResultSetMapping(ResultSet rs, Client client) throws SQLException {
         return new ReservationDTO(
                 rs.getLong("reservation_id"),
                 rs.getObject("date_reserve", LocalDate.class),

@@ -1,17 +1,17 @@
 package ru.questsfera.questreservation.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.dto.*;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
-import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.processor.SlotListMaker;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
@@ -25,21 +25,16 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/quests")
 public class QuestController {
 
-    @Autowired
-    private QuestService questService;
-    @Autowired
-    private AccountService accountService;
-
+    private final QuestService questService;
+    private final AccountService accountService;
 
     @GetMapping("/")
     public String showQuestList(Principal principal, Model model) {
-
-        Account account = accountService.getAccountByLogin(principal.getName());
-        Set<Quest> quests = account.getQuests();//TODO: sort for quests
-
+        Set<Quest> quests = questService.findAllByAccount_login(principal.getName());
         model.addAttribute("quests", quests);
         return "quests/quests-list";
     }
@@ -47,14 +42,17 @@ public class QuestController {
     @PostMapping("/add-form")
     public String addQuest(Principal principal, Model model) {
 
-        Account account = accountService.getAccountByLogin(principal.getName());
-        List<Account> allAccounts = accountService.getAccountsByCompanyId(account.getCompanyId());
+        List<Account> allAccounts = accountService.findAllAccountsInCompanyByOwnAccountName(principal.getName());
+        Account myAccount = allAccounts.stream()
+                .filter(ac -> ac.getLogin().equals(principal.getName()))
+                .findFirst()
+                .orElseThrow();
 
         QuestForm questForm = new QuestForm();
         questForm.setStatuses(Status.getDefaultStatuses());
         questForm.setAutoBlock(LocalTime.MIN);
         questForm.setTypeBuilder(SlotListTypeBuilder.EQUAL_DAYS);
-        questForm.setAccounts(new ArrayList<>(List.of(account)));
+        questForm.setAccounts(new ArrayList<>(List.of(myAccount)));
 
         SlotListMaker.addDefaultValues(questForm.getSlotList());
         String slotListJSON = SlotListMapper.createJSON(questForm.getSlotList());
@@ -107,7 +105,7 @@ public class QuestController {
             model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
             model.addAttribute("slotListJSON", slotListJSON);
             model.addAttribute("userStatuses", Status.getUserStatuses());
-            model.addAttribute("allAccounts", accountService.getAccountsByCompanyId(account.getCompanyId()));
+            model.addAttribute("allAccounts", accountService.findAllAccountsByCompanyId(account.getCompanyId()));
 
             return "quests/add-quest-form";
         }

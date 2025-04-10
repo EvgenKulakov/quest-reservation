@@ -1,10 +1,10 @@
 package ru.questsfera.questreservation.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum SlotListTypeBuilder {
 
     EQUAL_DAYS("Одинаковые дни"),

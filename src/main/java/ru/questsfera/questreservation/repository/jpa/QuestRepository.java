@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import ru.questsfera.questreservation.entity.Quest;
 
 import java.util.List;
+import java.util.Set;
 
 public interface QuestRepository extends JpaRepository<Quest, Integer> {
 
@@ -19,5 +20,5 @@ public interface QuestRepository extends JpaRepository<Quest, Integer> {
     List<Quest> findAllByAccountId(@Param("accountId") Integer accountId);
 
     @Query("SELECT qu FROM Quest qu JOIN FETCH qu.accounts ac WHERE ac.login = :login")
-    List<Quest> findAllByAccount_login(String login);
+    Set<Quest> findAllByAccount_login(String login);
 }

@@ -49,14 +49,19 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public List<Account> getAccountsByCompanyId(Integer companyId) {
+    public List<Account> findAllAccountsByCompanyId(Integer companyId) {
         return accountRepository.findAllByCompanyIdOrderByLogin(companyId);
     }
 
     @Transactional(readOnly = true)
-    public List<Account> findAllByMyAccountName(String accountName) {
+    public List<Account> findAllAccountsInCompanyByOwnAccountName(String accountName) {
+        return accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(accountName);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Account> findOwnAccountsByAccountName(String accountName) {
         Account myAccount = getAccountByLogin(accountName);
-        return accountJdbcRepository.findAllByAccountOrderByName(myAccount);
+        return accountJdbcRepository.findOwnAccountsByMyAccountOrderByName(myAccount);
     }
 
     @Transactional
@@ -99,7 +104,7 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public void checkSecurityForAccounts(List<Account> changeAccounts, Account myAccount) {
-        List<Account> usersByAdmin = getAccountsByCompanyId(myAccount.getCompanyId());
+        List<Account> usersByAdmin = findAllAccountsByCompanyId(myAccount.getCompanyId());
         if (!usersByAdmin.containsAll(changeAccounts)) {
             throw new SecurityException("Нет доступа для изменения данных пользователей");
         }

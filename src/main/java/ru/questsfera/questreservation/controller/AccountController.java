@@ -27,7 +27,7 @@ public class AccountController {
 
     @GetMapping("/")
     public String showAccountsList(Principal principal, Model model) {
-        List<Account> accounts = accountService.findAllByMyAccountName(principal.getName());
+        List<Account> accounts = accountService.findOwnAccountsByAccountName(principal.getName());
         model.addAttribute("accounts", accounts);
         return "accounts/accounts-list";
     }

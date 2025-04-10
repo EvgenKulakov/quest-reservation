@@ -26,7 +26,7 @@ public class ReservationGetOperator {
 
     @Transactional(readOnly = true)
     public SlotListPageDTO getQuestsAndSlotsByDate(LocalDate date, Principal principal) {
-        List<Quest> quests = questService.findAllByAccount_login(principal.getName());
+        Set<Quest> quests = questService.findAllByAccount_login(principal.getName());
 
         List<ReservationDTO> reservationDTOs = reservationService.findActiveByQuestIdsAndDate(
                 quests.stream().map(Quest::getId).toList(), date);
