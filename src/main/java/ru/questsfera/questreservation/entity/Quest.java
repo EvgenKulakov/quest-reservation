@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import ru.questsfera.questreservation.converter.SlotListMapper;
-import ru.questsfera.questreservation.dto.QuestForm;
+import ru.questsfera.questreservation.dto.QuestFormDTO;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -53,14 +53,14 @@ public class Quest implements Comparable<Quest> {
             inverseJoinColumns = @JoinColumn(name = "id_second_quest"))
     private Set<Quest> synchronizedQuests = new HashSet<>();
 
-    public Quest(QuestForm questForm, Integer companyId) {
-        this.questName = questForm.getQuestName();
-        this.minPersons = questForm.getMinPersons();
-        this.maxPersons = questForm.getMaxPersons();
-        this.autoBlock = questForm.getAutoBlock();
-        this.slotList = SlotListMapper.createJSON(questForm.getSlotList());
-        this.accounts = questForm.getAccounts();
-        this.statuses = questForm.getStatuses().stream()
+    public Quest(QuestFormDTO questFormDTO, Integer companyId) {
+        this.questName = questFormDTO.getQuestName();
+        this.minPersons = questFormDTO.getMinPersons();
+        this.maxPersons = questFormDTO.getMaxPersons();
+        this.autoBlock = questFormDTO.getAutoBlock();
+        this.slotList = SlotListMapper.createJSON(questFormDTO.getSlotList());
+        this.accounts = questFormDTO.getAccounts();
+        this.statuses = questFormDTO.getStatuses().stream()
                 .map(s -> s.getType().name()).collect(Collectors.joining(","));
         this.companyId = companyId;
     }

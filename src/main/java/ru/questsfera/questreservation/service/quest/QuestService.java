@@ -64,11 +64,11 @@ public class QuestService {
 
     @Transactional
     public void saveQuest(Quest quest) {
-        for (Account account : accountRepository.findAllByQuestId(quest.getId())) {
+        questRepository.save(quest);
+        for (Account account : quest.getAccounts()) {
             account.getQuests().add(quest);
             accountRepository.save(account);
         }
-        questRepository.save(quest);
     }
 
     @Transactional

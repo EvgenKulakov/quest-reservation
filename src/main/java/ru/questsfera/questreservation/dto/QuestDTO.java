@@ -33,14 +33,14 @@ public class QuestDTO implements Comparable<QuestDTO> {
     private List<Status> statuses;
     private Set<Quest> synchronizedQuests;
 
-    public QuestDTO(QuestForm questForm, Integer companyId) {
-        this.questName = questForm.getQuestName();
-        this.minPersons = questForm.getMinPersons();
-        this.maxPersons = questForm.getMaxPersons();
-        this.autoBlock = questForm.getAutoBlock();
-        this.slotList = SlotListMapper.createJSON(questForm.getSlotList());
-        this.accounts = questForm.getAccounts();
-        this.statuses = questForm.getStatuses();
+    public QuestDTO(QuestFormDTO questFormDTO, Integer companyId) {
+        this.questName = questFormDTO.getQuestName();
+        this.minPersons = questFormDTO.getMinPersons();
+        this.maxPersons = questFormDTO.getMaxPersons();
+        this.autoBlock = questFormDTO.getAutoBlock();
+        this.slotList = SlotListMapper.createJSON(questFormDTO.getSlotList());
+        this.accounts = questFormDTO.getAccounts();
+        this.statuses = questFormDTO.getStatuses();
         this.companyId = companyId;
     }
 

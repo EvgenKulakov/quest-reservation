@@ -9,14 +9,12 @@ import ru.questsfera.questreservation.entity.Status;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class QuestForm {
+public class QuestFormDTO {
 
     @NotBlank(message = "*Обязательное поле")
     private String questName;

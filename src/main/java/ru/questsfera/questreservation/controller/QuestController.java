@@ -48,16 +48,16 @@ public class QuestController {
                 .findFirst()
                 .orElseThrow();
 
-        QuestForm questForm = new QuestForm();
-        questForm.setStatuses(Status.getDefaultStatuses());
-        questForm.setAutoBlock(LocalTime.MIN);
-        questForm.setTypeBuilder(SlotListTypeBuilder.EQUAL_DAYS);
-        questForm.setAccounts(new ArrayList<>(List.of(myAccount)));
+        QuestFormDTO questFormDTO = new QuestFormDTO();
+        questFormDTO.setStatuses(Status.getDefaultStatuses());
+        questFormDTO.setAutoBlock(LocalTime.MIN);
+        questFormDTO.setTypeBuilder(SlotListTypeBuilder.EQUAL_DAYS);
+        questFormDTO.setAccounts(new ArrayList<>(List.of(myAccount)));
 
-        SlotListMaker.addDefaultValues(questForm.getSlotList());
-        String slotListJSON = SlotListMapper.createJSON(questForm.getSlotList());
+        SlotListMaker.addDefaultValues(questFormDTO.getSlotList());
+        String slotListJSON = SlotListMapper.createJSON(questFormDTO.getSlotList());
 
-        model.addAttribute("questForm", questForm);
+        model.addAttribute("questForm", questFormDTO);
         model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
         model.addAttribute("slotListJSON", slotListJSON);
         model.addAttribute("allAccounts", allAccounts);
@@ -67,57 +67,52 @@ public class QuestController {
     }
 
     @PostMapping("/save-quest")
-    public String saveQuest(@Valid @ModelAttribute("questForm") QuestForm questForm,
+    public String saveQuest(@Valid @ModelAttribute("questForm") QuestFormDTO questFormDTO,
                             BindingResult binding,
                             Principal principal,
                             Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
 
-        accountService.checkSecurityForAccounts(questForm.getAccounts(), account);
+//        accountService.checkSecurityForAccounts(questForm.getAccounts(), account); // TODO security
 
-        boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompanyId());
-        String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuilder());
+        boolean existQuestName = questService.existQuestNameByCompany(questFormDTO.getQuestName(), account.getCompanyId());
+        String globalErrorMessage = SlotListValidator.checkByType(questFormDTO.getSlotList(), questFormDTO.getTypeBuilder());
 
-        if (binding.hasErrors() || questForm.getMinPersons() > questForm.getMaxPersons()
+        if (binding.hasErrors() || questFormDTO.getMinPersons() > questFormDTO.getMaxPersons()
                 || existQuestName || !globalErrorMessage.isEmpty()) {
 
-            if (questForm.getMinPersons() != null
-                    && questForm.getMaxPersons() != null
-                    && questForm.getMinPersons() > questForm.getMaxPersons()) {
+            if (questFormDTO.getMinPersons() != null
+                    && questFormDTO.getMaxPersons() != null
+                    && questFormDTO.getMinPersons() > questFormDTO.getMaxPersons()) {
                 binding.rejectValue("errorCountPersons", "errorCode",
                         "*Значение \"От\" не может быть больше значения \"До\"");
             }
 
             if (existQuestName) {
                 binding.rejectValue("questName", "errorCode",
-                        String.format("У вас уже есть квест с названием \"%s\"", questForm.getQuestName()));
+                        String.format("У вас уже есть квест с названием \"%s\"", questFormDTO.getQuestName()));
             }
 
             if (!globalErrorMessage.isEmpty()) {
-                questForm.setOnlySecondPageError(!binding.hasFieldErrors());
+                questFormDTO.setOnlySecondPageError(!binding.hasFieldErrors());
                 binding.addError(new ObjectError("global", globalErrorMessage));
             }
 
-            String slotListJSON = SlotListMapper.createJSON(questForm.getSlotList());
+            String slotListJSON = SlotListMapper.createJSON(questFormDTO.getSlotList());
 
-            model.addAttribute("questForm", questForm);
+            model.addAttribute("questForm", questFormDTO);
             model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
             model.addAttribute("slotListJSON", slotListJSON);
             model.addAttribute("userStatuses", Status.getUserStatuses());
-            model.addAttribute("allAccounts", accountService.findAllAccountsByCompanyId(account.getCompanyId()));
+            model.addAttribute("allAccounts", accountService.findAllAccountsInCompanyByOwnAccountName(principal.getName()));
 
             return "quests/add-quest-form";
         }
 
-        SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuilder());
-        Quest quest = new Quest(questForm, account.getCompanyId());
+        SlotListMaker.makeByType(questFormDTO.getSlotList(), questFormDTO.getTypeBuilder());
+        Quest quest = new Quest(questFormDTO, account.getCompanyId());
         questService.saveQuest(quest);
-
-        for (Account acc : quest.getAccounts()) {
-            acc.getQuests().add(quest);
-            accountService.saveAccount(acc);
-        }
 
         return "redirect:/quests/";
     }

@@ -50,7 +50,7 @@ public class AccountService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public List<Account> findAllAccountsByCompanyId(Integer companyId) {
-        return accountRepository.findAllByCompanyIdOrderByLogin(companyId);
+        return accountRepository.findAllByCompanyIdOrderByFirstName(companyId);
     }
 
     @Transactional(readOnly = true)
