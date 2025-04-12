@@ -31,11 +31,6 @@ public class QuestService {
         return questRepository.findAllByCompanyIdOrderByQuestName(companyId);
     }
 
-    @Transactional
-    public List<Quest> findAllByAccountId(Integer accountId) {
-        return questRepository.findAllByAccountId(accountId);
-    }
-
     @Transactional(readOnly = true)
     public Set<Quest> findAllByAccount_login(String login) {
         return questRepository.findAllByAccount_login(login);
@@ -56,39 +51,30 @@ public class QuestService {
         return questRepository.existsQuestByIdAndCompanyId(quest.getId(), companyId);
     }
 
-    //TODO: migration in reservationService
-    @Transactional
-    public boolean hasReservationsByQuest(Quest quest) {
-        return reservationRepository.existsByQuestId(quest.getId());
-    }
-
     @Transactional
     public void saveQuest(Quest quest) {
         questRepository.save(quest);
         for (Account account : quest.getAccounts()) {
-            account.getQuests().add(quest);
-            accountRepository.save(account);
+            if (!account.getQuests().contains(quest)) {
+                account.getQuests().add(quest);
+                accountRepository.save(account);
+            }
         }
     }
 
     @Transactional
-    public void deleteQuest(Quest quest, Integer companyId) {
+    public void deleteQuest(Quest quest) {
 
-        checkSecurityForQuest(quest, companyId);
+//        checkSecurityForQuest(quest, companyId); // TODO security
 
         reservationRepository.deleteByQuestId(quest.getId());
 
-        for (Account account : accountRepository.findAllByQuestId(quest.getId())) {
+        for (Account account : accountRepository.findAllByQuestIdOrderByName(quest.getId())) {
             account.getQuests().remove(quest);
             accountRepository.save(account);
         }
 
-//        for (Status status : statusRepository.findAllByQuestId(quest.getId())) {
-////            status.getQuests().remove(quest);
-//            statusRepository.save(status);
-//        }
-
-//        if (!quest.getSynchronizedQuests().isEmpty()) {
+//        if (!quest.getSynchronizedQuests().isEmpty()) { // TODO SynchronizeQuests
 //            dontSynchronizeQuests(quest);
 //            System.out.println("Синхронизация по квесту id:" + quest.getId()
 //                    + " и всем связаным квестам отменена"); //TODO: вывести сообщение на страницу

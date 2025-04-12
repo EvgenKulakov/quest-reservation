@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.dto.ReservationDTO;
 import ru.questsfera.questreservation.entity.Company;
+import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.repository.jdbc.ReservationJdbcRepository;
 import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
@@ -35,6 +36,11 @@ public class ReservationService {
     public List<ReservationDTO> findActiveByQuestIdsAndDate(Collection<Integer> questIds, LocalDate dateReserve) {
         if (questIds.isEmpty()) return Collections.emptyList();
         return reservationJdbcRepository.findActiveByQuestIdsAndDate(questIds, dateReserve);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean hasReservationsByQuest(Quest quest) {
+        return reservationRepository.existsByQuestId(quest.getId());
     }
 
     @Transactional

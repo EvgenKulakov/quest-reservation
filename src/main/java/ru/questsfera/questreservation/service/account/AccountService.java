@@ -64,9 +64,9 @@ public class AccountService implements UserDetailsService {
         return accountJdbcRepository.findOwnAccountsByMyAccountOrderByName(myAccount);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Account> getAccountsByQuest(Quest quest) {
-        return accountRepository.findAllByQuestId(quest.getId());
+        return accountRepository.findAllByQuestIdOrderByName(quest.getId());
     }
 
     @Transactional(readOnly = true)

@@ -15,6 +15,7 @@ import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.processor.SlotListMaker;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
+import ru.questsfera.questreservation.service.reservation.ReservationService;
 import ru.questsfera.questreservation.validator.SlotListValidator;
 
 import java.security.Principal;
@@ -22,7 +23,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,6 +31,7 @@ public class QuestController {
 
     private final QuestService questService;
     private final AccountService accountService;
+    private final ReservationService reservationService;
 
     @GetMapping("/")
     public String showQuestList(Principal principal, Model model) {
@@ -120,8 +121,7 @@ public class QuestController {
     @PostMapping("/quest-info")
     public String showQuest(@RequestParam("quest") Quest quest, Model model) {
 
-        Set<Account> accounts = new TreeSet<>((u1, u2) -> u1.getLogin().compareToIgnoreCase(u2.getLogin()));
-        accounts.addAll(accountService.getAccountsByQuest(quest));
+        List<Account> accounts = accountService.getAccountsByQuest(quest);
 
         SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
         List<List<TimePrice>> allDays = slotList.getAllDays();
@@ -137,21 +137,18 @@ public class QuestController {
     public String deleteQuest(@RequestParam("quest") Quest quest,
                               Principal principal, Model model) {
 
-        Account account = accountService.getAccountByLogin(principal.getName());
-
-        if (questService.hasReservationsByQuest(quest)) {
+        if (reservationService.hasReservationsByQuest(quest)) {
             model.addAttribute("quest", quest);
             return "quests/question-delete-quest";
         }
 
-        questService.deleteQuest(quest, account.getCompanyId());
+        questService.deleteQuest(quest);
         return "redirect:/quests/";
     }
 
     @PostMapping("/delete-final")
     public String deleteQuestFinal(@RequestParam("quest") Quest quest, Principal principal) {
-        Account account = accountService.getAccountByLogin(principal.getName());
-        questService.deleteQuest(quest, account.getCompanyId());
+        questService.deleteQuest(quest);
         return "redirect:/quests/";
     }
 }

@@ -21,6 +21,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     List<Account> findAllByCompanyIdOrderByFirstName(Integer companyId);
 
-    @Query("SELECT ac FROM Account ac JOIN ac.quests qu WHERE qu.id = :questId")
-    List<Account> findAllByQuestId(@Param("questId") Integer questId);
+    @Query("SELECT ac FROM Account ac " +
+            "JOIN ac.quests qu " +
+            "WHERE qu.id = :questId " +
+            "ORDER BY ac.firstName, ac.lastName")
+    List<Account> findAllByQuestIdOrderByName(@Param("questId") Integer questId);
 }
