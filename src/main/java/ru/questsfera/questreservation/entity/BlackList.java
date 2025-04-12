@@ -1,6 +1,5 @@
 package ru.questsfera.questreservation.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +14,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "blacklist", schema = "quest_reservations_db")
-@JsonIgnoreProperties({"company"})
 public class BlackList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

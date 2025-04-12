@@ -19,7 +19,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     boolean existsAccountByIdAndCompanyId(Integer accountId, Integer companyId);
 
-    List<Account> findAllByCompanyIdOrderByFirstName(Integer companyId);
+    List<Account> findAllByCompanyId(Integer companyId);
 
     @Query("SELECT ac FROM Account ac " +
             "JOIN ac.quests qu " +
