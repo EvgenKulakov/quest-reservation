@@ -18,10 +18,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "reservations", schema = "quest_reservations_db")
+@Table(name = "reservations")
 public class Reservation {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservations_seq")
+    @SequenceGenerator(name = "reservations_seq", sequenceName = "reservations_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "date_reserve")

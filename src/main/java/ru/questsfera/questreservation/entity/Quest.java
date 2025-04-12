@@ -14,10 +14,11 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "quests", schema = "quest_reservations_db")
+@Table(name = "quests")
 public class Quest implements Comparable<Quest> {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "quests_seq")
+    @SequenceGenerator(name = "quests_seq", sequenceName = "quests_id_seq", allocationSize = 1)
     private Integer id;
 
     @Column(name = "quest_name")

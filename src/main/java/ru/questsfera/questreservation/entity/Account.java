@@ -16,10 +16,11 @@ import java.util.TreeSet;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "accounts", schema = "quest_reservations_db")
+@Table(name = "accounts")
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accounts_seq")
+    @SequenceGenerator(name = "accounts_seq", sequenceName = "accounts_id_seq", allocationSize = 1)
     private Integer id;
 
     @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание Email")

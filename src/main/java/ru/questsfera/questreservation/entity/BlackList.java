@@ -13,10 +13,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "blacklist", schema = "quest_reservations_db")
+@Table(name = "blacklist")
 public class BlackList {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "blacklist_seq")
+    @SequenceGenerator(name = "blacklist_seq", sequenceName = "blacklist_id_seq", allocationSize = 1)
     private Integer id;
 
     @Column(name = "client_id")

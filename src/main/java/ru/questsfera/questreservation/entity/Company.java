@@ -12,10 +12,11 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "companies", schema = "quest_reservations_db")
+@Table(name = "companies")
 public class Company {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "companies_seq")
+    @SequenceGenerator(name = "companies_seq", sequenceName = "companies_id_seq", allocationSize = 1)
     private Integer id;
 
     @Column(name = "name")

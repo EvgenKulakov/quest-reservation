@@ -10,7 +10,7 @@
 
 ## Stack:
 ```
-Java 17, Spring Boot 3, MySQL, Spring Data JPA, Hibernate ORM, FlyWay,
+Java 21, Spring Boot 3, PostgreSQL 17, Spring Data JPA, Hibernate ORM, FlyWay,
 Spring Security 6, Spring MVC, Hibernate Validator, Thymeleaf, BootStrap 5, Docker
 ```
 ***
@@ -22,7 +22,7 @@ Spring Security 6, Spring MVC, Hibernate Validator, Thymeleaf, BootStrap 5, Dock
 
 ### Сервер:
 >__Сборка:__
-MySQL, Redis и Spring Boot через Docker-compose
+PostgreSQL, Redis и Spring Boot через Docker-compose
 > 
 >__Ссылка на сервер:__ 
 > <a href="http://99152dd5cacb.vps.myjino.ru" target="_blank">http://99152dd5cacb.vps.myjino.ru</a>
