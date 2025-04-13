@@ -8,10 +8,9 @@ services:
       POSTGRES_PASSWORD: 12345
       POSTGRES_DB: quest_reservations_db
       POSTGRES_USER: postgres
+      TZ: Europe/Moscow
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
     ports:
       - "5432:5432"
 
