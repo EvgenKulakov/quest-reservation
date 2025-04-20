@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS reservations
 (
-    id                SERIAL8 PRIMARY KEY,
+    id                BIGSERIAL PRIMARY KEY,
     date_reserve      DATE          NOT NULL,
     time_reserve      TIME          NOT NULL,
     time_created      TIMESTAMP     NOT NULL,
