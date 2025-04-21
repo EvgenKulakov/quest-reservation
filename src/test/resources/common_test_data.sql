@@ -10,6 +10,9 @@ VALUES
 (5, 'TestName_client', 'TestSurname_client', '+79995201511', '', null, null, 1),
 (6, 'TestName_client', 'TestSurname_client', '+79995201511', '', null, null, 1);
 
+-- Костыль для корректной работы H2 после hibernate.ddl-auto: create-drop
+ALTER TABLE quests ALTER COLUMN slot_list TYPE TEXT USING slot_list::TEXT;
+
 INSERT INTO quests (id, quest_name, min_persons, max_persons, auto_block, sms, slot_list, company_id, statuses)
 VALUES (1, 'GEA', 1, 6, '00:00:00', null, e'{
   "monday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000}, {"time" : "14:00", "price" : 3000}, {"time" : "15:00", "price" : 3000}, {"time" : "16:00", "price" : 3000}, {"time" : "17:00", "price" : 3000}, {"time" : "18:00", "price" : 3000}, {"time" : "19:00", "price" : 3000}, {"time" : "20:00", "price" : 3000}, {"time" : "21:00", "price" : 3000} ],
