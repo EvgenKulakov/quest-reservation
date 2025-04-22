@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation;
+package ru.questsfera.questreservation.test.utils;
 
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;

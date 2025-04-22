@@ -1,3 +1,11 @@
+-- noinspection SqlWithoutWhereForFile
+DELETE FROM companies;
+DELETE FROM clients;
+DELETE FROM quests;
+DELETE FROM reservations;
+DELETE FROM accounts;
+DELETE FROM account_quest;
+
 INSERT INTO companies (id, name, money)
 VALUES (1, 'test company', 10000.00);
 
@@ -14,7 +22,7 @@ VALUES
 ALTER TABLE quests ALTER COLUMN slot_list TYPE TEXT USING slot_list::TEXT;
 
 INSERT INTO quests (id, quest_name, min_persons, max_persons, auto_block, sms, slot_list, company_id, statuses)
-VALUES (1, 'GEA', 1, 6, '00:00:00', null, e'{
+VALUES (1, 'Quest One', 1, 6, '00:00:00', null, e'{
   "monday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000}, {"time" : "14:00", "price" : 3000}, {"time" : "15:00", "price" : 3000}, {"time" : "16:00", "price" : 3000}, {"time" : "17:00", "price" : 3000}, {"time" : "18:00", "price" : 3000}, {"time" : "19:00", "price" : 3000}, {"time" : "20:00", "price" : 3000}, {"time" : "21:00", "price" : 3000} ],
   "tuesday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000}, {"time" : "14:00", "price" : 3000}, {"time" : "15:00", "price" : 3000}, {"time" : "16:00", "price" : 3000}, {"time" : "17:00", "price" : 3000}, {"time" : "18:00", "price" : 3000}, {"time" : "19:00", "price" : 3000}, {"time" : "20:00", "price" : 3000}, {"time" : "21:00", "price" : 3000} ],
   "wednesday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000}, {"time" : "14:00", "price" : 3000}, {"time" : "15:00", "price" : 3000}, {"time" : "16:00", "price" : 3000}, {"time" : "17:00", "price" : 3000}, {"time" : "18:00", "price" : 3000}, {"time" : "19:00", "price" : 3000}, {"time" : "20:00", "price" : 3000}, {"time" : "21:00", "price" : 3000} ],
@@ -25,7 +33,7 @@ VALUES (1, 'GEA', 1, 6, '00:00:00', null, e'{
 }', 1, 'NEW_RESERVE,CANCEL,CONFIRMED,NOT_COME,COMPLETED');
 
 INSERT INTO quests (id, quest_name, min_persons, max_persons, auto_block, sms, slot_list, company_id, statuses)
-VALUES (2, 'Астралов', 1, 5, '00:00:00', null, e'{
+VALUES (2, 'Quest Two', 1, 5, '00:00:00', null, e'{
   "monday" : [ {"time" : "12:30","price" : 1500}, {"time" : "14:00", "price" : 1500}, {"time" : "16:30", "price" : 1500}, {"time" : "18:30", "price" : 1500}, {"time" : "20:00", "price" : 1500}, {"time" : "22:00", "price" : 1500} ],
   "tuesday" : [ {"time" : "12:30", "price" : 1500}, {"time" : "14:00", "price" : 1500}, {"time" : "16:30", "price" : 1500}, {"time" : "18:30", "price" : 1500}, {"time" : "20:00", "price" : 1500}, {"time" : "22:00", "price" : 1500} ],
   "wednesday" : [ {"time" : "12:30", "price" : 1500}, {"time" : "14:00", "price" : 1500}, {"time" : "16:30", "price" : 1500}, {"time" : "18:30", "price" : 1500}, {"time" : "20:00", "price" : 1500}, {"time" : "22:00", "price" : 1500} ],
@@ -48,9 +56,9 @@ VALUES
 
 INSERT INTO accounts (id, login, password, first_name, last_name, phone, role, company_id)
 VALUES
-(1, 'admin@yandex.ru', '$2a$10$I6WnbfYRb2Z8uBysTKy5l.uSazvJYhqFgsj4LQ.5vZc65TmGlcat6', 'Test', 'Евгений', null, 'ROLE_OWNER', 1),
-(2, 'second@yandex.ru', '$2a$10$l0VKw9rNsW.z609bimtWEOyjrVSYWf8Lskriij08nAyS1PqLNfnxq', 'second', 'second2', null, 'ROLE_ADMIN', 1),
-(3, 'third@yandex.ru', '$2a$10$CIkKUYln9NlUsaMS2ODTkOVR7HyoszJm/DWAIf9MFSW14HqqHDvw6', 'third', 'third2', null, 'ROLE_USER', 1);
+(1, 'admin@gmail.com', '$2a$10$I6WnbfYRb2Z8uBysTKy5l.uSazvJYhqFgsj4LQ.5vZc65TmGlcat6', 'Test', 'Евгений', '+79995554433', 'ROLE_OWNER', 1),
+(2, 'second@gmail.com', '$2a$10$l0VKw9rNsW.z609bimtWEOyjrVSYWf8Lskriij08nAyS1PqLNfnxq', 'second', 'second', null, 'ROLE_ADMIN', 1),
+(3, 'third@gmail.com', '$2a$10$CIkKUYln9NlUsaMS2ODTkOVR7HyoszJm/DWAIf9MFSW14HqqHDvw6', 'second', 'third', null, 'ROLE_USER', 1);
 
 INSERT INTO account_quest (account_id, quest_id)
 VALUES
