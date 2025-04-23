@@ -1,59 +1,59 @@
-package ru.questsfera.questreservation.repository;
+package ru.questsfera.questreservation.repository.jpa;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 import ru.questsfera.questreservation.test.utils.TestProfiles;
 
 import java.time.LocalTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @ActiveProfiles(TestProfiles.H2_TEST)
 @Sql(scripts = {"classpath:common_test_data.sql"})
-public class AccountRepositoryJpaTest {
-
-    static final String ACCOUNT_LOGIN = "admin@gmail.com";
-    static final String NOT_EXISTS_LOGIN = "not-exists-login@gmail.com";
+class QuestRepositoryJpaTest {
 
     @Autowired
-    AccountRepository accountRepository;
+    QuestRepository questRepository;
 
     @Test
-    void findAccountByLogin_Success() {
-        Account actualAccount = accountRepository.findAccountByLogin(ACCOUNT_LOGIN).orElseThrow();
-        Account exceptedAccount = getAccount();
-        assertThat(actualAccount)
-                .usingRecursiveComparison()
-                .withEqualsForType((q1, q2) -> Set.of(q1).equals(Set.of(q2)), Set.class)
-                .isEqualTo(exceptedAccount);
+    void existsQuestByQuestNameAndCompanyId() {
+        boolean existsQuest = questRepository.existsQuestByQuestNameAndCompanyId("Quest One", 1);
+        boolean notExistsQuest1 = questRepository.existsQuestByQuestNameAndCompanyId("No quest", 1);
+        boolean notExistsQuest2 = questRepository.existsQuestByQuestNameAndCompanyId("Quest One", 100);
+        boolean notExistsQuest3 = questRepository.existsQuestByQuestNameAndCompanyId("No quest", 100);
+
+        assertThat(existsQuest).isTrue();
+        assertThat(notExistsQuest1).isFalse();
+        assertThat(notExistsQuest2).isFalse();
+        assertThat(notExistsQuest3).isFalse();
     }
 
     @Test
-    void findAccountByLogin_Failure() {
-        assertThatThrownBy(() -> accountRepository.findAccountByLogin(NOT_EXISTS_LOGIN).orElseThrow())
-                .isInstanceOf(NoSuchElementException.class);
+    void existsQuestByIdAndCompanyId() {
+        boolean existsQuest = questRepository.existsQuestByIdAndCompanyId(1, 1);
+        boolean notExistsQuest1 = questRepository.existsQuestByIdAndCompanyId(100, 1);
+        boolean notExistsQuest2 = questRepository.existsQuestByIdAndCompanyId(1, 100);
+        boolean notExistsQuest3 = questRepository.existsQuestByIdAndCompanyId(100, 100);
+
+        assertThat(existsQuest).isTrue();
+        assertThat(notExistsQuest1).isFalse();
+        assertThat(notExistsQuest2).isFalse();
+        assertThat(notExistsQuest3).isFalse();
     }
 
     @Test
-    void findAccountByLoginWithQuests_Success() {
-        Account actualAccount = accountRepository.findAccountByLoginWithQuests(ACCOUNT_LOGIN).orElseThrow();
-        Account exceptedAccount = getAccount();
-        assertThat(actualAccount)
-                .usingRecursiveComparison()
-                .ignoringFields("quests")
-                .isEqualTo(exceptedAccount);
+    void findAllByCompanyIdOrderByQuestName() {
+        List<Quest> actualQuests = questRepository.findAllByCompanyIdOrderByQuestName(1);
+        List<Quest> exceptedQuests = getQuestsWithoutAccounts();
 
-        Set<Quest> actualQuests = new TreeSet<>(actualAccount.getQuests());
-        Set<Quest> exceptedQuests = exceptedAccount.getQuests();
         assertThat(actualQuests)
                 .usingRecursiveComparison()
                 .ignoringFields("accounts")
@@ -61,63 +61,18 @@ public class AccountRepositoryJpaTest {
     }
 
     @Test
-    void findAccountByLoginWithQuests_Failure() {
-        assertThatThrownBy(() -> accountRepository.findAccountByLoginWithQuests(NOT_EXISTS_LOGIN).orElseThrow())
-                .isInstanceOf(NoSuchElementException.class);
-    }
+    void findAllByAccount_login() {
+        Set<Quest> actualQuests = questRepository.findAllByAccount_login("admin@gmail.com");
+        Set<Quest> exceptedQuests = Set.copyOf(getQuestsWithoutAccounts());
 
-    @Test
-    void existsAccountByLogin() {
-        boolean existsAccount = accountRepository.existsAccountByLogin(ACCOUNT_LOGIN);
-        boolean notExistsAccount = accountRepository.existsAccountByLogin(NOT_EXISTS_LOGIN);
-        assertThat(existsAccount).isTrue();
-        assertThat(notExistsAccount).isFalse();
-    }
-
-    @Test
-    void existsAccountByIdAndCompanyId() {
-        boolean existsAccount = accountRepository.existsAccountByIdAndCompanyId(1, 1);
-        boolean notExistsAccount1 = accountRepository.existsAccountByIdAndCompanyId(100, 1);
-        boolean notExistsAccount2 = accountRepository.existsAccountByIdAndCompanyId(1, 100);
-        boolean notExistsAccount3 = accountRepository.existsAccountByIdAndCompanyId(100, 100);
-
-        assertThat(existsAccount).isTrue();
-        assertThat(notExistsAccount1).isFalse();
-        assertThat(notExistsAccount2).isFalse();
-        assertThat(notExistsAccount3).isFalse();
-    }
-
-    @Test
-    void findAllByCompanyId() {
-        List<Account> actualAccounts = accountRepository.findAllByCompanyId(1);
-        assertThat(actualAccounts.size()).isEqualTo(3);
-    }
-
-    @Test
-    void findAllByQuestIdOrderByName() {
-        List<Account> actualAccounts = accountRepository.findAllByQuestIdOrderByName(1);
-        List<Account> exceptedAccounts = getAccountsWithIdAndName();
-        assertThat(actualAccounts)
+        assertThat(actualQuests)
                 .usingRecursiveComparison()
-                .ignoringFields("login", "password", "phone", "role", "companyId", "quests")
-                .isEqualTo(exceptedAccounts);
+                .ignoringCollectionOrder()
+                .ignoringFields("accounts")
+                .isEqualTo(exceptedQuests);
     }
 
-    private Account getAccount() {
-        return Account.builder()
-                .id(1)
-                .login(ACCOUNT_LOGIN)
-                .password("$2a$10$I6WnbfYRb2Z8uBysTKy5l.uSazvJYhqFgsj4LQ.5vZc65TmGlcat6")
-                .firstName("Test")
-                .lastName("Евгений")
-                .phone("+79995554433")
-                .role(Account.Role.ROLE_OWNER)
-                .companyId(1)
-                .quests(getQuestsWithoutAccounts())
-                .build();
-    }
-
-    private Set<Quest> getQuestsWithoutAccounts() {
+    private List<Quest> getQuestsWithoutAccounts() {
         String slotListQuestOne = """
                {
                  "monday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000}, {"time" : "14:00", "price" : 3000}, {"time" : "15:00", "price" : 3000}, {"time" : "16:00", "price" : 3000}, {"time" : "17:00", "price" : 3000}, {"time" : "18:00", "price" : 3000}, {"time" : "19:00", "price" : 3000}, {"time" : "20:00", "price" : 3000}, {"time" : "21:00", "price" : 3000} ],
@@ -164,14 +119,6 @@ public class AccountRepositoryJpaTest {
                 .synchronizedQuests(new HashSet<>())
                 .build();
 
-        return new TreeSet<>(Set.of(questOne, questTwo));
-    }
-
-    private List<Account> getAccountsWithIdAndName() {
-        return List.of(
-                Account.builder().id(1).firstName("Test").lastName("Евгений").build(),
-                Account.builder().id(2).firstName("second").lastName("second").build(),
-                Account.builder().id(3).firstName("second").lastName("third").build()
-        );
+        return List.of(questOne, questTwo);
     }
 }
