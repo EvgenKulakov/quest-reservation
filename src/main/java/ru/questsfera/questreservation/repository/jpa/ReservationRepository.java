@@ -6,11 +6,8 @@ import ru.questsfera.questreservation.entity.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-
-    List<Reservation> findAllByQuestIdAndDateReserve(Integer questId, LocalDate date);
 
     boolean existsByQuestId(Integer questId);
 
@@ -23,12 +20,4 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "AND r.timeReserve = :timeReserve " +
             "AND r.statusType != 'CANCEL'")
     boolean existsByQuestIdAndDateReserveAndTimeReserve(Integer questId, LocalDate dateReserve, LocalTime timeReserve);
-
-    List<Reservation> findAllByQuestIdAndDateReserveIn(Integer questId, List<LocalDate> dates);
-
-    List<Reservation> findAllByDateReserveIn(List<LocalDate> dates);
-
-    List<Reservation> findAllByDateReserve(LocalDate dateReserve);
-
-    List<Reservation> findAllByClientId(Integer clientId);
 }

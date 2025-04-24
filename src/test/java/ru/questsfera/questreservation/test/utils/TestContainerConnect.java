@@ -6,12 +6,13 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import ru.questsfera.questreservation.config.Profile;
 
 /**
  * Using with docker-engine
  */
 @Testcontainers
-@ActiveProfiles(TestProfiles.TESTCONTAINERS)
+@ActiveProfiles(Profile.TESTCONTAINERS)
 public abstract class TestContainerConnect {
 
     @Container

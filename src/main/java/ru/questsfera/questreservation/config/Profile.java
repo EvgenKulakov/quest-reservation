@@ -1,6 +1,6 @@
-package ru.questsfera.questreservation.test.utils;
+package ru.questsfera.questreservation.config;
 
-public abstract class TestProfiles {
+public abstract class Profile {
 
     public static final String TESTCONTAINERS = "testcontainers-test";
     public static final String H2_TEST = "h2-test";

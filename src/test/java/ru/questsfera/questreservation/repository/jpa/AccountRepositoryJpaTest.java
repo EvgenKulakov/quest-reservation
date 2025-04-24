@@ -7,7 +7,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.test.utils.TestProfiles;
+import ru.questsfera.questreservation.config.Profile;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
-@ActiveProfiles(TestProfiles.H2_TEST)
+@ActiveProfiles(Profile.H2_TEST)
 @Sql(scripts = {"classpath:common_test_data.sql"})
 public class AccountRepositoryJpaTest {
 
