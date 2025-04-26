@@ -75,6 +75,7 @@ public class AccountService implements UserDetailsService {
         return accountRepository.existsAccountByLogin(login);
     }
 
+    // TODO security
     @Transactional(readOnly = true)
     public boolean existAccountByCompanyId(Account account, Integer companyId) {
         return accountRepository.existsAccountByIdAndCompanyId(account.getId(), companyId);
@@ -86,10 +87,11 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public void delete(Account account) {
-        accountRepository.delete(account);
+    public void deleteById(Integer id) {
+        accountRepository.deleteById(id);
     }
 
+    // TODO security
     @Transactional
     public void checkSecurityForAccount(Account changeAccount, Account myAccount) {
         boolean existAccountByCompany = existAccountByCompanyId(changeAccount, myAccount.getCompanyId());
@@ -102,6 +104,7 @@ public class AccountService implements UserDetailsService {
         }
     }
 
+    // TODO security
     @Transactional
     public void checkSecurityForAccounts(List<Account> changeAccounts, Account myAccount) {
         List<Account> usersByAdmin = findAllAccountsByCompanyId(myAccount.getCompanyId());

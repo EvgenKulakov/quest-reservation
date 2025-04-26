@@ -139,7 +139,7 @@ public class AccountController {
     public String deleteAccount(@RequestParam("account") Account account, Principal principal) {
 //        Account myAccount = accountService.getAccountByLogin(principal.getName());
 //        accountService.checkSecurityForAccount(account, myAccount); // TODO security
-        accountService.delete(account);
+        accountService.deleteById(account.getId());
         return "redirect:/accounts/";
     }
 }
