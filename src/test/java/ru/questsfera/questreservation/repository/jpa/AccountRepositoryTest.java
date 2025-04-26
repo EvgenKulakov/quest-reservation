@@ -87,19 +87,31 @@ public class AccountRepositoryTest {
     }
 
     @Test
-    void findAllByCompanyId() {
+    void findAllByCompanyId_success() {
         List<Account> actualAccounts = accountRepository.findAllByCompanyId(1);
         assertThat(actualAccounts.size()).isEqualTo(3);
     }
 
     @Test
-    void findAllByQuestIdOrderByName() {
+    void findAllByCompanyId_empty() {
+        List<Account> emptyResult = accountRepository.findAllByCompanyId(100);
+        assertThat(emptyResult.isEmpty()).isTrue();
+    }
+
+    @Test
+    void findAllByQuestIdOrderByName_success() {
         List<Account> actualAccounts = accountRepository.findAllByQuestIdOrderByName(1);
         List<Account> exceptedAccounts = getAccountsWithIdAndName();
         assertThat(actualAccounts)
                 .usingRecursiveComparison()
                 .ignoringFields("login", "password", "phone", "role", "companyId", "quests")
                 .isEqualTo(exceptedAccounts);
+    }
+
+    @Test
+    void findAllByQuestIdOrderByName_empty() {
+        List<Account> emptyResult = accountRepository.findAllByQuestIdOrderByName(100);
+        assertThat(emptyResult.isEmpty()).isTrue();
     }
 
     private Account getAccount() {

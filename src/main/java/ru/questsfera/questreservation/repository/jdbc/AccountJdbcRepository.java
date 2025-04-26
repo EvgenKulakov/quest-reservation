@@ -63,14 +63,14 @@ public class AccountJdbcRepository {
 
     private Account accountResultSetMapping(ResultSet rs) throws SQLException {
         return new Account(
-                rs.getInt("id"),
+                rs.getObject("id", Integer.class),
                 rs.getString("login"),
                 rs.getString("password"),
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("phone"),
                 Account.Role.valueOf(rs.getString("role")),
-                rs.getInt("company_id"),
+                rs.getObject("company_id", Integer.class),
                 null
         );
     }

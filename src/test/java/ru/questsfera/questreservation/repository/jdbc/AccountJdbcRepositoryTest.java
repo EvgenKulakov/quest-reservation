@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 import ru.questsfera.questreservation.entity.Account;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +25,7 @@ class AccountJdbcRepositoryTest {
     AccountJdbcRepository accountJdbcRepository;
 
     @Test
-    void findOwnAccountsByMyAccountOrderByName() {
+    void findOwnAccountsByMyAccountOrderByName_success() {
         List<Account> actualAccByOwner = accountJdbcRepository.findOwnAccountsByMyAccountOrderByName(getAccountOwner());
         List<Account> exceptedAccByOwner = List.of(getAccountAdmin(), getAccountUser());
         assertThat(actualAccByOwner)
@@ -38,29 +37,29 @@ class AccountJdbcRepositoryTest {
         assertThat(actualAccByAdmin)
                 .usingRecursiveComparison()
                 .isEqualTo(exceptedAccByAdmin);
-
-        List<Account> actualAccByUser = accountJdbcRepository.findOwnAccountsByMyAccountOrderByName(getAccountUser());
-        List<Account> exceptedAccByUser = new ArrayList<>();
-        assertThat(actualAccByUser)
-                .usingRecursiveComparison()
-                .isEqualTo(exceptedAccByUser);
     }
 
     @Test
-    void findAllAccountsInCompanyByOwnAccountName() {
+    void findOwnAccountsByMyAccountOrderByName_empty() {
+        List<Account> actualAccByUser = accountJdbcRepository.findOwnAccountsByMyAccountOrderByName(getAccountUser());
+        assertThat(actualAccByUser.isEmpty()).isTrue();
+    }
+
+    @Test
+    void findAllAccountsInCompanyByOwnAccountName_success() {
         List<Account> actualAccByExistsLogin =
                 accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(ACCOUNT_ROLE_OWNER_LOGIN);
         List<Account> exceptedAccByExistsLogin = List.of(getAccountOwner(), getAccountAdmin(), getAccountUser());
         assertThat(actualAccByExistsLogin)
                 .usingRecursiveComparison()
                 .isEqualTo(exceptedAccByExistsLogin);
+    }
 
+    @Test
+    void findAllAccountsInCompanyByOwnAccountName_empty() {
         List<Account> actualAccByNotExistingLogin =
                 accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(NOT_EXISTS_LOGIN);
-        List<Account> exceptedAccByNotExistsLogin = new ArrayList<>();
-        assertThat(actualAccByNotExistingLogin)
-                .usingRecursiveComparison()
-                .isEqualTo(exceptedAccByNotExistsLogin);
+        assertThat(actualAccByNotExistingLogin.isEmpty()).isTrue();
     }
 
     private Account getAccountOwner() {

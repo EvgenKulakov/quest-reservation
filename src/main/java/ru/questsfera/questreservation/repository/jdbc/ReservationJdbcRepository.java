@@ -46,41 +46,43 @@ public class ReservationJdbcRepository {
 
         return jdbcTemplate.query(sql, params, (rs, rowNum) ->
                 ReservationDTO.builder()
-                        .id(rs.getLong("id"))
+                        .id(rs.getObject("id", Long.class))
                         .timeReserve(rs.getObject("time_reserve", LocalTime.class))
-                        .questId(rs.getInt("quest_id"))
+                        .questId(rs.getObject("quest_id", Integer.class))
                         .statusType(StatusType.valueOf(rs.getString("status_type")))
                         .build());
     }
 
     private Client clientResultSetMapping(ResultSet rs) throws SQLException {
+        if (rs.getObject("client_id", Integer.class) == null) return null;
+
         return new Client(
-                rs.getInt("client_id"),
+                rs.getObject("client_id", Integer.class),
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("phone"),
                 rs.getString("email"),
                 rs.getString("comments"),
-                rs.getInt("blacklist_id"),
-                rs.getInt("company_id")
+                rs.getObject("blacklist_id", Integer.class),
+                rs.getObject("company_id", Integer.class)
         );
     }
 
     private ReservationDTO reservationDtoResultSetMapping(ResultSet rs, Client client) throws SQLException {
         return new ReservationDTO(
-                rs.getLong("reservation_id"),
+                rs.getObject("reservation_id", Long.class),
                 rs.getObject("date_reserve", LocalDate.class),
                 rs.getObject("time_reserve", LocalTime.class),
                 rs.getObject("time_created", LocalDateTime.class),
                 rs.getObject("time_last_change", LocalDateTime.class),
                 rs.getObject("changed_slot_time", LocalTime.class),
-                rs.getInt("quest_id"),
+                rs.getObject("quest_id", Integer.class),
                 StatusType.valueOf(rs.getString("status_type")),
                 rs.getString("source_reserve"),
                 rs.getBigDecimal("price"),
                 rs.getBigDecimal("changed_price"),
                 client,
-                rs.getInt("count_persons"),
+                rs.getObject("count_persons", Integer.class),
                 rs.getString("admin_comment"),
                 rs.getString("client_comment"),
                 rs.getString("history_messages")

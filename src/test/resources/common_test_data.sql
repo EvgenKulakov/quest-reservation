@@ -11,7 +11,7 @@ VALUES (1, 'test company', 10000.00);
 
 INSERT INTO clients (id, first_name, last_name, phone, email, comments, blacklist_id, company_id)
 VALUES
-(1, 'TestName_client', 'TestSurname_client', '+79995201511', '', null, null, 1),
+(1, 'TestName_client', 'TestSurname_client', '+79995201511', 'ee@email.com', null, null, 1),
 (2, 'TestName_client', 'TestSurname_client', '+79995201511', '', null, null, 1),
 (3, 'TestName_client', 'TestSurname_client', '+79995201511', '', null, null, 1),
 (4, 'TestName_client', 'TestSurname_client', '+79995201511', '', null, null, 1),
@@ -45,7 +45,7 @@ VALUES (2, 'Quest Two', 1, 5, '00:00:00', null, e'{
 
 INSERT INTO reservations (id, date_reserve, time_reserve, time_created, time_last_change, changed_slot_time, quest_id, status_type, source_reserve, price, changed_price, client_id, count_persons, admin_comment, client_comment, history_messages)
 VALUES
-(1, '2025-04-21', '16:00:00', '2025-04-21 00:29:51.003024', '2025-04-21 00:29:51.006025', null, 1, 'CONFIRMED', 'default', 3000.00, null, 1, 1, '', null, 'default'),
+(1, '2025-04-21', '16:00:00', '2025-04-21 00:29:51.003024', '2025-04-21 00:29:51.006025', null, 1, 'CONFIRMED', 'default', 3000.00, null, 1, 1, 'Hi', null, 'default'),
 (2, '2025-04-21', '17:00:00', '2025-04-21 00:29:53.345590', null, null, 1, 'BLOCK', 'default', null, null, null, null, null, null, 'default'),
 (3, '2025-04-22', '17:00:00', '2025-04-21 00:30:51.116089', '2025-04-21 00:30:51.119760', null, 1, 'NOT_COME', 'default', 3000.00, null, 2, 1, '', null, 'default'),
 (4, '2025-04-21', '12:00:00', '2025-04-21 00:31:02.138441', '2025-04-21 00:31:02.146137', null, 1, 'CANCEL', 'default', 3000.00, null, 3, 1, '', null, 'default'),
