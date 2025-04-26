@@ -1,10 +1,10 @@
 -- noinspection SqlWithoutWhereForFile
-DELETE FROM companies;
-DELETE FROM clients;
-DELETE FROM quests;
-DELETE FROM reservations;
-DELETE FROM accounts;
 DELETE FROM account_quest;
+DELETE FROM accounts;
+DELETE FROM reservations;
+DELETE FROM quests;
+DELETE FROM clients;
+DELETE FROM companies;
 
 INSERT INTO companies (id, name, money)
 VALUES (1, 'test company', 10000.00);

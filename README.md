@@ -10,8 +10,8 @@
 
 ## Stack:
 ```
-Java 21, Spring Boot 3, PostgreSQL 17, Spring Data JPA, Hibernate ORM, FlyWay,
-Spring Security 6, Spring MVC, Hibernate Validator, Thymeleaf, BootStrap 5, Docker
+Java 21, Spring Boot 3, PostgreSQL 17, Spring Data JPA, Hibernate 6 ORM, FlyWay,
+Spring Security 6, Spring MVC, Hibernate Validator, H2, Thymeleaf, BootStrap 5, Docker
 ```
 ***
 

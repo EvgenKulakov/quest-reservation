@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DataJpaTest
 @ActiveProfiles(Profile.H2_TEST)
 @Sql(scripts = {"classpath:common_test_data.sql"})
-public class AccountRepositoryJpaTest {
+public class AccountRepositoryTest {
 
     static final String ACCOUNT_LOGIN = "admin@gmail.com";
     static final String NOT_EXISTS_LOGIN = "not-exists-login@gmail.com";

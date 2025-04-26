@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @ActiveProfiles(Profile.H2_TEST)
 @Sql(scripts = {"classpath:common_test_data.sql"})
-class QuestRepositoryJpaTest {
+class QuestRepositoryTest {
 
     @Autowired
     QuestRepository questRepository;
