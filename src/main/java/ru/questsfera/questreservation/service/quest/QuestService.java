@@ -10,7 +10,6 @@ import ru.questsfera.questreservation.repository.jpa.QuestRepository;
 import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -22,11 +21,6 @@ public class QuestService {
     private final AccountRepository accountRepository;
 
     @Transactional(readOnly = true)
-    public Optional<Quest> findById(Integer id) {
-        return questRepository.findById(id);
-    }
-
-    @Transactional(readOnly = true)
     public List<Quest> getQuestsByCompany(Integer companyId) {
         return questRepository.findAllByCompanyIdOrderByQuestName(companyId);
     }
@@ -34,11 +28,6 @@ public class QuestService {
     @Transactional(readOnly = true)
     public Set<Quest> findAllByAccount_login(String login) {
         return questRepository.findAllByAccount_login(login);
-    }
-
-    @Transactional
-    public List<Quest> findAll() {
-        return questRepository.findAll();
     }
 
     @Transactional
@@ -79,9 +68,10 @@ public class QuestService {
 //            System.out.println("Синхронизация по квесту id:" + quest.getId()
 //                    + " и всем связаным квестам отменена"); //TODO: вывести сообщение на страницу
 //        }
-        questRepository.delete(quest);
+        questRepository.deleteById(quest.getId());
     }
 
+    // TODO security
     @Transactional
     public void checkSecurityForQuest(Quest quest, Integer companyId) {
         boolean existQuestByCompany = existQuestByCompany(quest, companyId);

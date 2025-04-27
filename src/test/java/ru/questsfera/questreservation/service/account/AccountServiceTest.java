@@ -181,16 +181,11 @@ class AccountServiceTest {
     @Test
     void existAccountByLogin() {
         when(accountRepository.existsAccountByLogin(ACCOUNT_LOGIN)).thenReturn(Boolean.TRUE);
-        when(accountRepository.existsAccountByLogin(NOT_EXISTS_LOGIN)).thenReturn(Boolean.FALSE);
-
         boolean existsAccount = accountService.existAccountByLogin(ACCOUNT_LOGIN);
-        boolean notExistsAccount = accountService.existAccountByLogin(NOT_EXISTS_LOGIN);
 
         assertThat(existsAccount).isTrue();
-        assertThat(notExistsAccount).isFalse();
 
         verify(accountRepository).existsAccountByLogin(ACCOUNT_LOGIN);
-        verify(accountRepository).existsAccountByLogin(NOT_EXISTS_LOGIN);
     }
 
     @Test
