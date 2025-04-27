@@ -13,11 +13,13 @@ import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.repository.jdbc.AccountJdbcRepository;
 import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,12 +29,9 @@ class AccountServiceTest {
     static final String ACCOUNT_LOGIN = "admin@gmail.com";
     static final String NOT_EXISTS_LOGIN = "not-exists-login@gmail.com";
 
-    @Mock
-    AccountRepository accountRepository;
-    @Mock
-    AccountJdbcRepository accountJdbcRepository;
-    @InjectMocks
-    AccountService accountService;
+    @Mock AccountRepository accountRepository;
+    @Mock AccountJdbcRepository accountJdbcRepository;
+    @InjectMocks AccountService accountService;
 
     @Test
     void loadUserByUsername_success() {
