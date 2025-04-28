@@ -3,8 +3,10 @@ package ru.questsfera.questreservation.service.reservation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.questsfera.questreservation.converter.ReservationMapper;
 import ru.questsfera.questreservation.converter.SlotMapper;
 import ru.questsfera.questreservation.dto.ResFormDTO;
+import ru.questsfera.questreservation.dto.ReservationDTO;
 import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Client;
@@ -22,6 +24,9 @@ public class ReservationSaveOperator {
 
     private final ReservationService reservationService;
     private final ClientService clientService;
+    private final ReservationFactory reservationFactory;
+    private final ReservationMapper reservationMapper;
+    private final Editor editor;
 
     @Transactional
     public void saveReservation(ResFormDTO resFormDTO, String slotJSON, Principal principal) {
@@ -29,16 +34,16 @@ public class ReservationSaveOperator {
         Reservation reservation = null;
 
         if (slot.getStatusType() == StatusType.EMPTY) {
-            reservation = ReservationFactory.createReservation(resFormDTO, slot);
+            reservation = reservationFactory.createReservation(resFormDTO, slot);
             Client newClient = new Client(resFormDTO, slot.getCompanyId());
             Client clientSaved = clientService.saveClient(newClient);
             reservation.setClientId(clientSaved.getId());
             reservation.setSourceReserve("default"); //TODO: source reserve
         } else {
-            reservation = reservationService.findById(slot.getReservationId());
-            Client client = clientService.findById(reservation.getClientId());
-            Editor.editReservationAndClient(reservation, client, resFormDTO);
-            clientService.saveClient(client);
+            ReservationDTO reservationDTO = reservationService.findReservationDtoById(slot.getReservationId());
+            editor.editReservationAndClient(reservationDTO, resFormDTO);
+            clientService.saveClient(reservationDTO.getClient());
+            reservation = reservationMapper.toEntity(reservationDTO);
         }
 
         reservation.setTimeLastChange(LocalDateTime.now());
@@ -50,7 +55,7 @@ public class ReservationSaveOperator {
     @Transactional
     public void saveBlockReservation(String slotJSON) {
         Slot slot = SlotMapper.createSlotObject(slotJSON);
-        Reservation reservation = ReservationFactory.createBlockReservation(slot);
+        Reservation reservation = reservationFactory.createBlockReservation(slot);
 
         reservation.setSourceReserve("default"); //TODO: source reserve
         reservation.setHistoryMessages("default"); //TODO: history message

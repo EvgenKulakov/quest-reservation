@@ -1,20 +1,21 @@
 package ru.questsfera.questreservation.processor;
 
+import org.springframework.stereotype.Component;
 import ru.questsfera.questreservation.dto.ResFormDTO;
-import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Reservation;
+import ru.questsfera.questreservation.dto.ReservationDTO;
 
+@Component
 public class Editor {
 
-    public static void editReservationAndClient(Reservation reservation, Client client, ResFormDTO resForm) {
-        reservation.setStatusType(resForm.getStatusType());
-        reservation.setCountPersons(resForm.getCountPersons());
-        reservation.setAdminComment(resForm.getAdminComment());
-        reservation.setClientComment(resForm.getClientComment());
+    public void editReservationAndClient(ReservationDTO reservationDTO, ResFormDTO resForm) {
+        reservationDTO.setStatusType(resForm.getStatusType());
+        reservationDTO.setCountPersons(resForm.getCountPersons());
+        reservationDTO.setAdminComment(resForm.getAdminComment());
+        reservationDTO.setClientComment(resForm.getClientComment());
 
-        client.setFirstName(resForm.getFirstName());
-        client.setLastName(resForm.getLastName());
-        client.setPhones(resForm.getPhone());
-        client.setEmails(resForm.getEmail());
+        reservationDTO.getClient().setFirstName(resForm.getFirstName());
+        reservationDTO.getClient().setLastName(resForm.getLastName());
+        reservationDTO.getClient().setPhones(resForm.getPhone());
+        reservationDTO.getClient().setEmails(resForm.getEmail());
     }
 }

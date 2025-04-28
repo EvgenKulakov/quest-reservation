@@ -1,9 +1,6 @@
 package ru.questsfera.questreservation.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Value;
+import lombok.*;
 import ru.questsfera.questreservation.entity.Client;
 
 import java.math.BigDecimal;
@@ -13,6 +10,7 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @Builder
 public class ReservationDTO {

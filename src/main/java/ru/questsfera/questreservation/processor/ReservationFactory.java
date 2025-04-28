@@ -1,5 +1,6 @@
 package ru.questsfera.questreservation.processor;
 
+import org.springframework.stereotype.Service;
 import ru.questsfera.questreservation.dto.ResFormDTO;
 import ru.questsfera.questreservation.dto.ReservationDTO;
 import ru.questsfera.questreservation.dto.Slot;
@@ -9,9 +10,10 @@ import ru.questsfera.questreservation.entity.Reservation;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Service
 public class ReservationFactory {
 
-    public static Reservation createReservation(ResFormDTO resFormDTO, Slot slot) {
+    public Reservation createReservation(ResFormDTO resFormDTO, Slot slot) {
         Reservation reservation = new Reservation();
         reservation.setDateReserve(slot.getDate());
         reservation.setTimeReserve(slot.getTime());
@@ -25,7 +27,7 @@ public class ReservationFactory {
         return reservation;
     }
 
-    public static Reservation createBlockReservation(Slot slot) {
+    public Reservation createBlockReservation(Slot slot) {
         Reservation reservation = new Reservation();
         reservation.setDateReserve(slot.getDate());
         reservation.setTimeReserve(slot.getTime());
@@ -35,7 +37,7 @@ public class ReservationFactory {
         return reservation;
     }
 
-    public static ResFormDTO createResFormDTO(ReservationDTO reservationDTO) {
+    public ResFormDTO createResFormDTO(ReservationDTO reservationDTO) {
         ResFormDTO resFormDTO = new ResFormDTO();
         resFormDTO.setId(reservationDTO.getId());
         resFormDTO.setStatusType(reservationDTO.getStatusType());

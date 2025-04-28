@@ -23,11 +23,6 @@ public class ReservationService {
     private final ReservationJdbcRepository reservationJdbcRepository;
 
     @Transactional(readOnly = true)
-    public Reservation findById(Long id) {
-        return reservationRepository.findById(id).orElseThrow();
-    }
-
-    @Transactional(readOnly = true)
     public ReservationDTO findReservationDtoById(Long id) {
         return reservationJdbcRepository.findReservationDtoById(id);
     }

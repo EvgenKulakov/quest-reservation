@@ -19,11 +19,12 @@ import java.security.Principal;
 public class ReservationRestController {
 
     private final ReservationService reservationService;
+    private final ReservationFactory reservationFactory;
 
     @GetMapping("/{id}")
     public ResponseEntity<ResFormDTO> getReserveById(@PathVariable("id") Long id, Principal principal) {
         ReservationDTO reservationDTO = reservationService.findReservationDtoById(id);
-        ResFormDTO resFormDTO = ReservationFactory.createResFormDTO(reservationDTO);
+        ResFormDTO resFormDTO = reservationFactory.createResFormDTO(reservationDTO);
         return ResponseEntity.ok(resFormDTO);
     }
 }
