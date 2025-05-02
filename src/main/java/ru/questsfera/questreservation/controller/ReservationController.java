@@ -57,7 +57,7 @@ public class ReservationController {
             return errorSlotListRendering(date, principal, slotJSON, resForm, model);
         }
 
-        reservationSaveOperator.saveReservation(resForm, slotJSON, principal);
+        reservationSaveOperator.saveUsingResFormAndSlot(resForm, slotJSON, principal);
 
         redirectAttributes.addAttribute("date", date);
         return "redirect:/reservations/slot-list";
@@ -77,7 +77,7 @@ public class ReservationController {
             return errorSlotListRendering(date, principal, slotJSON, resForm, model);
         }
 
-        reservationSaveOperator.saveBlockReservation(slotJSON);
+        reservationSaveOperator.saveBlockReservationUsingSlot(slotJSON);
 
         redirectAttributes.addAttribute("date", date);
         return "redirect:/reservations/slot-list";

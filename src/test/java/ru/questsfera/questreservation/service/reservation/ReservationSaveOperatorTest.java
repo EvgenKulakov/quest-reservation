@@ -9,12 +9,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.converter.ReservationMapper;
 import ru.questsfera.questreservation.dto.ResFormDTO;
 import ru.questsfera.questreservation.dto.ReservationDTO;
-import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
-import ru.questsfera.questreservation.entity.Status;
-import ru.questsfera.questreservation.processor.ReservationFactory;
 import ru.questsfera.questreservation.service.client.ClientService;
 
 import java.math.BigDecimal;
@@ -33,39 +30,34 @@ class ReservationSaveOperatorTest {
     @Mock ClientService clientService;
     @Mock Principal principal;
     @Mock ReservationMapper reservationMapper;
-    @Mock ReservationFactory reservationFactory;
     @InjectMocks ReservationSaveOperator reservationSaveOperator;
 
     @Test
-    void saveReservation_new() {
-        ReservationDTO reservationDTO = Mockito.spy(getReservationDto());
-        Client client = reservationDTO.getClient();
-        Reservation reservation = getReservation();
+    void saveUsingResFormAndSlot_saveNew() {
+        ReservationDTO reservationDTO = Mockito.mock(ReservationDTO.class);
+        Client clientSaved = Client.builder().id(1).build();
         ResFormDTO resFormDTO = getResFormDto();
         String slotJson = getSLotEmptyJson();
-        Slot slot = getSlot();
 
-        when(reservationFactory.createReservation(resFormDTO, slot)).thenReturn(reservation);
-        when(clientService.saveClient(any(Client.class))).thenReturn(client);
+        when(clientService.saveClient(any(Client.class))).thenReturn(clientSaved);
+        reservationSaveOperator.saveUsingResFormAndSlot(resFormDTO, slotJson, principal);
 
-        reservationSaveOperator.saveReservation(resFormDTO, slotJson, principal);
-
-        verify(reservationFactory).createReservation(resFormDTO, slot);
         verify(clientService).saveClient(any(Client.class));
-        verify(reservationService).saveReservation(reservation);
+        verify(reservationService).saveReservation(any(Reservation.class));
         verify(reservationDTO, never()).editUsingResForm(resFormDTO);
     }
 
     @Test
-    void saveReservation_edit() {
+    void saveUsingResFormAndSlot_saveExists() {
         ReservationDTO reservationDTO = Mockito.spy(getReservationDto());
         Reservation reservation = getReservation();
         ResFormDTO resFormDTO = getResFormDto();
+        String slotJson = getSLotWithReserveJson();
 
-        when(reservationService.findReservationDtoById(3L)).thenReturn(reservationDTO);
+        when(reservationService.findReservationDtoById(anyLong())).thenReturn(reservationDTO);
         when(reservationMapper.toEntity(reservationDTO)).thenReturn(reservation);
 
-        reservationSaveOperator.saveReservation(resFormDTO, getSLotWithReserveJson(), principal);
+        reservationSaveOperator.saveUsingResFormAndSlot(resFormDTO, slotJson, principal);
 
         verify(reservationDTO).editUsingResForm(resFormDTO);
         verify(clientService).saveClient(reservationDTO.getClient());
@@ -74,16 +66,10 @@ class ReservationSaveOperatorTest {
     }
 
     @Test
-    void saveBlockReservation() {
+    void saveBlockReservationUsingSlot() {
         String slotJson = getSLotEmptyJson();
-        Slot slot = getSlot();
-        Reservation reservation = getReservation();
-
-        when(reservationFactory.createBlockReservation(slot)).thenReturn(reservation);
-        reservationSaveOperator.saveBlockReservation(slotJson);
-
-        verify(reservationFactory).createBlockReservation(slot);
-        verify(reservationService).saveReservation(reservation);
+        reservationSaveOperator.saveBlockReservationUsingSlot(slotJson);
+        verify(reservationService).saveReservation(any(Reservation.class));
     }
 
     private String getSLotWithReserveJson() {
@@ -158,22 +144,6 @@ class ReservationSaveOperatorTest {
                   "minPersons" : 1,
                   "maxPersons" : 6
                 }""";
-    }
-
-    private Slot getSlot() {
-        return new Slot(
-                1,
-                1,
-                "Quest One",
-                null,
-                LocalDate.parse("2025-04-22"),
-                LocalTime.parse("17:00:00"),
-                3000,
-                Status.getUserStatuses(),
-                StatusType.EMPTY,
-                1,
-                6
-        );
     }
 
     private ResFormDTO getResFormDto() {

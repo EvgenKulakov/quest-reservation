@@ -44,4 +44,18 @@ public class ResFormDTO {
     private String adminComment;
 
     private String clientComment;
+
+    public static ResFormDTO fromReservationDto(ReservationDTO reservationDTO) {
+        ResFormDTO resFormDTO = new ResFormDTO();
+        resFormDTO.setId(reservationDTO.getId());
+        resFormDTO.setStatusType(reservationDTO.getStatusType());
+        resFormDTO.setFirstName(reservationDTO.getClient().getFirstName());
+        resFormDTO.setLastName(reservationDTO.getClient().getLastName());
+        resFormDTO.setPhone(reservationDTO.getClient().getPhones());
+        resFormDTO.setEmail(reservationDTO.getClient().getEmails());
+        resFormDTO.setCountPersons(reservationDTO.getCountPersons());
+        resFormDTO.setAdminComment(reservationDTO.getAdminComment());
+        resFormDTO.setClientComment(reservationDTO.getClientComment());
+        return resFormDTO;
+    }
 }

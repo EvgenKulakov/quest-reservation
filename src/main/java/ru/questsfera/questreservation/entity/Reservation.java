@@ -2,6 +2,8 @@ package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.questsfera.questreservation.dto.ResFormDTO;
+import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.StatusType;
 
 import java.math.BigDecimal;
@@ -69,6 +71,30 @@ public class Reservation {
     // TODO: new table historyMessages
     @Column(name = "history_messages")
     private String historyMessages;
+
+    public static Reservation fromResFormAndSlot(ResFormDTO resFormDTO, Slot slot) {
+        Reservation reservation = new Reservation();
+        reservation.setDateReserve(slot.getDate());
+        reservation.setTimeReserve(slot.getTime());
+        reservation.setDateAndTimeCreated(LocalDateTime.now());
+        reservation.setQuestId(slot.getQuestId());
+        reservation.setStatusType(resFormDTO.getStatusType());
+        reservation.setPrice(new BigDecimal(slot.getPrice()));
+        reservation.setCountPersons(resFormDTO.getCountPersons());
+        reservation.setAdminComment(resFormDTO.getAdminComment());
+        reservation.setClientComment(resFormDTO.getClientComment());
+        return reservation;
+    }
+
+    public static Reservation blockReservationFromSlot(Slot slot) {
+        Reservation reservation = new Reservation();
+        reservation.setDateReserve(slot.getDate());
+        reservation.setTimeReserve(slot.getTime());
+        reservation.setDateAndTimeCreated(LocalDateTime.now());
+        reservation.setQuestId(slot.getQuestId());
+        reservation.setStatusType(StatusType.BLOCK);
+        return reservation;
+    }
 
     @Override
     public boolean equals(Object o) {

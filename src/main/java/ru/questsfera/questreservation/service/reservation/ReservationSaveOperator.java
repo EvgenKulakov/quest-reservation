@@ -11,7 +11,6 @@ import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
-import ru.questsfera.questreservation.processor.ReservationFactory;
 import ru.questsfera.questreservation.service.client.ClientService;
 
 import java.security.Principal;
@@ -23,27 +22,38 @@ public class ReservationSaveOperator {
 
     private final ReservationService reservationService;
     private final ClientService clientService;
-    private final ReservationFactory reservationFactory;
     private final ReservationMapper reservationMapper;
 
     @Transactional
-    public void saveReservation(ResFormDTO resFormDTO, String slotJSON, Principal principal) {
+    public void saveUsingResFormAndSlot(ResFormDTO resFormDTO, String slotJSON, Principal principal) {
         Slot slot = SlotMapper.createSlotObject(slotJSON);
-        Reservation reservation = null;
-
         if (slot.getStatusType() == StatusType.EMPTY) {
-            reservation = reservationFactory.createReservation(resFormDTO, slot);
-            Client newClient = new Client(resFormDTO, slot.getCompanyId());
-            Client clientSaved = clientService.saveClient(newClient);
-            reservation.setClientId(clientSaved.getId());
-            reservation.setSourceReserve("default"); //TODO: source reserve
+            saveNewReservation(resFormDTO, slot);
         } else {
-            ReservationDTO reservationDTO = reservationService.findReservationDtoById(slot.getReservationId());
-            ReservationDTO editedReservationDTO = reservationDTO.editUsingResForm(resFormDTO);
-            clientService.saveClient(editedReservationDTO.getClient());
-            reservation = reservationMapper.toEntity(editedReservationDTO);
+            saveExistsReservation(resFormDTO, slot);
         }
+    }
 
+    private void saveNewReservation(ResFormDTO resFormDTO, Slot slot) {
+        Reservation reservation = Reservation.fromResFormAndSlot(resFormDTO, slot);
+        Client newClient = Client.fromResFormAndCompanyId(resFormDTO, slot.getCompanyId());
+        Client clientSaved = clientService.saveClient(newClient);
+
+        reservation.setClientId(clientSaved.getId());
+        reservation.setSourceReserve("default"); //TODO: source reserve
+        reservation.setTimeLastChange(LocalDateTime.now());
+        reservation.setHistoryMessages("default"); //TODO: history message
+
+        reservationService.saveReservation(reservation);
+    }
+
+    private void saveExistsReservation(ResFormDTO resFormDTO, Slot slot) {
+        ReservationDTO reservationDTO = reservationService.findReservationDtoById(slot.getReservationId());
+        ReservationDTO editedReservationDTO = reservationDTO.editUsingResForm(resFormDTO);
+
+        clientService.saveClient(editedReservationDTO.getClient());
+
+        Reservation reservation = reservationMapper.toEntity(editedReservationDTO);
         reservation.setTimeLastChange(LocalDateTime.now());
         reservation.setHistoryMessages("default"); //TODO: history message
 
@@ -51,9 +61,9 @@ public class ReservationSaveOperator {
     }
 
     @Transactional
-    public void saveBlockReservation(String slotJSON) {
+    public void saveBlockReservationUsingSlot(String slotJSON) {
         Slot slot = SlotMapper.createSlotObject(slotJSON);
-        Reservation reservation = reservationFactory.createBlockReservation(slot);
+        Reservation reservation = Reservation.blockReservationFromSlot(slot);
 
         reservation.setSourceReserve("default"); //TODO: source reserve
         reservation.setHistoryMessages("default"); //TODO: history message

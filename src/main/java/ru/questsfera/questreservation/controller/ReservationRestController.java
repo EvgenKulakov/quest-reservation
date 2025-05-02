@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.questsfera.questreservation.dto.ResFormDTO;
 import ru.questsfera.questreservation.dto.ReservationDTO;
-import ru.questsfera.questreservation.processor.ReservationFactory;
 import ru.questsfera.questreservation.service.reservation.ReservationService;
 
 import java.security.Principal;
@@ -19,12 +18,11 @@ import java.security.Principal;
 public class ReservationRestController {
 
     private final ReservationService reservationService;
-    private final ReservationFactory reservationFactory;
 
     @GetMapping("/{id}")
     public ResponseEntity<ResFormDTO> getReserveById(@PathVariable("id") Long id, Principal principal) {
         ReservationDTO reservationDTO = reservationService.findReservationDtoById(id);
-        ResFormDTO resFormDTO = reservationFactory.createResFormDTO(reservationDTO);
+        ResFormDTO resFormDTO = ResFormDTO.fromReservationDto(reservationDTO);
         return ResponseEntity.ok(resFormDTO);
     }
 }

@@ -1,10 +1,7 @@
 package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.questsfera.questreservation.dto.ResFormDTO;
 
 import java.util.Objects;
@@ -13,6 +10,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "clients")
 public class Client {
@@ -43,12 +41,14 @@ public class Client {
     @Column(name = "company_id")
     private Integer companyId;
 
-    public Client(ResFormDTO resForm, Integer companyId) {
-        this.firstName = resForm.getFirstName();
-        this.lastName = resForm.getLastName();
-        this.phones = resForm.getPhone();
-        this.emails = resForm.getEmail();
-        this.companyId = companyId;
+    public static Client fromResFormAndCompanyId(ResFormDTO resForm, Integer companyId) {
+        Client client = new Client();
+        client.setFirstName(resForm.getFirstName());
+        client.setLastName(resForm.getLastName());
+        client.setPhones(resForm.getPhone());
+        client.setEmails(resForm.getEmail());
+        client.setCompanyId(companyId);
+        return client;
     }
 
     @Override
