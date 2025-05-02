@@ -1,10 +1,7 @@
 package ru.questsfera.questreservation.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.questsfera.questreservation.dto.StatusType;
 
 import java.math.BigDecimal;
@@ -17,6 +14,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "reservations")
 public class Reservation {
