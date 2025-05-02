@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.converter.ReservationMapper;
 import ru.questsfera.questreservation.dto.ResFormDTO;
@@ -13,7 +14,6 @@ import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.entity.Status;
-import ru.questsfera.questreservation.processor.Editor;
 import ru.questsfera.questreservation.processor.ReservationFactory;
 import ru.questsfera.questreservation.service.client.ClientService;
 
@@ -34,12 +34,11 @@ class ReservationSaveOperatorTest {
     @Mock Principal principal;
     @Mock ReservationMapper reservationMapper;
     @Mock ReservationFactory reservationFactory;
-    @Mock Editor editor;
     @InjectMocks ReservationSaveOperator reservationSaveOperator;
 
     @Test
     void saveReservation_new() {
-        ReservationDTO reservationDTO = getReservationDto();
+        ReservationDTO reservationDTO = Mockito.spy(getReservationDto());
         Client client = reservationDTO.getClient();
         Reservation reservation = getReservation();
         ResFormDTO resFormDTO = getResFormDto();
@@ -54,12 +53,12 @@ class ReservationSaveOperatorTest {
         verify(reservationFactory).createReservation(resFormDTO, slot);
         verify(clientService).saveClient(any(Client.class));
         verify(reservationService).saveReservation(reservation);
-        verify(editor, never()).editReservationAndClient(reservationDTO, resFormDTO);
+        verify(reservationDTO, never()).editUsingResForm(resFormDTO);
     }
 
     @Test
     void saveReservation_edit() {
-        ReservationDTO reservationDTO = getReservationDto();
+        ReservationDTO reservationDTO = Mockito.spy(getReservationDto());
         Reservation reservation = getReservation();
         ResFormDTO resFormDTO = getResFormDto();
 
@@ -68,7 +67,7 @@ class ReservationSaveOperatorTest {
 
         reservationSaveOperator.saveReservation(resFormDTO, getSLotWithReserveJson(), principal);
 
-        verify(editor).editReservationAndClient(reservationDTO, resFormDTO);
+        verify(reservationDTO).editUsingResForm(resFormDTO);
         verify(clientService).saveClient(reservationDTO.getClient());
         verify(reservationMapper).toEntity(reservationDTO);
         verify(reservationService).saveReservation(reservation);

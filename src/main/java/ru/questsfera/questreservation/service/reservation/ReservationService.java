@@ -51,13 +51,14 @@ public class ReservationService {
         reservationRepository.deleteById(reservationId);
     }
 
+    // TODO security
     public void checkSecurityForReserve(Reservation reservation, Company company) {
 //        if (!company.getQuests().contains(reservation.getQuest())) {
 //            throw new SecurityException("Нет доступа для редактирования данного бронирования");
 //        }
     }
 
-    public void doubleCheck(Reservation reservation) {
+    private void doubleCheck(Reservation reservation) {
 
         if (reservation.getId() == null) {
             boolean existsReservation = reservationRepository.existsByQuestIdAndDateReserveAndTimeReserve(

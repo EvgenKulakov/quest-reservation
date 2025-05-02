@@ -11,7 +11,6 @@ import ru.questsfera.questreservation.dto.Slot;
 import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
-import ru.questsfera.questreservation.processor.Editor;
 import ru.questsfera.questreservation.processor.ReservationFactory;
 import ru.questsfera.questreservation.service.client.ClientService;
 
@@ -26,7 +25,6 @@ public class ReservationSaveOperator {
     private final ClientService clientService;
     private final ReservationFactory reservationFactory;
     private final ReservationMapper reservationMapper;
-    private final Editor editor;
 
     @Transactional
     public void saveReservation(ResFormDTO resFormDTO, String slotJSON, Principal principal) {
@@ -41,9 +39,9 @@ public class ReservationSaveOperator {
             reservation.setSourceReserve("default"); //TODO: source reserve
         } else {
             ReservationDTO reservationDTO = reservationService.findReservationDtoById(slot.getReservationId());
-            editor.editReservationAndClient(reservationDTO, resFormDTO);
-            clientService.saveClient(reservationDTO.getClient());
-            reservation = reservationMapper.toEntity(reservationDTO);
+            ReservationDTO editedReservationDTO = reservationDTO.editUsingResForm(resFormDTO);
+            clientService.saveClient(editedReservationDTO.getClient());
+            reservation = reservationMapper.toEntity(editedReservationDTO);
         }
 
         reservation.setTimeLastChange(LocalDateTime.now());

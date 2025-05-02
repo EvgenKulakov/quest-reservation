@@ -32,6 +32,19 @@ public class ReservationDTO {
     private String clientComment;
     private String historyMessages;
 
+    public ReservationDTO editUsingResForm(ResFormDTO resFormDTO) {
+        this.setStatusType(resFormDTO.getStatusType());
+        this.setCountPersons(resFormDTO.getCountPersons());
+        this.setAdminComment(resFormDTO.getAdminComment());
+        this.setClientComment(resFormDTO.getClientComment());
+
+        this.getClient().setFirstName(resFormDTO.getFirstName());
+        this.getClient().setLastName(resFormDTO.getLastName());
+        this.getClient().setPhones(resFormDTO.getPhone());
+        this.getClient().setEmails(resFormDTO.getEmail());
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
