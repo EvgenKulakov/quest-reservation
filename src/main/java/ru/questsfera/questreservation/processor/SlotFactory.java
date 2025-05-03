@@ -11,7 +11,7 @@ import java.util.Map;
 
 @AllArgsConstructor
 public class SlotFactory {
-    private QuestDTO quest;
+    private QuestDTO questDTO;
     private LocalDate date;
     private SlotList slotList;
     private Map<LocalTime, ReservationDTO> reservations;
@@ -19,7 +19,6 @@ public class SlotFactory {
     public List<Slot> getActualSlots() {
 
         List<Slot> slots = new ArrayList<>();
-
         List<TimePrice> timePriceList = switchDay(date);
 
         for (TimePrice timePrice : timePriceList) {
@@ -27,7 +26,7 @@ public class SlotFactory {
             Integer price = timePrice.getPrice();
 
             if (reservations.containsKey(time)) {
-                slots.add(createSlotWithReserve(time, price, reservations.get(time)));
+                slots.add(createSlotWithReserve(reservations.get(time), price));
             } else {
                 slots.add(createEmptySlot(time, price));
             }
@@ -48,11 +47,11 @@ public class SlotFactory {
         };
     }
 
-    private Slot createSlotWithReserve(LocalTime time, Integer price, ReservationDTO reserve) {
-        return new Slot(quest, reserve, date, time, price);
+    private Slot createSlotWithReserve(ReservationDTO reserve, Integer price) {
+        return Slot.fromQuestAndReservation(questDTO, reserve, price);
     }
 
     private Slot createEmptySlot(LocalTime time, Integer price) {
-        return new Slot(quest, date, time, price);
+        return Slot.emptyFromQuestDateTimePrice(questDTO, date, time, price);
     }
 }

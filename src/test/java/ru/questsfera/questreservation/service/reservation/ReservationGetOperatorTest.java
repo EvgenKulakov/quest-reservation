@@ -12,6 +12,7 @@ import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Status;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -105,13 +106,14 @@ class ReservationGetOperatorTest {
                 .id(1L)
                 .timeReserve(LocalTime.parse("12:00:00"))
                 .questId(1)
+                .price(new BigDecimal(3000))
                 .statusType(StatusType.CONFIRMED)
                 .build();
     }
 
     private Map<String, List<Slot>> getQuestNamesAndSlots() {
-        Slot slot1 = new Slot(getQuestDto(), getResDto(), LocalDate.now(), LocalTime.parse("12:00:00"), 3000);
-        Slot slot2 = new Slot(getQuestDto(), LocalDate.now(), LocalTime.parse("13:00:00"), 3000);
+        Slot slot1 = Slot.fromQuestAndReservation(getQuestDto(), getResDto(), 3000);
+        Slot slot2 = Slot.emptyFromQuestDateTimePrice(getQuestDto(), LocalDate.now(), LocalTime.parse("13:00:00"), 3000);
         return Map.of("Quest One", List.of(slot1, slot2));
     }
 

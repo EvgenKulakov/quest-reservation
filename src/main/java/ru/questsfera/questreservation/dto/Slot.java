@@ -33,31 +33,35 @@ public class Slot {
     private Integer minPersons;
     private Integer maxPersons;
 
-    public Slot(QuestDTO quest, ReservationDTO reservation, LocalDate date, LocalTime time, Integer price) {
-        this.companyId = quest.getCompanyId();
-        this.questId = quest.getId();
-        this.questName = quest.getQuestName();
-        this.reservationId = reservation.getId();
-        this.date = date;
-        this.time = time;
-        this.price = price;
-        this.statuses = quest.getStatuses();
-        this.statusType = reservation.getStatusType();
-        this.minPersons = quest.getMinPersons();
-        this.maxPersons = quest.getMaxPersons();
+    public static Slot fromQuestAndReservation(QuestDTO questDTO, ReservationDTO reservationDTO, Integer price) {
+        Slot slot = new Slot();
+        slot.setCompanyId(questDTO.getCompanyId());
+        slot.setQuestId(questDTO.getId());
+        slot.setQuestName(questDTO.getQuestName());
+        slot.setReservationId(reservationDTO.getId());
+        slot.setDate(reservationDTO.getDateReserve());
+        slot.setTime(reservationDTO.getTimeReserve());
+        slot.setPrice(price);
+        slot.setStatuses(questDTO.getStatuses());
+        slot.setStatusType(reservationDTO.getStatusType());
+        slot.setMinPersons(questDTO.getMinPersons());
+        slot.setMaxPersons(questDTO.getMaxPersons());
+        return slot;
     }
 
-    public Slot(QuestDTO quest, LocalDate date, LocalTime time, Integer price) {
-        this.companyId = quest.getCompanyId();
-        this.questId = quest.getId();
-        this.questName = quest.getQuestName();
-        this.date = date;
-        this.time = time;
-        this.price = price;
-        this.statuses = quest.getStatuses();
-        this.statusType = StatusType.EMPTY;
-        this.minPersons = quest.getMinPersons();
-        this.maxPersons = quest.getMaxPersons();
+    public static Slot emptyFromQuestDateTimePrice(QuestDTO questDTO, LocalDate date, LocalTime time, Integer price) {
+        Slot slot = new Slot();
+        slot.setCompanyId(questDTO.getCompanyId());
+        slot.setQuestId(questDTO.getId());
+        slot.setQuestName(questDTO.getQuestName());
+        slot.setDate(date);
+        slot.setTime(time);
+        slot.setPrice(price);
+        slot.setStatuses(questDTO.getStatuses());
+        slot.setStatusType(StatusType.EMPTY);
+        slot.setMinPersons(questDTO.getMinPersons());
+        slot.setMaxPersons(questDTO.getMaxPersons());
+        return slot;
     }
 
     @JsonIgnore
@@ -77,7 +81,7 @@ public class Slot {
                 && Objects.equals(time, slot.time)
                 && Objects.equals(price, slot.price)
                 && Objects.equals(statuses, slot.statuses)
-                && statusType == slot.statusType
+                && Objects.equals(statusType, slot.statusType)
                 && Objects.equals(minPersons, slot.minPersons)
                 && Objects.equals(maxPersons, slot.maxPersons);
     }
