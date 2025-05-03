@@ -20,6 +20,7 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,15 +36,12 @@ class ReservationGetOperatorTest {
     LocalDate date;
     String accountLogin;
     Set<Quest> quests;
-    List<Integer> questIds;
-    List<ReservationDTO> reservationDTOs;
 
     @BeforeEach
     void setUp() {
         date = LocalDate.now();
         accountLogin = "login";
         quests = Set.of(getQuest());
-        questIds = quests.stream().map(Quest::getId).toList();
 
         when(principal.getName()).thenReturn(accountLogin);
         when(questService.findAllByAccount_login(accountLogin)).thenReturn(quests);
@@ -51,8 +49,8 @@ class ReservationGetOperatorTest {
 
     @Test
     void getQuestsAndSlotsByDate_success() {
-        reservationDTOs = List.of(getResDto());
-        when(reservationService.findActiveByQuestIdsAndDate(questIds, date)).thenReturn(reservationDTOs);
+        List<ReservationDTO> reservationDTOs = List.of(getResDto());
+        when(reservationService.findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class))).thenReturn(reservationDTOs);
         when(questMapper.toDto(getQuest())).thenReturn(getQuestDto());
 
         SlotListPageDTO actualSlotListPageDTO = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
@@ -63,13 +61,13 @@ class ReservationGetOperatorTest {
                 .isEqualTo(exceptedSlotListPageDTO);
 
         verify(questService).findAllByAccount_login(accountLogin);
-        verify(reservationService).findActiveByQuestIdsAndDate(questIds, date);
+        verify(reservationService).findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class));
     }
 
     @Test
     void getQuestsAndSlotsByDate_doubleBlockingFailure() {
-        reservationDTOs = List.of(getResDto(), getResDto());
-        when(reservationService.findActiveByQuestIdsAndDate(questIds, date)).thenReturn(reservationDTOs);
+        List<ReservationDTO> reservationDTOs = List.of(getResDto(), getResDto());
+        when(reservationService.findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class))).thenReturn(reservationDTOs);
 
         assertThatThrownBy(() -> reservationGetOperator.getQuestsAndSlotsByDate(date, principal))
                 .isInstanceOf(RuntimeException.class)

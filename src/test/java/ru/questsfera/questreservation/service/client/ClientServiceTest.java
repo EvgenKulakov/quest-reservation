@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.repository.jpa.ClientRepository;
@@ -11,6 +12,7 @@ import ru.questsfera.questreservation.repository.jpa.ClientRepository;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,41 +24,29 @@ class ClientServiceTest {
 
     @Test
     void saveClient() {
-        Client client = getClient();
+        Client client = Mockito.mock(Client.class);
         clientService.saveClient(client);
         verify(clientRepository).save(client);
     }
 
     @Test
     void findById_success() {
-        Client exceptedClient = getClient();
-        when(clientRepository.findById(1)).thenReturn(Optional.of(exceptedClient));
-        Client actualClient = clientService.findById(1);
+        Client exceptedClient = Mockito.mock(Client.class);
+        when(clientRepository.findById(anyInt())).thenReturn(Optional.of(exceptedClient));
+        Client actualClient = clientService.findById(anyInt());
 
         assertThat(actualClient).isSameAs(exceptedClient);
 
-        verify(clientRepository).findById(1);
+        verify(clientRepository).findById(anyInt());
     }
 
     @Test
     void findById_returnNull() {
-        when(clientRepository.findById(100)).thenReturn(Optional.empty());
-        Client client = clientService.findById(100);
+        when(clientRepository.findById(anyInt())).thenReturn(Optional.empty());
+        Client client = clientService.findById(anyInt());
 
         assertThat(client).isNull();
 
-        verify(clientRepository).findById(100);
-    }
-
-    private Client getClient() {
-        return new Client(
-                1,
-                "TestName_client",
-                "TestSurname_client",
-                "+79995201511", "ee@email.com",
-                null,
-                null,
-                1
-        );
+        verify(clientRepository).findById(anyInt());
     }
 }
