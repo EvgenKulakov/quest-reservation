@@ -8,6 +8,6 @@ import java.util.Set;
 
 @Value
 public class SlotListPageDTO {
-    Map<String, List<Slot>> questsAndSlots;
+    Map<String, List<Slot>> questNamesAndSlots;
     Set<StatusType> useStatuses;
 }

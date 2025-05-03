@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.questsfera.questreservation.converter.QuestMapper;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.dto.*;
 import ru.questsfera.questreservation.entity.Quest;
@@ -23,6 +24,7 @@ public class ReservationGetOperator {
 
     private final ReservationService reservationService;
     private final QuestService questService;
+    private final QuestMapper questMapper;
 
     @Transactional(readOnly = true)
     public SlotListPageDTO getQuestsAndSlotsByDate(LocalDate date, Principal principal) {
@@ -34,13 +36,13 @@ public class ReservationGetOperator {
         Map<Integer, Map<LocalTime, ReservationDTO>> questIdAndTimeAndReserve =
                 splitQuestIdAndTimeAndReserve(reservationDTOs);
 
-        Map<String, List<Slot>> questNameAndSlots = getQuestNameAndSlots(quests, questIdAndTimeAndReserve, date);
+        Map<String, List<Slot>> questNamesAndSlots = getQuestNamesAndSlots(quests, questIdAndTimeAndReserve, date);
 
         Set<StatusType> useStatuses = reservationDTOs.stream()
                 .map(ReservationDTO::getStatusType)
                 .collect(Collectors.toSet());
 
-        return new SlotListPageDTO(questNameAndSlots, useStatuses);
+        return new SlotListPageDTO(questNamesAndSlots, useStatuses);
     }
 
     private Map<Integer, Map<LocalTime, ReservationDTO>> splitQuestIdAndTimeAndReserve(List<ReservationDTO> reservations) {
@@ -63,7 +65,7 @@ public class ReservationGetOperator {
         return questIdAndTimeAndReserve;
     }
 
-    private Map<String, List<Slot>> getQuestNameAndSlots(
+    private Map<String, List<Slot>> getQuestNamesAndSlots(
             Set<Quest> quests,
             Map<Integer, Map<LocalTime, ReservationDTO>> questIdAndTimeAndReserve,
             LocalDate date
@@ -73,7 +75,8 @@ public class ReservationGetOperator {
         for (Quest quest : quests) {
             Map<LocalTime, ReservationDTO> reservations = questIdAndTimeAndReserve.getOrDefault(quest.getId(), Collections.emptyMap());
             SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
-            SlotFactory slotFactory = new SlotFactory(new QuestDTO(quest), date, slotList, reservations);
+            QuestDTO questDTO = questMapper.toDto(quest);
+            SlotFactory slotFactory = new SlotFactory(questDTO, date, slotList, reservations);
             List<Slot> slots = slotFactory.getActualSlots();
             questNameAndSlots.put(quest.getQuestName(), slots);
         }

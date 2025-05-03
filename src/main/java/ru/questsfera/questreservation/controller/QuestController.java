@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import ru.questsfera.questreservation.converter.QuestMapper;
 import ru.questsfera.questreservation.converter.SlotListMapper;
 import ru.questsfera.questreservation.dto.*;
 import ru.questsfera.questreservation.entity.Account;
@@ -32,6 +33,7 @@ public class QuestController {
     private final QuestService questService;
     private final AccountService accountService;
     private final ReservationService reservationService;
+    private final QuestMapper questMapper;
 
     @GetMapping("/")
     public String showQuestList(Principal principal, Model model) {
@@ -112,7 +114,7 @@ public class QuestController {
         }
 
         SlotListMaker.makeByType(questFormDTO.getSlotList(), questFormDTO.getTypeBuilder());
-        Quest quest = new Quest(questFormDTO, account.getCompanyId());
+        Quest quest =  Quest.fromQuestFormAndCompanyId(questFormDTO, account.getCompanyId());
         questService.saveQuest(quest);
 
         return "redirect:/quests/";
@@ -125,8 +127,9 @@ public class QuestController {
 
         SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
         List<List<TimePrice>> allDays = slotList.getAllDays();
+        QuestDTO questDTO = questMapper.toDto(quest);
 
-        model.addAttribute("quest", new QuestDTO(quest));
+        model.addAttribute("quest", questDTO);
         model.addAttribute("accounts", accounts);
         model.addAttribute("allSlotList", allDays);
 

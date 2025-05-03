@@ -55,16 +55,19 @@ public class Quest implements Comparable<Quest> {
             inverseJoinColumns = @JoinColumn(name = "id_second_quest"))
     private Set<Quest> synchronizedQuests = new HashSet<>();
 
-    public Quest(QuestFormDTO questFormDTO, Integer companyId) {
-        this.questName = questFormDTO.getQuestName();
-        this.minPersons = questFormDTO.getMinPersons();
-        this.maxPersons = questFormDTO.getMaxPersons();
-        this.autoBlock = questFormDTO.getAutoBlock();
-        this.slotList = SlotListMapper.createJSON(questFormDTO.getSlotList());
-        this.accounts = questFormDTO.getAccounts();
-        this.statuses = questFormDTO.getStatuses().stream()
-                .map(s -> s.getType().name()).collect(Collectors.joining(","));
-        this.companyId = companyId;
+    public static Quest fromQuestFormAndCompanyId(QuestFormDTO questFormDTO, Integer companyId) {
+        Quest quest = new Quest();
+        quest.questName = questFormDTO.getQuestName();
+        quest.minPersons = questFormDTO.getMinPersons();
+        quest.maxPersons = questFormDTO.getMaxPersons();
+        quest.autoBlock = questFormDTO.getAutoBlock();
+        quest.slotList = SlotListMapper.createJSON(questFormDTO.getSlotList());
+        quest.accounts = questFormDTO.getAccounts();
+        quest.statuses = questFormDTO.getStatuses().stream()
+                .map(s -> s.getType().name())
+                .collect(Collectors.joining(","));
+        quest.companyId = companyId;
+        return quest;
     }
 
     public static void synchronizeQuests(Quest... quests) {

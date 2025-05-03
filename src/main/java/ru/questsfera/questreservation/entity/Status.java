@@ -26,7 +26,7 @@ public class Status { // TODO DTO
         this(StatusType.values()[Integer.parseInt(id)]);
     }
 
-    public static Status createStatusFromStatusTypeName(String name) {
+    public static Status fromStatusTypeName(String name) {
         return new Status(StatusType.valueOf(name));
     }
 

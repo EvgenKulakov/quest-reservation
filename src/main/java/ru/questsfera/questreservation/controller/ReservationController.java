@@ -36,7 +36,7 @@ public class ReservationController {
         SlotListPageDTO slotListPageDTO = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
 
         model.addAttribute("res_form", new ResFormDTO());
-        model.addAttribute("quests_and_slots", slotListPageDTO.getQuestsAndSlots());
+        model.addAttribute("quest_names_and_slots", slotListPageDTO.getQuestNamesAndSlots());
         model.addAttribute("use_statuses" , slotListPageDTO.getUseStatuses());
         model.addAttribute("date", date);
 
@@ -98,7 +98,7 @@ public class ReservationController {
         SlotListPageDTO slotListPageDTO = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
 
         model.addAttribute("res_form", resForm);
-        model.addAttribute("quests_and_slots", slotListPageDTO.getQuestsAndSlots());
+        model.addAttribute("quest_names_and_slots", slotListPageDTO.getQuestNamesAndSlots());
         model.addAttribute("use_statuses" , slotListPageDTO.getUseStatuses());
         model.addAttribute("date", date);
         model.addAttribute("error_slot", errorSlotJson);

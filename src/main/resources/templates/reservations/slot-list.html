@@ -13,7 +13,7 @@
 <header th:insert="~{header-fragment :: head}"></header>
 
 <section>
-  <th:block th:switch="${#maps.isEmpty(quests_and_slots)}">
+  <th:block th:switch="${#maps.isEmpty(quest_names_and_slots)}">
 
     <div th:case="${true}" class="container-fluid mt-4">
       <div sec:authorize="hasAnyRole('ADMIN', 'OWNER')">
@@ -52,14 +52,14 @@
         </div>
       </div>
 
-      <div th:each="one_quest_with_slots : ${quests_and_slots}" class="container-fluid" id="block-reserves">
+      <div th:each="quest_name_with_slots : ${quest_names_and_slots}" class="container-fluid" id="block-reserves">
         <div class="row-cols-auto d-flex align-items-center quest-name">
           <h3>
-            <td th:text="${one_quest_with_slots.key}"></td>
+            <td th:text="${quest_name_with_slots.key}"></td>
           </h3>
         </div>
         <div class="row-cols-auto d-flex flex-wrap">
-          <td th:each="slot : ${one_quest_with_slots.value}">
+          <td th:each="slot : ${quest_name_with_slots.value}">
             <form>
               <button class="slot-button custom-button"
                       th:value="${slot.getJson()}"
