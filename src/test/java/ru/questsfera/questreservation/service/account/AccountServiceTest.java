@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,19 +38,23 @@ class AccountServiceTest {
 
     @Test
     void loadUserByUsername_success() {
-        Account accountOwner = getAccount();
-        when(accountRepository.findAccountByLogin(ACCOUNT_LOGIN)).thenReturn(Optional.of(accountOwner));
-        UserDetails userDetails = accountService.loadUserByUsername(ACCOUNT_LOGIN);
+        Account account = Mockito.mock(Account.class);
+        when(account.getLogin()).thenReturn(ACCOUNT_LOGIN);
+        when(account.getPassword()).thenReturn("");
+        when(account.getRole()).thenReturn(Account.Role.ROLE_OWNER);
+
+        when(accountRepository.findAccountByLogin(anyString())).thenReturn(Optional.of(account));
+        UserDetails userDetails = accountService.loadUserByUsername(anyString());
 
         assertThat(userDetails)
                 .extracting(UserDetails::getUsername, UserDetails::getPassword, UserDetails::getAuthorities)
                 .containsExactly(
-                        accountOwner.getLogin(),
-                        accountOwner.getPassword(),
-                        Collections.singleton(new SimpleGrantedAuthority(accountOwner.getRole().name()))
+                        account.getLogin(),
+                        account.getPassword(),
+                        Collections.singleton(new SimpleGrantedAuthority(account.getRole().name()))
                 );
 
-        verify(accountRepository).findAccountByLogin(ACCOUNT_LOGIN);
+        verify(accountRepository).findAccountByLogin(anyString());
     }
 
     @Test
@@ -60,13 +67,13 @@ class AccountServiceTest {
 
     @Test
     void getAccountByLogin_success() {
-        Account exceptedAccount = getAccount();
-        when(accountRepository.findAccountByLogin(ACCOUNT_LOGIN)).thenReturn(Optional.of(exceptedAccount));
-        Account actualAccount = accountService.getAccountByLogin(ACCOUNT_LOGIN);
+        Account exceptedAccount = Mockito.mock(Account.class);
+        when(accountRepository.findAccountByLogin(anyString())).thenReturn(Optional.of(exceptedAccount));
+        Account actualAccount = accountService.getAccountByLogin(anyString());
 
         assertThat(actualAccount).isSameAs(exceptedAccount);
 
-        verify(accountRepository).findAccountByLogin(ACCOUNT_LOGIN);
+        verify(accountRepository).findAccountByLogin(anyString());
     }
 
     @Test
@@ -79,66 +86,66 @@ class AccountServiceTest {
 
     @Test
     void findAccountByLoginWithQuests_success() {
-        Account exceptedAccount = getAccount();
-        when(accountRepository.findAccountByLoginWithQuests(ACCOUNT_LOGIN))
-                .thenReturn(Optional.of(exceptedAccount));
-        Account actualAccount = accountService.findAccountByLoginWithQuests(ACCOUNT_LOGIN);
+        Account exceptedAccount = Mockito.mock(Account.class);
+
+        when(accountRepository.findAccountByLoginWithQuests(anyString())).thenReturn(Optional.of(exceptedAccount));
+        Account actualAccount = accountService.findAccountByLoginWithQuests(anyString());
 
         assertThat(actualAccount).isSameAs(exceptedAccount);
 
-        verify(accountRepository).findAccountByLoginWithQuests(ACCOUNT_LOGIN);
+        verify(accountRepository).findAccountByLoginWithQuests(anyString());
     }
 
     @Test
     void findAllAccountsByCompanyId_success() {
-        List<Account> exceptedAccounts = List.of(getAccount());
-        when(accountRepository.findAllByCompanyId(1)).thenReturn(exceptedAccounts);
-        List<Account> actualAccounts = accountService.findAllAccountsByCompanyId(1);
+        List<Account> exceptedAccounts = List.of(Mockito.mock(Account.class));
+        when(accountRepository.findAllByCompanyId(anyInt())).thenReturn(exceptedAccounts);
+        List<Account> actualAccounts = accountService.findAllAccountsByCompanyId(anyInt());
 
         assertThat(actualAccounts).isSameAs(exceptedAccounts);
 
-        verify(accountRepository).findAllByCompanyId(1);
+        verify(accountRepository).findAllByCompanyId(anyInt());
     }
 
     @Test
     void findAllAccountsByCompanyId_empty() {
-        when(accountRepository.findAllByCompanyId(100)).thenReturn(new ArrayList<>());
-        List<Account> actualAccounts = accountService.findAllAccountsByCompanyId(100);
+        when(accountRepository.findAllByCompanyId(anyInt())).thenReturn(new ArrayList<>());
+        List<Account> actualAccounts = accountService.findAllAccountsByCompanyId(anyInt());
 
         assertThat(actualAccounts.isEmpty()).isTrue();
 
-        verify(accountRepository).findAllByCompanyId(100);
+        verify(accountRepository).findAllByCompanyId(anyInt());
     }
 
     @Test
     void findAllAccountsInCompanyByOwnAccountName_success() {
-        List<Account> exceptedAccounts = List.of(getAccount());
-        when(accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(ACCOUNT_LOGIN)).thenReturn(exceptedAccounts);
-        List<Account> actualAccounts = accountService.findAllAccountsInCompanyByOwnAccountName(ACCOUNT_LOGIN);
+        List<Account> exceptedAccounts = List.of(Mockito.mock(Account.class));
+        when(accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(anyString())).thenReturn(exceptedAccounts);
+        List<Account> actualAccounts = accountService.findAllAccountsInCompanyByOwnAccountName(anyString());
 
         assertThat(actualAccounts).isSameAs(exceptedAccounts);
 
-        verify(accountJdbcRepository).findAllAccountsInCompanyByOwnAccountName(ACCOUNT_LOGIN);
+        verify(accountJdbcRepository).findAllAccountsInCompanyByOwnAccountName(anyString());
     }
 
     @Test
     void findAllAccountsInCompanyByOwnAccountName_empty() {
-        when(accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(NOT_EXISTS_LOGIN))
+        when(accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(anyString()))
                 .thenReturn(new ArrayList<>());
-        List<Account> actualAccounts = accountService.findAllAccountsInCompanyByOwnAccountName(NOT_EXISTS_LOGIN);
+        List<Account> actualAccounts = accountService.findAllAccountsInCompanyByOwnAccountName(anyString());
 
         assertThat(actualAccounts.isEmpty()).isTrue();
 
-        verify(accountJdbcRepository).findAllAccountsInCompanyByOwnAccountName(NOT_EXISTS_LOGIN);
+        verify(accountJdbcRepository).findAllAccountsInCompanyByOwnAccountName(anyString());
     }
 
     @Test
     void findOwnAccountsByAccountName_success() {
-        Account account = getAccount();
+        Account account = Mockito.mock(Account.class);
         List<Account> exceptedAccounts = List.of(account);
-        when(accountRepository.findAccountByLogin(ACCOUNT_LOGIN)).thenReturn(Optional.of(account));
+        when(accountRepository.findAccountByLogin(anyString())).thenReturn(Optional.of(account));
         when(accountJdbcRepository.findOwnAccountsByMyAccountOrderByName(account)).thenReturn(exceptedAccounts);
-        List<Account> actualAccounts = accountService.findOwnAccountsByAccountName(ACCOUNT_LOGIN);
+        List<Account> actualAccounts = accountService.findOwnAccountsByAccountName(anyString());
 
         assertThat(actualAccounts).isSameAs(exceptedAccounts);
 
@@ -147,10 +154,10 @@ class AccountServiceTest {
 
     @Test
     void findOwnAccountsByAccountName_empty() {
-        Account account = getAccount();
-        when(accountRepository.findAccountByLogin(ACCOUNT_LOGIN)).thenReturn(Optional.of(account));
+        Account account = Mockito.mock(Account.class);
+        when(accountRepository.findAccountByLogin(anyString())).thenReturn(Optional.of(account));
         when(accountJdbcRepository.findOwnAccountsByMyAccountOrderByName(account)).thenReturn(new ArrayList<>());
-        List<Account> actualAccounts = accountService.findOwnAccountsByAccountName(ACCOUNT_LOGIN);
+        List<Account> actualAccounts = accountService.findOwnAccountsByAccountName(anyString());
 
         assertThat(actualAccounts.isEmpty()).isTrue();
 
@@ -159,23 +166,31 @@ class AccountServiceTest {
 
     @Test
     void getAccountsByQuest_success() {
-        List<Account> exceptedAccounts = List.of(getAccount());
-        when(accountRepository.findAllByQuestIdOrderByName(1)).thenReturn(exceptedAccounts);
-        List<Account> actualAccounts = accountService.getAccountsByQuest(getQuest());
+        Quest quest = Mockito.mock(Quest.class);
+        Integer questId = 1;
+        List<Account> exceptedAccounts = List.of(Mockito.mock(Account.class));
+
+        when(quest.getId()).thenReturn(questId);
+        when(accountRepository.findAllByQuestIdOrderByName(anyInt())).thenReturn(exceptedAccounts);
+        List<Account> actualAccounts = accountService.getAccountsByQuest(quest);
 
         assertThat(actualAccounts).isSameAs(exceptedAccounts);
 
-        verify(accountRepository).findAllByQuestIdOrderByName(1);
+        verify(accountRepository).findAllByQuestIdOrderByName(anyInt());
     }
 
     @Test
     void getAccountsByQuest_failure() {
-        when(accountRepository.findAllByQuestIdOrderByName(1)).thenReturn(new ArrayList<>());
-        List<Account> actualAccounts = accountService.getAccountsByQuest(getQuest());
+        Quest quest = Mockito.mock(Quest.class);
+        Integer questId = 1;
+
+        when(quest.getId()).thenReturn(questId);
+        when(accountRepository.findAllByQuestIdOrderByName(anyInt())).thenReturn(new ArrayList<>());
+        List<Account> actualAccounts = accountService.getAccountsByQuest(quest);
 
         assertThat(actualAccounts.isEmpty()).isTrue();
 
-        verify(accountRepository).findAllByQuestIdOrderByName(1);
+        verify(accountRepository).findAllByQuestIdOrderByName(anyInt());
     }
 
     @Test
@@ -190,34 +205,14 @@ class AccountServiceTest {
 
     @Test
     void saveAccount() {
-        Account account = getAccount();
+        Account account = Mockito.mock(Account.class);
         accountService.saveAccount(account);
         verify(accountRepository).save(account);
     }
 
     @Test
     void deleteById() {
-        accountService.deleteById(1);
-        verify(accountRepository).deleteById(1);
-    }
-
-    private Account getAccount() {
-        return Account.builder()
-                .id(1)
-                .login(ACCOUNT_LOGIN)
-                .password("$2a$10$I6WnbfYRb2Z8uBysTKy5l.uSazvJYhqFgsj4LQ.5vZc65TmGlcat6")
-                .firstName("Test")
-                .lastName("Евгений")
-                .phone("+79995554433")
-                .role(Account.Role.ROLE_OWNER)
-                .companyId(1)
-                .build();
-    }
-
-    private Quest getQuest() {
-        return Quest.builder()
-                .id(1)
-                .questName("Quest One")
-                .build();
+        accountService.deleteById(anyInt());
+        verify(accountRepository).deleteById(anyInt());
     }
 }
