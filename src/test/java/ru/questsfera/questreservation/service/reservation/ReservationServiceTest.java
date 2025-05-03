@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.entity.Quest;
 import ru.questsfera.questreservation.entity.Reservation;
@@ -46,23 +47,40 @@ class ReservationServiceTest {
 
     @Test
     void hasReservationsByQuest() {
-        Quest quest = Quest.builder().id(1).build();
+        Quest quest = Mockito.mock(Quest.class);
+        Integer questId = 1;
+
+        when(quest.getId()).thenReturn(questId);
         reservationService.hasReservationsByQuest(quest);
-        verify(reservationRepository).existsByQuestId(quest.getId());
+
+        verify(reservationRepository).existsByQuestId(questId);
     }
 
     @Test
     void saveReservation_success() {
-        Reservation reservation = getReservation();
+        Reservation reservation = Mockito.mock(Reservation.class);
+        Long reservationId = 1L;
+
+        when(reservation.getId()).thenReturn(reservationId);
         reservationService.saveReservation(reservation);
+
         verify(reservationRepository).save(reservation);
     }
 
     @Test
     void saveReservation_doubleCheckFailure() {
-        Reservation reservation = getReservation();
-        when(reservationRepository.existsByQuestIdAndDateReserveAndTimeReserve(reservation.getQuestId(),
-                reservation.getDateReserve(), reservation.getTimeReserve())).thenReturn(Boolean.TRUE);
+        Reservation reservation = Mockito.mock(Reservation.class);
+        Integer questId = 1;
+        LocalDate dateReserve = LocalDate.now();
+        LocalTime timeReserve = LocalTime.now();
+
+        when(reservation.getId()).thenReturn(null);
+        when(reservation.getQuestId()).thenReturn(questId);
+        when(reservation.getDateReserve()).thenReturn(dateReserve);
+        when(reservation.getTimeReserve()).thenReturn(timeReserve);
+
+        when(reservationRepository.existsByQuestIdAndDateReserveAndTimeReserve(questId,
+                dateReserve, timeReserve)).thenReturn(Boolean.TRUE);
 
         assertThatThrownBy(() -> reservationService.saveReservation(reservation))
                 .isInstanceOf(RuntimeException.class)
@@ -73,13 +91,5 @@ class ReservationServiceTest {
     void deleteBlockedReservation() {
         reservationService.deleteBlockedReservation(anyLong());
         verify(reservationRepository).deleteById(anyLong());
-    }
-
-    private Reservation getReservation() {
-        return Reservation.builder()
-                .dateReserve(LocalDate.parse("2025-04-25"))
-                .timeReserve(LocalTime.parse("17:00:00"))
-                .questId(1)
-                .build();
     }
 }

@@ -9,16 +9,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.converter.ReservationMapper;
 import ru.questsfera.questreservation.dto.ResFormDTO;
 import ru.questsfera.questreservation.dto.ReservationDTO;
-import ru.questsfera.questreservation.dto.StatusType;
 import ru.questsfera.questreservation.entity.Client;
 import ru.questsfera.questreservation.entity.Reservation;
 import ru.questsfera.questreservation.service.client.ClientService;
 
-import java.math.BigDecimal;
 import java.security.Principal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -35,11 +30,13 @@ class ReservationSaveOperatorTest {
     @Test
     void saveUsingResFormAndSlot_saveNew() {
         ReservationDTO reservationDTO = Mockito.mock(ReservationDTO.class);
-        Client clientSaved = Client.builder().id(1).build();
-        ResFormDTO resFormDTO = getResFormDto();
+        Client client = Mockito.mock(Client.class);
+        Integer clientId = 1;
+        ResFormDTO resFormDTO = Mockito.mock(ResFormDTO.class);
         String slotJson = getSLotEmptyJson();
 
-        when(clientService.saveClient(any(Client.class))).thenReturn(clientSaved);
+        when(clientService.saveClient(any(Client.class))).thenReturn(client);
+        when(client.getId()).thenReturn(clientId);
         reservationSaveOperator.saveUsingResFormAndSlot(resFormDTO, slotJson, principal);
 
         verify(clientService).saveClient(any(Client.class));
@@ -49,18 +46,21 @@ class ReservationSaveOperatorTest {
 
     @Test
     void saveUsingResFormAndSlot_saveExists() {
-        ReservationDTO reservationDTO = Mockito.spy(getReservationDto());
-        Reservation reservation = getReservation();
-        ResFormDTO resFormDTO = getResFormDto();
+        ReservationDTO reservationDTO = Mockito.mock(ReservationDTO.class);
+        Client client = Mockito.mock(Client.class);
+        Reservation reservation = Mockito.mock(Reservation.class);
+        ResFormDTO resFormDTO = Mockito.mock(ResFormDTO.class);
         String slotJson = getSLotWithReserveJson();
 
         when(reservationService.findReservationDtoById(anyLong())).thenReturn(reservationDTO);
+        when(reservationDTO.editUsingResForm(resFormDTO)).thenReturn(reservationDTO);
+        when(reservationDTO.getClient()).thenReturn(client);
         when(reservationMapper.toEntity(reservationDTO)).thenReturn(reservation);
 
         reservationSaveOperator.saveUsingResFormAndSlot(resFormDTO, slotJson, principal);
 
         verify(reservationDTO).editUsingResForm(resFormDTO);
-        verify(clientService).saveClient(reservationDTO.getClient());
+        verify(clientService).saveClient(client);
         verify(reservationMapper).toEntity(reservationDTO);
         verify(reservationService).saveReservation(reservation);
     }
@@ -144,74 +144,5 @@ class ReservationSaveOperatorTest {
                   "minPersons" : 1,
                   "maxPersons" : 6
                 }""";
-    }
-
-    private ResFormDTO getResFormDto() {
-        return new ResFormDTO(
-                3L,
-                StatusType.CONFIRMED,
-                "Egor",
-                "Jukov",
-                "+79998887766",
-                "some@gmail.com",
-                5,
-                "admin comment",
-                null
-        );
-    }
-
-    private ReservationDTO getReservationDto() {
-        return new ReservationDTO(
-                3L,
-                LocalDate.parse("2025-04-25"),
-                LocalTime.parse("17:00:00"),
-                LocalDateTime.parse("2025-04-26T00:58:38.605035"),
-                null,
-                null,
-                1,
-                StatusType.NOT_COME,
-                "default",
-                new BigDecimal(3000),
-                null,
-                getClient(),
-                4,
-                null,
-                null,
-                "default"
-        );
-    }
-
-    private Client getClient() {
-        return new Client(
-                1,
-                "Egorka",
-                "Jukof",
-                "+79998887766",
-                "ee@email.com",
-                null,
-                null,
-                1
-        );
-    }
-
-    private Reservation getReservation() {
-        return new Reservation(
-                3L,
-                LocalDate.parse("2025-04-25"),
-                LocalTime.parse("17:00:00"),
-                LocalDateTime.parse("2025-04-26T00:58:38.605035"),
-                null,
-                null,
-                1,
-                StatusType.NOT_COME,
-                "default",
-                new BigDecimal(3000),
-                null,
-                1,
-                4,
-                null,
-                null,
-                "default"
-        );
     }
 }
