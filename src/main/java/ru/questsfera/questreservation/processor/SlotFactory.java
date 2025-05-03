@@ -17,7 +17,6 @@ public class SlotFactory {
     private Map<LocalTime, ReservationDTO> reservations;
 
     public List<Slot> getActualSlots() {
-
         List<Slot> slots = new ArrayList<>();
         List<TimePrice> timePriceList = switchDay(date);
 

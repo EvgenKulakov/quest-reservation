@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.entity.Account;
 import ru.questsfera.questreservation.entity.Quest;
@@ -11,10 +12,7 @@ import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 import ru.questsfera.questreservation.repository.jpa.QuestRepository;
 import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -29,59 +27,58 @@ class QuestServiceTest {
 
     @Test
     void getQuestsByCompany() {
-        List<Quest> exceptedQuests = List.of(getQuest());
-        when(questService.getQuestsByCompany(1)).thenReturn(exceptedQuests);
-        List<Quest> actualQuests = questService.getQuestsByCompany(1);
+        List<Quest> exceptedQuests = new ArrayList<>();
+        when(questRepository.findAllByCompanyIdOrderByQuestName(anyInt())).thenReturn(exceptedQuests);
+        List<Quest> actualQuests = questService.getQuestsByCompany(anyInt());
 
         assertThat(actualQuests).isSameAs(exceptedQuests);
 
-        verify(questRepository).findAllByCompanyIdOrderByQuestName(1);
+        verify(questRepository).findAllByCompanyIdOrderByQuestName(anyInt());
     }
 
     @Test
     void findAllByAccount_login() {
-        String accountLogin = "login";
-        Set<Quest> exceptedQuests = Set.of(getQuest());
-        when(questRepository.findAllByAccount_login(accountLogin)).thenReturn(exceptedQuests);
-        Set<Quest> actualQuests = questService.findAllByAccount_login(accountLogin);
+        Set<Quest> exceptedQuests = new HashSet<>();
+        when(questRepository.findAllByAccount_login(anyString())).thenReturn(exceptedQuests);
+        Set<Quest> actualQuests = questService.findAllByAccount_login(anyString());
 
         assertThat(actualQuests).isSameAs(exceptedQuests);
 
-        verify(questRepository).findAllByAccount_login(accountLogin);
+        verify(questRepository).findAllByAccount_login(anyString());
     }
 
     @Test
     void existQuestNameByCompany() {
-        Quest quest = getQuest();
-        String questName = quest.getQuestName();
-        int companyId = quest.getCompanyId();
-
-        when(questRepository.existsQuestByQuestNameAndCompanyId(questName, companyId)).thenReturn(Boolean.TRUE);
-        boolean existsQuestName = questService.existQuestNameByCompany(questName, companyId);
+        when(questRepository.existsQuestByQuestNameAndCompanyId(anyString(), anyInt())).thenReturn(Boolean.TRUE);
+        boolean existsQuestName = questService.existQuestNameByCompany(anyString(), anyInt());
 
         assertThat(existsQuestName).isTrue();
 
-        verify(questRepository).existsQuestByQuestNameAndCompanyId(questName, companyId);
+        verify(questRepository).existsQuestByQuestNameAndCompanyId(anyString(), anyInt());
     }
 
     @Test
     void existQuestByCompany() {
-        Quest quest = getQuest();
-        int companyId = quest.getCompanyId();
+        Quest quest = Mockito.mock(Quest.class);
+        Integer questId = 1;
+        Integer companyId = 1;
 
-        when(questRepository.existsQuestByIdAndCompanyId(quest.getId(), companyId)).thenReturn(Boolean.TRUE);
+        when(quest.getId()).thenReturn(questId);
+        when(questRepository.existsQuestByIdAndCompanyId(anyInt(), anyInt())).thenReturn(Boolean.TRUE);
         boolean existsQuest = questService.existQuestByCompany(quest, companyId);
 
         assertThat(existsQuest).isTrue();
 
-        verify(questRepository).existsQuestByIdAndCompanyId(quest.getId(), companyId);
+        verify(questRepository).existsQuestByIdAndCompanyId(questId, companyId);
     }
 
     @Test
     void saveQuest_saveAccount() {
-        Quest quest = getQuest();
-        Account account = getAccountEmptyQuests();
-        quest.setAccounts(List.of(account));
+        Quest quest = Mockito.mock(Quest.class);
+        Account account = Mockito.mock(Account.class);
+
+        when(quest.getAccounts()).thenReturn(List.of(account));
+        when(account.getQuests()).thenReturn(new HashSet<>());
         questService.saveQuest(quest);
 
         verify(questRepository).save(quest);
@@ -90,9 +87,11 @@ class QuestServiceTest {
 
     @Test
     void saveQuest_notSaveAccount() {
-        Quest quest = getQuest();
-        Account account = getAccountWithQuests();
-        quest.setAccounts(List.of(account));
+        Quest quest = Mockito.mock(Quest.class);
+        Account account = Mockito.mock(Account.class);
+
+        when(quest.getAccounts()).thenReturn(List.of(account));
+        when(account.getQuests()).thenReturn(Set.of(quest));
         questService.saveQuest(quest);
 
         verify(questRepository).save(quest);
@@ -101,61 +100,37 @@ class QuestServiceTest {
 
     @Test
     void deleteQuest_changeAccount() {
-        Quest quest = getQuest();
-        Account accountSpy = spy(getAccountEmptyQuests());
+        Quest quest = Mockito.mock(Quest.class);
+        Integer questId = 1;
+        Account account = Mockito.mock(Account.class);
         Set<Quest> questsInAccountSpy = spy(new TreeSet<>());
 
-        doReturn(questsInAccountSpy).when(accountSpy).getQuests();
-        when(accountRepository.findAllByQuestIdOrderByName(quest.getId())).thenReturn(List.of(accountSpy));
-
+        when(quest.getId()).thenReturn(questId);
+        when(account.getQuests()).thenReturn(questsInAccountSpy);
+        when(accountRepository.findAllByQuestIdOrderByName(anyInt())).thenReturn(List.of(account));
         questService.deleteQuest(quest);
 
-        verify(reservationRepository).deleteByQuestId(quest.getId());
-        verify(accountRepository).findAllByQuestIdOrderByName(quest.getId());
+        verify(reservationRepository).deleteByQuestId(questId);
+        verify(accountRepository).findAllByQuestIdOrderByName(questId);
         verify(questsInAccountSpy).remove(quest);
-        verify(accountRepository).save(accountSpy);
-        verify(questRepository).deleteById(quest.getId());
+        verify(accountRepository).save(account);
+        verify(questRepository).deleteById(questId);
     }
 
     @Test
     void deleteQuest_noChangeAccount() {
-        Quest quest = getQuest();
-        Account accountSpy = spy(getAccountEmptyQuests());
-        Set<Quest> questsInAccountSpy = spy(new TreeSet<>());
+        Quest quest = Mockito.mock(Quest.class);
+        Integer questId = 1;
+        Account account = Mockito.mock(Account.class);
 
-        lenient().when(accountSpy.getQuests()).thenReturn(questsInAccountSpy);
-        when(accountRepository.findAllByQuestIdOrderByName(quest.getId())).thenReturn(new ArrayList<>());
-
+        when(quest.getId()).thenReturn(questId);
+        when(accountRepository.findAllByQuestIdOrderByName(anyInt())).thenReturn(new ArrayList<>());
         questService.deleteQuest(quest);
 
-        verify(reservationRepository).deleteByQuestId(quest.getId());
-        verify(accountRepository).findAllByQuestIdOrderByName(quest.getId());
-        verify(questsInAccountSpy, never()).remove(quest);
-        verify(accountRepository, never()).save(accountSpy);
-        verify(questRepository).deleteById(quest.getId());
-    }
-
-    private Quest getQuest() {
-       return Quest.builder()
-                .id(1)
-                .questName("Quest One")
-                .companyId(1)
-                .build();
-    }
-
-    private Account getAccountEmptyQuests() {
-        return Account.builder()
-                .id(1)
-                .login("login")
-                .quests(new TreeSet<>())
-                .build();
-    }
-
-    private Account getAccountWithQuests() {
-        return Account.builder()
-                .id(1)
-                .login("login")
-                .quests(Set.of(getQuest()))
-                .build();
+        verify(reservationRepository).deleteByQuestId(questId);
+        verify(accountRepository).findAllByQuestIdOrderByName(questId);
+        verify(account, never()).getQuests();
+        verify(accountRepository, never()).save(account);
+        verify(questRepository).deleteById(questId);
     }
 }
