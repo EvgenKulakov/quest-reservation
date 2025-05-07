@@ -6,9 +6,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.jdbc.Sql;
-import ru.questsfera.questreservation.dto.ReservationDTO;
-import ru.questsfera.questreservation.dto.StatusType;
-import ru.questsfera.questreservation.entity.Client;
+import ru.questsfera.questreservation.model.dto.ReservationDTO;
+import ru.questsfera.questreservation.model.dto.StatusType;
+import ru.questsfera.questreservation.model.entity.Client;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

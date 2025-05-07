@@ -7,10 +7,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.converter.ReservationMapper;
-import ru.questsfera.questreservation.dto.ResFormDTO;
-import ru.questsfera.questreservation.dto.ReservationDTO;
-import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Reservation;
+import ru.questsfera.questreservation.model.dto.ResFormDTO;
+import ru.questsfera.questreservation.model.dto.ReservationDTO;
+import ru.questsfera.questreservation.model.entity.Client;
+import ru.questsfera.questreservation.model.entity.Reservation;
 import ru.questsfera.questreservation.service.client.ClientService;
 
 import java.security.Principal;
@@ -41,7 +41,7 @@ class ReservationSaveOperatorTest {
 
         verify(clientService).saveClient(any(Client.class));
         verify(reservationService).saveReservation(any(Reservation.class));
-        verify(reservationDTO, never()).editUsingResForm(resFormDTO);
+        verify(reservationDTO, never()).editWithResForm(resFormDTO);
     }
 
     @Test
@@ -53,13 +53,13 @@ class ReservationSaveOperatorTest {
         String slotJson = getSLotWithReserveJson();
 
         when(reservationService.findReservationDtoById(anyLong())).thenReturn(reservationDTO);
-        when(reservationDTO.editUsingResForm(resFormDTO)).thenReturn(reservationDTO);
+        when(reservationDTO.editWithResForm(resFormDTO)).thenReturn(reservationDTO);
         when(reservationDTO.getClient()).thenReturn(client);
         when(reservationMapper.toEntity(reservationDTO)).thenReturn(reservation);
 
         reservationSaveOperator.saveUsingResFormAndSlot(resFormDTO, slotJson, principal);
 
-        verify(reservationDTO).editUsingResForm(resFormDTO);
+        verify(reservationDTO).editWithResForm(resFormDTO);
         verify(clientService).saveClient(client);
         verify(reservationMapper).toEntity(reservationDTO);
         verify(reservationService).saveReservation(reservation);

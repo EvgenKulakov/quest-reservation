@@ -1,7 +1,7 @@
 package ru.questsfera.questreservation.processor;
 
 import lombok.AllArgsConstructor;
-import ru.questsfera.questreservation.dto.*;
+import ru.questsfera.questreservation.model.dto.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -47,7 +47,7 @@ public class SlotFactory {
     }
 
     private Slot createSlotWithReserve(ReservationDTO reserve, Integer price) {
-        return Slot.fromQuestAndReservation(questDTO, reserve, price);
+        return Slot.fromQuestAndReservationAndPrice(questDTO, reserve, price);
     }
 
     private Slot createEmptySlot(LocalTime time, Integer price) {

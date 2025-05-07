@@ -1,8 +1,8 @@
 package ru.questsfera.questreservation.processor;
 
-import ru.questsfera.questreservation.dto.SlotList;
-import ru.questsfera.questreservation.dto.SlotListTypeBuilder;
-import ru.questsfera.questreservation.dto.TimePrice;
+import ru.questsfera.questreservation.model.dto.SlotList;
+import ru.questsfera.questreservation.model.dto.SlotListTypeBuilder;
+import ru.questsfera.questreservation.model.dto.TimePrice;
 
 import java.util.List;
 import java.util.stream.IntStream;

@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.converter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import ru.questsfera.questreservation.dto.Slot;
+import ru.questsfera.questreservation.model.dto.Slot;
 
 public class SlotMapper {
     private static final ObjectMapper mapper = new ObjectMapper();

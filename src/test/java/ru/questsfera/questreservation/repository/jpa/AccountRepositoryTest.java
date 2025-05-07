@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Quest;
+import ru.questsfera.questreservation.model.entity.Account;
+import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.config.Profile;
 
 import java.time.LocalTime;

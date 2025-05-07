@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.entity;
+package ru.questsfera.questreservation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

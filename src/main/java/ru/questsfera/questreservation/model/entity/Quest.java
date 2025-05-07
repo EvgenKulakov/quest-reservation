@@ -1,9 +1,9 @@
-package ru.questsfera.questreservation.entity;
+package ru.questsfera.questreservation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import ru.questsfera.questreservation.converter.SlotListMapper;
-import ru.questsfera.questreservation.dto.QuestFormDTO;
+import ru.questsfera.questreservation.model.dto.QuestFormDTO;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -63,7 +63,7 @@ public class Quest implements Comparable<Quest> {
         quest.autoBlock = questFormDTO.getAutoBlock();
         quest.slotList = SlotListMapper.createJSON(questFormDTO.getSlotList());
         quest.accounts = questFormDTO.getAccounts();
-        quest.statuses = questFormDTO.getStatuses().stream()
+        quest.statuses = questFormDTO.getStatuses().stream() // TODO через MapStruct ?
                 .map(s -> s.getType().name())
                 .collect(Collectors.joining(","));
         quest.companyId = companyId;

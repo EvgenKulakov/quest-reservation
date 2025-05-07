@@ -3,9 +3,9 @@ package ru.questsfera.questreservation.repository.jdbc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.questsfera.questreservation.dto.ReservationDTO;
-import ru.questsfera.questreservation.dto.StatusType;
-import ru.questsfera.questreservation.entity.Client;
+import ru.questsfera.questreservation.model.dto.ReservationDTO;
+import ru.questsfera.questreservation.model.dto.StatusType;
+import ru.questsfera.questreservation.model.entity.Client;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

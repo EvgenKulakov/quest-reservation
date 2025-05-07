@@ -2,7 +2,7 @@ package ru.questsfera.questreservation.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.questsfera.questreservation.entity.Reservation;
+import ru.questsfera.questreservation.model.entity.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

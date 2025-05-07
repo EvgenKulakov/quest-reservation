@@ -6,9 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.questsfera.questreservation.dto.AccountDTO;
-import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Company;
+import ru.questsfera.questreservation.converter.AccountMapper;
+import ru.questsfera.questreservation.model.dto.AccountDTO;
+import ru.questsfera.questreservation.model.entity.Account;
+import ru.questsfera.questreservation.model.entity.Company;
 import ru.questsfera.questreservation.processor.PasswordGenerator;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.company.CompanyService;
@@ -21,6 +22,7 @@ public class HomeController {
 
     private final AccountService accountService;
     private final CompanyService companyService;
+    private final AccountMapper accountMapper;
 
     @RequestMapping("/login")
     public String login() {
@@ -68,7 +70,7 @@ public class HomeController {
 
         accountDTO.setRole(Account.Role.ROLE_OWNER);
 
-        accountService.saveAccount(new Account(accountDTO));
+        accountService.saveAccount(accountMapper.toEntity(accountDTO));
         return "redirect:/login?new_account";
     }
 

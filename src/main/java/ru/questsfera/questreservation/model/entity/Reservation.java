@@ -1,10 +1,10 @@
-package ru.questsfera.questreservation.entity;
+package ru.questsfera.questreservation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.questsfera.questreservation.dto.ResFormDTO;
-import ru.questsfera.questreservation.dto.Slot;
-import ru.questsfera.questreservation.dto.StatusType;
+import ru.questsfera.questreservation.model.dto.ResFormDTO;
+import ru.questsfera.questreservation.model.dto.Slot;
+import ru.questsfera.questreservation.model.dto.StatusType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

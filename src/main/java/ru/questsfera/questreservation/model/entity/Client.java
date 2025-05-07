@@ -1,8 +1,8 @@
-package ru.questsfera.questreservation.entity;
+package ru.questsfera.questreservation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.questsfera.questreservation.dto.ResFormDTO;
+import ru.questsfera.questreservation.model.dto.ResFormDTO;
 
 import java.util.Objects;
 

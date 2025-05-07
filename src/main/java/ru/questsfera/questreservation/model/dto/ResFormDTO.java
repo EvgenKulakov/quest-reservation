@@ -1,9 +1,8 @@
-package ru.questsfera.questreservation.dto;
+package ru.questsfera.questreservation.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +12,6 @@ import ru.questsfera.questreservation.validator.ValidType;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ResFormDTO {
 
     private static final String ERROR_BLOCK = "*Для блокировки все поля должны быть пустыми";

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.converter.QuestMapper;
 import ru.questsfera.questreservation.converter.SlotListMapper;
-import ru.questsfera.questreservation.dto.*;
-import ru.questsfera.questreservation.entity.Quest;
+import ru.questsfera.questreservation.model.dto.*;
+import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.processor.SlotFactory;
 import ru.questsfera.questreservation.service.quest.QuestService;
 

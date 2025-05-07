@@ -9,8 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Quest;
+import ru.questsfera.questreservation.model.entity.Account;
+import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.repository.jdbc.AccountJdbcRepository;
 import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 

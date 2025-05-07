@@ -5,12 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.converter.ReservationMapper;
 import ru.questsfera.questreservation.converter.SlotMapper;
-import ru.questsfera.questreservation.dto.ResFormDTO;
-import ru.questsfera.questreservation.dto.ReservationDTO;
-import ru.questsfera.questreservation.dto.Slot;
-import ru.questsfera.questreservation.dto.StatusType;
-import ru.questsfera.questreservation.entity.Client;
-import ru.questsfera.questreservation.entity.Reservation;
+import ru.questsfera.questreservation.model.dto.ResFormDTO;
+import ru.questsfera.questreservation.model.dto.ReservationDTO;
+import ru.questsfera.questreservation.model.dto.Slot;
+import ru.questsfera.questreservation.model.dto.StatusType;
+import ru.questsfera.questreservation.model.entity.Client;
+import ru.questsfera.questreservation.model.entity.Reservation;
 import ru.questsfera.questreservation.service.client.ClientService;
 
 import java.security.Principal;
@@ -49,7 +49,7 @@ public class ReservationSaveOperator {
 
     private void saveExistsReservation(ResFormDTO resFormDTO, Slot slot) {
         ReservationDTO reservationDTO = reservationService.findReservationDtoById(slot.getReservationId());
-        ReservationDTO editedReservationDTO = reservationDTO.editUsingResForm(resFormDTO);
+        ReservationDTO editedReservationDTO = reservationDTO.editWithResForm(resFormDTO);
 
         clientService.saveClient(editedReservationDTO.getClient());
 

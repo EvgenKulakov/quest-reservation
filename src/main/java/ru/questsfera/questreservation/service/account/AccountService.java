@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.entity.Account;
-import ru.questsfera.questreservation.entity.Quest;
+import ru.questsfera.questreservation.model.entity.Account;
+import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.repository.jdbc.AccountJdbcRepository;
 import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 

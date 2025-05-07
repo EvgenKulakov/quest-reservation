@@ -1,7 +1,7 @@
-package ru.questsfera.questreservation.dto;
+package ru.questsfera.questreservation.model.dto;
 
 import lombok.*;
-import ru.questsfera.questreservation.entity.Client;
+import ru.questsfera.questreservation.model.entity.Client;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,7 +32,7 @@ public class ReservationDTO {
     private String clientComment;
     private String historyMessages;
 
-    public ReservationDTO editUsingResForm(ResFormDTO resFormDTO) {
+    public ReservationDTO editWithResForm(ResFormDTO resFormDTO) {
         this.setStatusType(resFormDTO.getStatusType());
         this.setCountPersons(resFormDTO.getCountPersons());
         this.setAdminComment(resFormDTO.getAdminComment());

@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.service.client;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.entity.Client;
+import ru.questsfera.questreservation.model.entity.Client;
 import ru.questsfera.questreservation.repository.jpa.ClientRepository;
 
 import java.util.Optional;

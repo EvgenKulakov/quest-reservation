@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.dto;
+package ru.questsfera.questreservation.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;

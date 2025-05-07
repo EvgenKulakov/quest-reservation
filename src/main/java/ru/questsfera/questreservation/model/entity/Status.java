@@ -1,9 +1,9 @@
-package ru.questsfera.questreservation.entity;
+package ru.questsfera.questreservation.model.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.questsfera.questreservation.dto.StatusType;
+import ru.questsfera.questreservation.model.dto.StatusType;
 
 import java.util.*;
 

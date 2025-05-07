@@ -7,9 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.converter.QuestMapper;
-import ru.questsfera.questreservation.dto.*;
-import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.entity.Status;
+import ru.questsfera.questreservation.model.dto.*;
+import ru.questsfera.questreservation.model.entity.Quest;
+import ru.questsfera.questreservation.model.entity.Status;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
 import java.math.BigDecimal;
@@ -110,7 +110,7 @@ class ReservationGetOperatorTest {
     }
 
     private Map<String, List<Slot>> getQuestNamesAndSlots() {
-        Slot slot1 = Slot.fromQuestAndReservation(getQuestDto(), getResDto(), 3000);
+        Slot slot1 = Slot.fromQuestAndReservationAndPrice(getQuestDto(), getResDto(), 3000);
         Slot slot2 = Slot.emptyFromQuestDateTimePrice(getQuestDto(), LocalDate.now(), LocalTime.parse("13:00:00"), 3000);
         return Map.of("Quest One", List.of(slot1, slot2));
     }

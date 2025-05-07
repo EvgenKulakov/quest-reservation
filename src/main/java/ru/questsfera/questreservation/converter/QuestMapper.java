@@ -2,9 +2,9 @@ package ru.questsfera.questreservation.converter;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.questsfera.questreservation.dto.QuestDTO;
-import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.entity.Status;
+import ru.questsfera.questreservation.model.dto.QuestDTO;
+import ru.questsfera.questreservation.model.entity.Quest;
+import ru.questsfera.questreservation.model.entity.Status;
 
 import java.util.Arrays;
 import java.util.Collections;

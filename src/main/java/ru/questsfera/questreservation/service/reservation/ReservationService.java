@@ -3,10 +3,10 @@ package ru.questsfera.questreservation.service.reservation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.dto.ReservationDTO;
-import ru.questsfera.questreservation.entity.Company;
-import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.entity.Reservation;
+import ru.questsfera.questreservation.model.dto.ReservationDTO;
+import ru.questsfera.questreservation.model.entity.Company;
+import ru.questsfera.questreservation.model.entity.Quest;
+import ru.questsfera.questreservation.model.entity.Reservation;
 import ru.questsfera.questreservation.repository.jdbc.ReservationJdbcRepository;
 import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
 

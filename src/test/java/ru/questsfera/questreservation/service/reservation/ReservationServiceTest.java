@@ -6,8 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.questsfera.questreservation.entity.Quest;
-import ru.questsfera.questreservation.entity.Reservation;
+import ru.questsfera.questreservation.model.entity.Quest;
+import ru.questsfera.questreservation.model.entity.Reservation;
 import ru.questsfera.questreservation.repository.jdbc.ReservationJdbcRepository;
 import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
 

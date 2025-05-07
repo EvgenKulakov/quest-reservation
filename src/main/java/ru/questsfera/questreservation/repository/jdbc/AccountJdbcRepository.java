@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.repository.jdbc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.questsfera.questreservation.entity.Account;
+import ru.questsfera.questreservation.model.entity.Account;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

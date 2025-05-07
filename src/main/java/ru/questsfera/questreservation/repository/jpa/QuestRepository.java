@@ -2,8 +2,7 @@ package ru.questsfera.questreservation.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import ru.questsfera.questreservation.entity.Quest;
+import ru.questsfera.questreservation.model.entity.Quest;
 
 import java.util.List;
 import java.util.Set;

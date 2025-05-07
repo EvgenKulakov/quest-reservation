@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.questsfera.questreservation.entity.Company;
+import ru.questsfera.questreservation.model.entity.Company;
 import ru.questsfera.questreservation.repository.jpa.CompanyRepository;
 
 import static org.mockito.Mockito.verify;

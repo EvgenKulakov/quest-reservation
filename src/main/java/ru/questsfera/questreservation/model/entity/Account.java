@@ -1,10 +1,9 @@
-package ru.questsfera.questreservation.entity;
+package ru.questsfera.questreservation.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import ru.questsfera.questreservation.dto.AccountDTO;
 import ru.questsfera.questreservation.validator.Patterns;
 
 import java.util.Objects;
@@ -54,18 +53,6 @@ public class Account {
             joinColumns = @JoinColumn(name = "account_id"),
             inverseJoinColumns = @JoinColumn(name = "quest_id"))
     private Set<Quest> quests = new TreeSet<>();
-
-    public Account(AccountDTO accountDTO) {
-        this.id = accountDTO.getId();
-        this.login = accountDTO.getLogin();
-        this.firstName = accountDTO.getFirstName();
-        this.password = accountDTO.getPassword();
-        this.lastName = accountDTO.getLastName();
-        this.phone = accountDTO.getPhone();
-        this.role = accountDTO.getRole();
-        this.companyId = accountDTO.getCompany().getId();
-        this.quests = accountDTO.getQuests();
-    }
 
     @Getter
     @RequiredArgsConstructor
