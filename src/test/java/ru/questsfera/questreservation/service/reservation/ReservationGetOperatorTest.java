@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.questsfera.questreservation.converter.QuestMapper;
+import ru.questsfera.questreservation.mapper.QuestMapper;
 import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.model.entity.Status;

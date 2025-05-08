@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.converter;
+package ru.questsfera.questreservation.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

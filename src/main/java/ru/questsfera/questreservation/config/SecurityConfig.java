@@ -20,7 +20,6 @@ public class SecurityConfig {
                             "/css/**", "/js/**", "/images/**", "/error").permitAll();
                     requests.requestMatchers("/quests/**", "/accounts/**").hasAnyRole("ADMIN", "OWNER");
                     requests.anyRequest().authenticated();
-
                 })
                 .formLogin((form) ->  {
                     form.loginPage("/login");

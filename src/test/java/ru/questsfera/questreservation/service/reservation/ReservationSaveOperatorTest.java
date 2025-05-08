@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.questsfera.questreservation.converter.ReservationMapper;
+import ru.questsfera.questreservation.mapper.ReservationMapper;
 import ru.questsfera.questreservation.model.dto.ResFormDTO;
 import ru.questsfera.questreservation.model.dto.ReservationDTO;
 import ru.questsfera.questreservation.model.entity.Client;

@@ -7,7 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.questsfera.questreservation.converter.SlotMapper;
+import ru.questsfera.questreservation.mapper.SlotMapper;
 import ru.questsfera.questreservation.model.dto.ResFormDTO;
 import ru.questsfera.questreservation.model.dto.Slot;
 import ru.questsfera.questreservation.model.dto.SlotListPageDTO;

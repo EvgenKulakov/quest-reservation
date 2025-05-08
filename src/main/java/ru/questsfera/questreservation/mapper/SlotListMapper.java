@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.converter;
+package ru.questsfera.questreservation.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

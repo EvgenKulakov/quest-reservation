@@ -2,7 +2,7 @@ package ru.questsfera.questreservation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.questsfera.questreservation.converter.SlotListMapper;
+import ru.questsfera.questreservation.mapper.SlotListMapper;
 import ru.questsfera.questreservation.model.dto.QuestFormDTO;
 
 import java.time.LocalTime;

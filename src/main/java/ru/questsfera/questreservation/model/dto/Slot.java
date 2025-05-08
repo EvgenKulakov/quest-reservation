@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.questsfera.questreservation.converter.SlotMapper;
+import ru.questsfera.questreservation.mapper.SlotMapper;
 import ru.questsfera.questreservation.model.entity.Status;
 
 import java.time.LocalDate;

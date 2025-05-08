@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.questsfera.questreservation.converter.AccountMapper;
+import ru.questsfera.questreservation.mapper.AccountMapper;
 import ru.questsfera.questreservation.model.dto.AccountDTO;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Company;
