@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.questsfera.questreservation.mapper.SlotMapper;
+import ru.questsfera.questreservation.mapper.SlotJsonMapper;
 import ru.questsfera.questreservation.model.entity.Status;
 
 import java.time.LocalDate;
@@ -33,13 +33,13 @@ public class Slot {
     private Integer minPersons;
     private Integer maxPersons;
 
-    public static Slot fromQuestAndReservationAndPrice(QuestDTO questDTO, ReservationDTO reservationDTO, Integer price) {
+    public static Slot fromQuestDateReservationPrice(QuestDTO questDTO, LocalDate date, ReservationDTO reservationDTO, Integer price) {
         Slot slot = new Slot();
         slot.setCompanyId(questDTO.getCompanyId());
         slot.setQuestId(questDTO.getId());
         slot.setQuestName(questDTO.getQuestName());
         slot.setReservationId(reservationDTO.getId());
-        slot.setDate(reservationDTO.getDateReserve());
+        slot.setDate(date);
         slot.setTime(reservationDTO.getTimeReserve());
         slot.setPrice(price);
         slot.setStatuses(questDTO.getStatuses());
@@ -66,7 +66,7 @@ public class Slot {
 
     @JsonIgnore
     public String getJson() {
-        return SlotMapper.createJSONSlot(this);
+        return SlotJsonMapper.createJSONSlot(this);
     }
 
     @Override

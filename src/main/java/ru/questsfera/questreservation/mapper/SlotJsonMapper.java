@@ -3,37 +3,27 @@ package ru.questsfera.questreservation.mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import ru.questsfera.questreservation.model.dto.SlotList;
+import ru.questsfera.questreservation.model.dto.Slot;
 
-public class SlotListMapper {
-
+public class SlotJsonMapper {
     private static final ObjectMapper mapper = new ObjectMapper();
     static {
         mapper.registerModule(new JavaTimeModule());
     }
 
-    public static SlotList createObject(String jsonSlotList) {
-
-        SlotList slotList = null;
+    public static Slot createSlotObject(String jsonSlot) {
         try {
-            slotList = mapper.readValue(jsonSlotList, SlotList.class);
+            return mapper.readValue(jsonSlot, Slot.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
-        return slotList;
     }
 
-    public static String createJSON(SlotList slotList) {
-
-        String JSONSlotList = null;
+    public static String createJSONSlot(Slot slot) {
         try {
-            JSONSlotList = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(slotList);
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(slot);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
-        return JSONSlotList;
     }
 }

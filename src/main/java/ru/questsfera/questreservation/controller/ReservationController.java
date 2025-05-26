@@ -7,7 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.questsfera.questreservation.mapper.SlotMapper;
+import ru.questsfera.questreservation.mapper.SlotJsonMapper;
 import ru.questsfera.questreservation.model.dto.ResFormDTO;
 import ru.questsfera.questreservation.model.dto.Slot;
 import ru.questsfera.questreservation.model.dto.SlotListPageDTO;
@@ -86,7 +86,7 @@ public class ReservationController {
     @PostMapping("/unBlock")
     public String deleteBlockReserve(@RequestParam("slot") String slotJSON, RedirectAttributes redirectAttributes) {
         //TODO: редактирование вместо удаления
-        Slot slot = SlotMapper.createSlotObject(slotJSON);
+        Slot slot = SlotJsonMapper.createSlotObject(slotJSON);
         reservationService.deleteBlockedReservation(slot.getReservationId());
         redirectAttributes.addAttribute("date", slot.getDate());
         return "redirect:/reservations/slot-list";

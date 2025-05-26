@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.mapper.QuestMapper;
-import ru.questsfera.questreservation.mapper.SlotListMapper;
+import ru.questsfera.questreservation.mapper.SlotListJsonMapper;
 import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.processor.SlotFactory;
@@ -74,7 +74,7 @@ public class ReservationGetOperator {
 
         for (Quest quest : quests) {
             Map<LocalTime, ReservationDTO> reservations = questIdAndTimeAndReserve.getOrDefault(quest.getId(), Collections.emptyMap());
-            SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
+            SlotList slotList = SlotListJsonMapper.toObject(quest.getSlotList());
             QuestDTO questDTO = questMapper.toDto(quest);
             SlotFactory slotFactory = new SlotFactory(questDTO, date, slotList, reservations);
             List<Slot> slots = slotFactory.getActualSlots();

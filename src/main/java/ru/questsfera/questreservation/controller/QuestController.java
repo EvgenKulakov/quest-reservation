@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.mapper.QuestMapper;
-import ru.questsfera.questreservation.mapper.SlotListMapper;
+import ru.questsfera.questreservation.mapper.SlotListJsonMapper;
 import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
@@ -58,7 +58,7 @@ public class QuestController {
         questFormDTO.setAccounts(new ArrayList<>(List.of(myAccount)));
 
         SlotListMaker.addDefaultValues(questFormDTO.getSlotList());
-        String slotListJSON = SlotListMapper.createJSON(questFormDTO.getSlotList());
+        String slotListJSON = SlotListJsonMapper.toJSON(questFormDTO.getSlotList());
 
         model.addAttribute("questForm", questFormDTO);
         model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
@@ -102,7 +102,7 @@ public class QuestController {
                 binding.addError(new ObjectError("global", globalErrorMessage));
             }
 
-            String slotListJSON = SlotListMapper.createJSON(questFormDTO.getSlotList());
+            String slotListJSON = SlotListJsonMapper.toJSON(questFormDTO.getSlotList());
 
             model.addAttribute("questForm", questFormDTO);
             model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
@@ -114,7 +114,8 @@ public class QuestController {
         }
 
         SlotListMaker.makeByType(questFormDTO.getSlotList(), questFormDTO.getTypeBuilder());
-        Quest quest =  Quest.fromQuestFormAndCompanyId(questFormDTO, account.getCompanyId());
+        String slotListJson = SlotListJsonMapper.toJSON(questFormDTO.getSlotList());
+        Quest quest =  Quest.fromQuestFormSlotListCompanyId(questFormDTO, slotListJson, account.getCompanyId());
         questService.saveQuest(quest);
 
         return "redirect:/quests/";
@@ -125,7 +126,7 @@ public class QuestController {
 
         List<Account> accounts = accountService.getAccountsByQuest(quest);
 
-        SlotList slotList = SlotListMapper.createObject(quest.getSlotList());
+        SlotList slotList = SlotListJsonMapper.toObject(quest.getSlotList());
         List<List<TimePrice>> allDays = slotList.getAllDays();
         QuestDTO questDTO = questMapper.toDto(quest);
 

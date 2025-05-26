@@ -47,7 +47,7 @@ public class SlotFactory {
     }
 
     private Slot createSlotWithReserve(ReservationDTO reserve, Integer price) {
-        return Slot.fromQuestAndReservationAndPrice(questDTO, reserve, price);
+        return Slot.fromQuestDateReservationPrice(questDTO, date, reserve, price);
     }
 
     private Slot createEmptySlot(LocalTime time, Integer price) {

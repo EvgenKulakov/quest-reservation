@@ -110,7 +110,7 @@ class ReservationGetOperatorTest {
     }
 
     private Map<String, List<Slot>> getQuestNamesAndSlots() {
-        Slot slot1 = Slot.fromQuestAndReservationAndPrice(getQuestDto(), getResDto(), 3000);
+        Slot slot1 = Slot.fromQuestDateReservationPrice(getQuestDto(), LocalDate.now(), getResDto(), 3000);
         Slot slot2 = Slot.emptyFromQuestDateTimePrice(getQuestDto(), LocalDate.now(), LocalTime.parse("13:00:00"), 3000);
         return Map.of("Quest One", List.of(slot1, slot2));
     }
