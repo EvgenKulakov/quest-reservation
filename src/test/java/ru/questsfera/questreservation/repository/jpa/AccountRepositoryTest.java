@@ -5,9 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import ru.questsfera.questreservation.config.Profile;
+import ru.questsfera.questreservation.model.dto.StatusType;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
-import ru.questsfera.questreservation.config.Profile;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -18,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DataJpaTest
 @ActiveProfiles(Profile.H2_TEST)
 @Sql(scripts = {"classpath:common_test_data.sql"})
-public class AccountRepositoryTest {
+class AccountRepositoryTest {
 
     static final String ACCOUNT_LOGIN = "admin@gmail.com";
     static final String NOT_EXISTS_LOGIN = "not-exists-login@gmail.com";
@@ -159,7 +160,8 @@ public class AccountRepositoryTest {
                 .autoBlock(LocalTime.MIN)
                 .slotList(slotListQuestOne)
                 .companyId(1)
-                .statuses("NEW_RESERVE,CANCEL,CONFIRMED,NOT_COME,COMPLETED")
+                .statuses(List.of(StatusType.NEW_RESERVE, StatusType.CANCEL, StatusType.CONFIRMED,
+                        StatusType.NOT_COME, StatusType.COMPLETED))
                 .synchronizedQuests(new HashSet<>())
                 .build();
 
@@ -171,7 +173,8 @@ public class AccountRepositoryTest {
                 .autoBlock(LocalTime.MIN)
                 .slotList(slotListQuestTwo)
                 .companyId(1)
-                .statuses("NEW_RESERVE,CANCEL,CONFIRMED,NOT_COME,COMPLETED")
+                .statuses(List.of(StatusType.NEW_RESERVE, StatusType.CANCEL, StatusType.CONFIRMED,
+                        StatusType.NOT_COME, StatusType.COMPLETED))
                 .synchronizedQuests(new HashSet<>())
                 .build();
 

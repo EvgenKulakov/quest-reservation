@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.questsfera.questreservation.mapper.SlotJsonMapper;
-import ru.questsfera.questreservation.model.entity.Status;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,7 +27,7 @@ public class Slot {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
     private Integer price; // TODO BigDecimal
-    private List<Status> statuses;
+    private List<StatusType> statuses;
     private StatusType statusType;
     private Integer minPersons;
     private Integer maxPersons;

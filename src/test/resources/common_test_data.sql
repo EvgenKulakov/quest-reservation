@@ -30,7 +30,7 @@ VALUES (1, 'Quest One', 1, 6, '00:00:00', null, e'{
   "friday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000}, {"time" : "14:00", "price" : 3000}, {"time" : "15:00", "price" : 3000}, {"time" : "16:00", "price" : 3000}, {"time" : "17:00", "price" : 3000}, {"time" : "18:00", "price" : 3000}, {"time" : "19:00", "price" : 3000}, {"time" : "20:00", "price" : 3000}, {"time" : "21:00", "price" : 3000} ],
   "saturday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000}, {"time" : "14:00", "price" : 3000}, {"time" : "15:00", "price" : 3000}, {"time" : "16:00", "price" : 3000}, {"time" : "17:00", "price" : 3000}, {"time" : "18:00", "price" : 3000}, {"time" : "19:00", "price" : 3000}, {"time" : "20:00", "price" : 3000}, {"time" : "21:00", "price" : 3000} ],
   "sunday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000}, {"time" : "14:00", "price" : 3000}, {"time" : "15:00", "price" : 3000}, {"time" : "16:00", "price" : 3000}, {"time" : "17:00", "price" : 3000}, {"time" : "18:00", "price" : 3000}, {"time" : "19:00", "price" : 3000}, {"time" : "20:00", "price" : 3000}, {"time" : "21:00", "price" : 3000} ]
-}', 1, 'NEW_RESERVE,CANCEL,CONFIRMED,NOT_COME,COMPLETED');
+}', 1, ARRAY['NEW_RESERVE', 'CANCEL', 'CONFIRMED', 'NOT_COME', 'COMPLETED']);
 
 INSERT INTO quests (id, quest_name, min_persons, max_persons, auto_block, sms, slot_list, company_id, statuses)
 VALUES (2, 'Quest Two', 1, 5, '00:00:00', null, e'{
@@ -41,7 +41,7 @@ VALUES (2, 'Quest Two', 1, 5, '00:00:00', null, e'{
   "friday" : [ {"time" : "12:30", "price" : 1500}, {"time" : "14:00", "price" : 1500}, {"time" : "16:30", "price" : 1500}, {"time" : "18:30", "price" : 1500}, {"time" : "20:00", "price" : 1500}, {"time" : "22:00", "price" : 1500} ],
   "saturday" : [ {"time" : "12:30", "price" : 1500}, {"time" : "14:00", "price" : 1500}, {"time" : "16:30", "price" : 1500}, {"time" : "18:30", "price" : 1500}, {"time" : "20:00", "price" : 1500}, {"time" : "22:00", "price" : 1500} ],
   "sunday" : [ {"time" : "12:30", "price" : 1500}, {"time" : "14:00", "price" : 1500}, {"time" : "16:30", "price" : 1500}, {"time" : "18:30", "price" : 1500}, {"time" : "20:00", "price" : 1500}, {"time" : "22:00", "price" : 1500} ]
-}', 1, 'NEW_RESERVE,CANCEL,CONFIRMED,NOT_COME,COMPLETED');
+}', 1, ARRAY['NEW_RESERVE', 'CANCEL', 'CONFIRMED', 'NOT_COME', 'COMPLETED']);
 
 INSERT INTO reservations (id, date_reserve, time_reserve, time_created, time_last_change, changed_slot_time, quest_id, status_type, source_reserve, price, changed_price, client_id, count_persons, admin_comment, client_comment, history_messages)
 VALUES

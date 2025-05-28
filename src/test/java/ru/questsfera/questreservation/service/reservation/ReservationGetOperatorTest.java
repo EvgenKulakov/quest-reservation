@@ -9,18 +9,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.mapper.QuestMapper;
 import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Quest;
-import ru.questsfera.questreservation.model.entity.Status;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -94,7 +97,7 @@ class ReservationGetOperatorTest {
                 .autoBlock(LocalTime.MIN)
                 .slotList(slotListQuestOne)
                 .companyId(1)
-                .statuses("NEW_RESERVE,CANCEL,CONFIRMED,NOT_COME,COMPLETED")
+                .statuses(StatusType.DEFAULT_STATUSES())
                 .synchronizedQuests(new HashSet<>())
                 .build();
     }
@@ -123,7 +126,7 @@ class ReservationGetOperatorTest {
                 .maxPersons(6)
                 .autoBlock(LocalTime.MIN)
                 .companyId(1)
-                .statuses(Status.getUserStatuses())
+                .statuses(StatusType.DEFAULT_STATUSES())
                 .synchronizedQuests(new HashSet<>())
                 .build();
     }

@@ -84,23 +84,23 @@ class ReservationSaveOperatorTest {
                   "price" : 3000,
                   "statuses" : [ {
                     "id" : 1,
-                    "type" : "NEW_RESERVE",
+                    "name" : "NEW_RESERVE",
                     "text" : "Новый"
                   }, {
                     "id" : 2,
-                    "type" : "CANCEL",
+                    "name" : "CANCEL",
                     "text" : "Отменён"
                   }, {
                     "id" : 3,
-                    "type" : "CONFIRMED",
+                    "name" : "CONFIRMED",
                     "text" : "Подтверждён"
                   }, {
                     "id" : 4,
-                    "type" : "NOT_COME",
+                    "name" : "NOT_COME",
                     "text" : "Не пришёл"
                   }, {
                     "id" : 5,
-                    "type" : "COMPLETED",
+                    "name" : "COMPLETED",
                     "text" : "Завершён"
                   } ],
                   "statusType" : "NOT_COME",
@@ -121,23 +121,23 @@ class ReservationSaveOperatorTest {
                   "price" : 3000,
                   "statuses" : [ {
                     "id" : 1,
-                    "type" : "NEW_RESERVE",
+                    "name" : "NEW_RESERVE",
                     "text" : "Новый"
                   }, {
                     "id" : 2,
-                    "type" : "CANCEL",
+                    "name" : "CANCEL",
                     "text" : "Отменён"
                   }, {
                     "id" : 3,
-                    "type" : "CONFIRMED",
+                    "name" : "CONFIRMED",
                     "text" : "Подтверждён"
                   }, {
                     "id" : 4,
-                    "type" : "NOT_COME",
+                    "name" : "NOT_COME",
                     "text" : "Не пришёл"
                   }, {
                     "id" : 5,
-                    "type" : "COMPLETED",
+                    "name" : "COMPLETED",
                     "text" : "Завершён"
                   } ],
                   "statusType" : "EMPTY",

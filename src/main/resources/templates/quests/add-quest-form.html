@@ -52,11 +52,11 @@
           <div th:each="status : ${userStatuses}">
             <div class="form-check">
               <input th:type="checkbox"
-                     th:class="${status.id <= 2}
+                     th:class="${status.name == 'NEW_RESERVE' || status.name == 'CANCEL'}
                                    ? 'form-check-input check-default'
                                    : 'form-check-input'"
-                     th:field="*{statuses}" th:value="${status.id}">
-              <label th:text="${status.type.text}"></label>
+                     th:field="*{statuses}" th:value="${status}">
+              <label th:text="${status.text}"></label>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@
         <div class="col">
           <div class="form-check" th:each="account : ${allAccounts}">
             <input th:type="checkbox"
-                   th:class="${account.role.name() == 'ROLE_OWNER'}
+                   th:class="${account.role.name == 'ROLE_OWNER'}
                                    ? 'form-check-input check-default'
                                    : 'form-check-input'"
                    th:field="*{accounts}" th:value="${account.id}">

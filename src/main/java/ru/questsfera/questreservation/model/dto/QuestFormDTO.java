@@ -1,11 +1,13 @@
 package ru.questsfera.questreservation.model.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.questsfera.questreservation.model.entity.Account;
-import ru.questsfera.questreservation.model.entity.Status;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class QuestFormDTO {
 
     private Boolean onlySecondPageError;
 
-    private List<Status> statuses;
+    private List<StatusType> statuses;
 
     @NotNull(message = "*Обязательное поле")
     private LocalTime autoBlock;

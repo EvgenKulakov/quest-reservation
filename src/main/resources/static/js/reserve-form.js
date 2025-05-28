@@ -40,7 +40,7 @@ async function clickSlot(slotButton) {
     slotTime.textContent = 'Время: ' + slot.time
     slotPrice.textContent = 'Стоимость: ' + slot.price + '₽'
 
-    if (slot.statusType !== 'BLOCK') {
+    if (slot.statusType.name !== 'BLOCK') {
         await showReservation(slot)
     } else {
         showBlockSlot()
@@ -51,7 +51,7 @@ async function showReservation(slot) {
     const statuses = slot.statuses
     for (let i = 0; i < statuses.length; i++) {
         const newOption = document.createElement("option")
-        newOption.value = statuses[i].type
+        newOption.value = statuses[i].name
         newOption.textContent = statuses[i].text
         selectStatus.appendChild(newOption);
     }
@@ -66,14 +66,14 @@ async function showReservation(slot) {
     if (errorMessages.length > 0) {
         selectStatus.value = changeStatus.value // TODO: обращение к slot ?
         selectCountPersons.value = changeCountPersons.value
-        if (slot.statusType !== 'EMPTY') {
+        if (slot.statusType.name !== 'EMPTY') {
             blockButton.style.display = 'none'
         }
-    } else if (slot.statusType !== 'EMPTY') {
+    } else if (slot.statusType.name !== 'EMPTY') {
         const reservation = await getReservation(slot.reservationId)
         if (!reservation) return // TODO: страница ошибки
 
-        selectStatus.value = reservation.statusType
+        selectStatus.value = reservation.statusType.name
         firstName.value = reservation.firstName
         lastName.value = reservation.lastName
         phone.value = reservation.phone

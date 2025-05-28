@@ -2,12 +2,13 @@ package ru.questsfera.questreservation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.questsfera.questreservation.mapper.SlotListJsonMapper;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import ru.questsfera.questreservation.model.dto.QuestFormDTO;
+import ru.questsfera.questreservation.model.dto.StatusType;
 
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -46,8 +47,10 @@ public class Quest implements Comparable<Quest> {
     @ManyToMany(mappedBy = "quests")
     private List<Account> accounts = new ArrayList<>();
 
-    @Column(name = "statuses")
-    private String statuses;
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "statuses", columnDefinition = "VARCHAR ARRAY")
+    @Enumerated(EnumType.STRING)
+    private List<StatusType> statuses;
 
     @ManyToMany
     @JoinTable(name = "synchronized_quests",
@@ -63,9 +66,7 @@ public class Quest implements Comparable<Quest> {
         quest.autoBlock = questFormDTO.getAutoBlock();
         quest.slotList = slotListJson;
         quest.accounts = questFormDTO.getAccounts();
-        quest.statuses = questFormDTO.getStatuses().stream()
-                .map(s -> s.getType().name())
-                .collect(Collectors.joining(","));
+        quest.statuses = questFormDTO.getStatuses();
         quest.companyId = companyId;
         return quest;
     }

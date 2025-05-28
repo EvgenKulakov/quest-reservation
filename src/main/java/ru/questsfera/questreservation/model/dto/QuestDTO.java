@@ -3,7 +3,6 @@ package ru.questsfera.questreservation.model.dto;
 import lombok.*;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
-import ru.questsfera.questreservation.model.entity.Status;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -26,7 +25,7 @@ public class QuestDTO implements Comparable<QuestDTO> {
     private String slotList;
     private Integer companyId;
     private List<Account> accounts;
-    private List<Status> statuses;
+    private List<StatusType> statuses;
     private Set<Quest> synchronizedQuests;
 
     @Override

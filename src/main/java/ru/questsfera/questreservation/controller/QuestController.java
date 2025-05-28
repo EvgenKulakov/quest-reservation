@@ -12,7 +12,6 @@ import ru.questsfera.questreservation.mapper.SlotListJsonMapper;
 import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
-import ru.questsfera.questreservation.model.entity.Status;
 import ru.questsfera.questreservation.processor.SlotListMaker;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
@@ -52,7 +51,7 @@ public class QuestController {
                 .orElseThrow();
 
         QuestFormDTO questFormDTO = new QuestFormDTO();
-        questFormDTO.setStatuses(Status.getDefaultStatuses());
+        questFormDTO.setStatuses(StatusType.MANDATORY_STATUSES());
         questFormDTO.setAutoBlock(LocalTime.MIN);
         questFormDTO.setTypeBuilder(SlotListTypeBuilder.EQUAL_DAYS);
         questFormDTO.setAccounts(new ArrayList<>(List.of(myAccount)));
@@ -64,7 +63,7 @@ public class QuestController {
         model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
         model.addAttribute("slotListJSON", slotListJSON);
         model.addAttribute("allAccounts", allAccounts);
-        model.addAttribute("userStatuses", Status.getUserStatuses());
+        model.addAttribute("userStatuses", StatusType.DEFAULT_STATUSES());
 
         return "quests/add-quest-form";
     }
@@ -107,7 +106,7 @@ public class QuestController {
             model.addAttribute("questForm", questFormDTO);
             model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
             model.addAttribute("slotListJSON", slotListJSON);
-            model.addAttribute("userStatuses", Status.getUserStatuses());
+            model.addAttribute("userStatuses", StatusType.DEFAULT_STATUSES());
             model.addAttribute("allAccounts", accountService.findAllAccountsInCompanyByOwnAccountName(principal.getName()));
 
             return "quests/add-quest-form";

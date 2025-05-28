@@ -6,8 +6,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ru.questsfera.questreservation.model.dto.Slot;
 
 public class SlotJsonMapper {
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper;
     static {
+        mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
     }
 

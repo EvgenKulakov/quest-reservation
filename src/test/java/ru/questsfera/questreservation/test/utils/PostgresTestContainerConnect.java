@@ -12,11 +12,11 @@ import ru.questsfera.questreservation.config.Profile;
  * Using with docker-engine
  */
 @Testcontainers
-@ActiveProfiles(Profile.TESTCONTAINERS)
-public abstract class TestContainerConnect {
+@ActiveProfiles(Profile.POSTGRES_TESTCONTAINER)
+public interface PostgresTestContainerConnect {
 
     @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17.4");
+    PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17.4");
 
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
