@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.service.reservation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.model.dto.ReservationDTO;
+import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.model.entity.Company;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.model.entity.Reservation;
@@ -23,12 +23,12 @@ public class ReservationService {
     private final ReservationJdbcRepository reservationJdbcRepository;
 
     @Transactional(readOnly = true)
-    public ReservationDTO findReservationDtoById(Long id) {
+    public ReservationWIthClient findReservationDtoById(Long id) {
         return reservationJdbcRepository.findReservationDtoById(id);
     }
 
     @Transactional(readOnly = true)
-    public List<ReservationDTO> findActiveByQuestIdsAndDate(Collection<Integer> questIds, LocalDate dateReserve) {
+    public List<ReservationWIthClient> findActiveByQuestIdsAndDate(Collection<Integer> questIds, LocalDate dateReserve) {
         if (questIds.isEmpty()) return Collections.emptyList();
         return reservationJdbcRepository.findActiveByQuestIdsAndDate(questIds, dateReserve);
     }

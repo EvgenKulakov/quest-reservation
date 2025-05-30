@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.mapper.QuestMapper;
 import ru.questsfera.questreservation.mapper.SlotListJsonMapper;
 import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Quest;
@@ -24,41 +23,40 @@ public class ReservationGetOperator {
 
     private final ReservationService reservationService;
     private final QuestService questService;
-    private final QuestMapper questMapper;
 
     @Transactional(readOnly = true)
     public SlotListPageDTO getQuestsAndSlotsByDate(LocalDate date, Principal principal) {
         Set<Quest> quests = questService.findAllByAccount_login(principal.getName());
 
-        List<ReservationDTO> reservationDTOs = reservationService.findActiveByQuestIdsAndDate(
+        List<ReservationWIthClient> reservationsWithClient = reservationService.findActiveByQuestIdsAndDate(
                 quests.stream().map(Quest::getId).toList(), date);
 
-        Map<Integer, Map<LocalTime, ReservationDTO>> questIdAndTimeAndReserve =
-                splitQuestIdAndTimeAndReserve(reservationDTOs);
+        Map<Integer, Map<LocalTime, ReservationWIthClient>> questIdAndTimeAndReserve =
+                splitQuestIdAndTimeAndReserve(reservationsWithClient);
 
         Map<String, List<Slot>> questNamesAndSlots = getQuestNamesAndSlots(quests, questIdAndTimeAndReserve, date);
 
-        Set<StatusType> useStatuses = reservationDTOs.stream()
-                .map(ReservationDTO::getStatusType)
+        Set<StatusType> useStatuses = reservationsWithClient.stream()
+                .map(ReservationWIthClient::getStatusType)
                 .collect(Collectors.toSet());
 
         return new SlotListPageDTO(questNamesAndSlots, useStatuses);
     }
 
-    private Map<Integer, Map<LocalTime, ReservationDTO>> splitQuestIdAndTimeAndReserve(List<ReservationDTO> reservations) {
-        Map<Integer, Map<LocalTime, ReservationDTO>> questIdAndTimeAndReserve = new HashMap<>();
+    private Map<Integer, Map<LocalTime, ReservationWIthClient>> splitQuestIdAndTimeAndReserve(List<ReservationWIthClient> reservations) {
+        Map<Integer, Map<LocalTime, ReservationWIthClient>> questIdAndTimeAndReserve = new HashMap<>();
 
-        for (ReservationDTO resDTO : reservations) {
-            Map<LocalTime, ReservationDTO> timeAndReserve = questIdAndTimeAndReserve.get(resDTO.getQuestId());
+        for (ReservationWIthClient resWithClient : reservations) {
+            Map<LocalTime, ReservationWIthClient> timeAndReserve = questIdAndTimeAndReserve.get(resWithClient.getQuestId());
             if (timeAndReserve != null) {
                 // TODO create notification mechanism for double blocking
-                if (timeAndReserve.containsKey(resDTO.getTimeReserve())) {
+                if (timeAndReserve.containsKey(resWithClient.getTimeReserve())) {
                     throw new RuntimeException(String.format("Double reservation: reservation_id=%s and reservation_id=%s",
-                            resDTO.getId(), timeAndReserve.get(resDTO.getTimeReserve())));
+                            resWithClient.getId(), timeAndReserve.get(resWithClient.getTimeReserve())));
                 }
-                timeAndReserve.put(resDTO.getTimeReserve(), resDTO);
+                timeAndReserve.put(resWithClient.getTimeReserve(), resWithClient);
             } else {
-                questIdAndTimeAndReserve.put(resDTO.getQuestId(), new HashMap<>(Map.of(resDTO.getTimeReserve(), resDTO)));
+                questIdAndTimeAndReserve.put(resWithClient.getQuestId(), new HashMap<>(Map.of(resWithClient.getTimeReserve(), resWithClient)));
             }
         }
 
@@ -67,16 +65,15 @@ public class ReservationGetOperator {
 
     private Map<String, List<Slot>> getQuestNamesAndSlots(
             Set<Quest> quests,
-            Map<Integer, Map<LocalTime, ReservationDTO>> questIdAndTimeAndReserve,
+            Map<Integer, Map<LocalTime, ReservationWIthClient>> questIdAndTimeAndReserve,
             LocalDate date
     ) {
         Map<String, List<Slot>> questNameAndSlots = new LinkedHashMap<>();
 
         for (Quest quest : quests) {
-            Map<LocalTime, ReservationDTO> reservations = questIdAndTimeAndReserve.getOrDefault(quest.getId(), Collections.emptyMap());
+            Map<LocalTime, ReservationWIthClient> reservations = questIdAndTimeAndReserve.getOrDefault(quest.getId(), Collections.emptyMap());
             SlotList slotList = SlotListJsonMapper.toObject(quest.getSlotList());
-            QuestDTO questDTO = questMapper.toDto(quest);
-            SlotFactory slotFactory = new SlotFactory(questDTO, date, slotList, reservations);
+            SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
             List<Slot> slots = slotFactory.getActualSlots();
             questNameAndSlots.put(quest.getQuestName(), slots);
         }

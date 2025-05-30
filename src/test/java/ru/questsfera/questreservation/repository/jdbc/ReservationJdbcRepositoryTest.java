@@ -6,7 +6,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.jdbc.Sql;
-import ru.questsfera.questreservation.model.dto.ReservationDTO;
+import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.model.dto.StatusType;
 import ru.questsfera.questreservation.model.entity.Client;
 
@@ -29,14 +29,14 @@ class ReservationJdbcRepositoryTest {
 
     @Test
     void findReservationDtoById_success() {
-        ReservationDTO actualResDto = reservationJdbcRepository.findReservationDtoById(1L);
-        ReservationDTO exceptedResDto = getReservationDto();
+        ReservationWIthClient actualResDto = reservationJdbcRepository.findReservationDtoById(1L);
+        ReservationWIthClient exceptedResDto = getReservationDto();
         assertThat(actualResDto)
                 .usingRecursiveComparison()
                 .isEqualTo(exceptedResDto);
 
-        ReservationDTO actualBlockResDto = reservationJdbcRepository.findReservationDtoById(7L);
-        ReservationDTO exceptedBlockResDto = getBlockReservationDto();
+        ReservationWIthClient actualBlockResDto = reservationJdbcRepository.findReservationDtoById(7L);
+        ReservationWIthClient exceptedBlockResDto = getBlockReservationDto();
         assertThat(actualBlockResDto)
                 .usingRecursiveComparison()
                 .isEqualTo(exceptedBlockResDto);
@@ -50,9 +50,9 @@ class ReservationJdbcRepositoryTest {
 
     @Test
     void findActiveByQuestIdsAndDate_success() {
-        List<ReservationDTO> actualReservations = reservationJdbcRepository
+        List<ReservationWIthClient> actualReservations = reservationJdbcRepository
                 .findActiveByQuestIdsAndDate(List.of(1), LocalDate.parse("2025-04-21"));
-        List<ReservationDTO> exceptedReservations = getReservationDTOs();
+        List<ReservationWIthClient> exceptedReservations = getReservationDTOs();
 
         assertThat(actualReservations)
                 .usingRecursiveComparison()
@@ -62,11 +62,11 @@ class ReservationJdbcRepositoryTest {
 
     @Test
     void findActiveByQuestIdsAndDate_empty() {
-        List<ReservationDTO> emptyResultQuery1 = reservationJdbcRepository
+        List<ReservationWIthClient> emptyResultQuery1 = reservationJdbcRepository
                 .findActiveByQuestIdsAndDate(List.of(100, 101), LocalDate.parse("2025-04-21"));
-        List<ReservationDTO> emptyResultQuery2 = reservationJdbcRepository
+        List<ReservationWIthClient> emptyResultQuery2 = reservationJdbcRepository
                 .findActiveByQuestIdsAndDate(List.of(1), LocalDate.parse("2099-04-21"));
-        List<ReservationDTO> emptyResultQuery3 = reservationJdbcRepository
+        List<ReservationWIthClient> emptyResultQuery3 = reservationJdbcRepository
                 .findActiveByQuestIdsAndDate(List.of(100, 101), LocalDate.parse("2099-04-21"));
 
         assertThat(emptyResultQuery1.isEmpty()).isTrue();
@@ -74,8 +74,8 @@ class ReservationJdbcRepositoryTest {
         assertThat(emptyResultQuery3.isEmpty()).isTrue();
     }
 
-    private ReservationDTO getReservationDto() {
-        return new ReservationDTO(
+    private ReservationWIthClient getReservationDto() {
+        return new ReservationWIthClient(
                 1L,
                 LocalDate.parse("2025-04-21"),
                 LocalTime.parse("16:00:00"),
@@ -107,8 +107,8 @@ class ReservationJdbcRepositoryTest {
         );
     }
 
-    private ReservationDTO getBlockReservationDto() {
-        return new ReservationDTO(
+    private ReservationWIthClient getBlockReservationDto() {
+        return new ReservationWIthClient(
                 7L,
                 LocalDate.parse("2025-04-21"),
                 LocalTime.parse("16:30:00"),
@@ -128,15 +128,15 @@ class ReservationJdbcRepositoryTest {
         );
     }
 
-    private List<ReservationDTO> getReservationDTOs() {
-        ReservationDTO res1 = ReservationDTO.builder()
+    private List<ReservationWIthClient> getReservationDTOs() {
+        ReservationWIthClient res1 = ReservationWIthClient.builder()
                 .id(1L)
                 .timeReserve(LocalTime.parse("16:00:00"))
                 .questId(1)
                 .statusType(StatusType.CONFIRMED)
                 .build();
 
-        ReservationDTO res2 = ReservationDTO.builder()
+        ReservationWIthClient res2 = ReservationWIthClient.builder()
                 .id(2L)
                 .timeReserve(LocalTime.parse("17:00:00"))
                 .questId(1)

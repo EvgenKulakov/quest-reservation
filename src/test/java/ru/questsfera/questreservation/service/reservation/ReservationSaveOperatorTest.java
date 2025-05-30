@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.mapper.ReservationMapper;
 import ru.questsfera.questreservation.model.dto.ResFormDTO;
-import ru.questsfera.questreservation.model.dto.ReservationDTO;
+import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.model.entity.Client;
 import ru.questsfera.questreservation.model.entity.Reservation;
 import ru.questsfera.questreservation.service.client.ClientService;
@@ -29,7 +29,7 @@ class ReservationSaveOperatorTest {
 
     @Test
     void saveUsingResFormAndSlot_saveNew() {
-        ReservationDTO reservationDTO = Mockito.mock(ReservationDTO.class);
+        ReservationWIthClient reservationWIthClient = Mockito.mock(ReservationWIthClient.class);
         Client client = Mockito.mock(Client.class);
         Integer clientId = 1;
         ResFormDTO resFormDTO = Mockito.mock(ResFormDTO.class);
@@ -41,27 +41,27 @@ class ReservationSaveOperatorTest {
 
         verify(clientService).saveClient(any(Client.class));
         verify(reservationService).saveReservation(any(Reservation.class));
-        verify(reservationDTO, never()).editWithResForm(resFormDTO);
+        verify(reservationWIthClient, never()).editWithResForm(resFormDTO);
     }
 
     @Test
     void saveUsingResFormAndSlot_saveExists() {
-        ReservationDTO reservationDTO = Mockito.mock(ReservationDTO.class);
+        ReservationWIthClient reservationWIthClient = Mockito.mock(ReservationWIthClient.class);
         Client client = Mockito.mock(Client.class);
         Reservation reservation = Mockito.mock(Reservation.class);
         ResFormDTO resFormDTO = Mockito.mock(ResFormDTO.class);
         String slotJson = getSLotWithReserveJson();
 
-        when(reservationService.findReservationDtoById(anyLong())).thenReturn(reservationDTO);
-        when(reservationDTO.editWithResForm(resFormDTO)).thenReturn(reservationDTO);
-        when(reservationDTO.getClient()).thenReturn(client);
-        when(reservationMapper.toEntity(reservationDTO)).thenReturn(reservation);
+        when(reservationService.findReservationDtoById(anyLong())).thenReturn(reservationWIthClient);
+        when(reservationWIthClient.editWithResForm(resFormDTO)).thenReturn(reservationWIthClient);
+        when(reservationWIthClient.getClient()).thenReturn(client);
+        when(reservationMapper.toEntity(reservationWIthClient)).thenReturn(reservation);
 
         reservationSaveOperator.saveUsingResFormAndSlot(resFormDTO, slotJson, principal);
 
-        verify(reservationDTO).editWithResForm(resFormDTO);
+        verify(reservationWIthClient).editWithResForm(resFormDTO);
         verify(clientService).saveClient(client);
-        verify(reservationMapper).toEntity(reservationDTO);
+        verify(reservationMapper).toEntity(reservationWIthClient);
         verify(reservationService).saveReservation(reservation);
     }
 

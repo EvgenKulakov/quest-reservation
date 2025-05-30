@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.questsfera.questreservation.mapper.SlotJsonMapper;
+import ru.questsfera.questreservation.model.entity.Quest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -32,34 +33,34 @@ public class Slot {
     private Integer minPersons;
     private Integer maxPersons;
 
-    public static Slot fromQuestDateReservationPrice(QuestDTO questDTO, LocalDate date, ReservationDTO reservationDTO, Integer price) {
+    public static Slot fromQuestDateReservationPrice(Quest quest, LocalDate date, ReservationWIthClient reservationWIthClient, Integer price) {
         Slot slot = new Slot();
-        slot.setCompanyId(questDTO.getCompanyId());
-        slot.setQuestId(questDTO.getId());
-        slot.setQuestName(questDTO.getQuestName());
-        slot.setReservationId(reservationDTO.getId());
+        slot.setCompanyId(quest.getCompanyId());
+        slot.setQuestId(quest.getId());
+        slot.setQuestName(quest.getQuestName());
+        slot.setReservationId(reservationWIthClient.getId());
         slot.setDate(date);
-        slot.setTime(reservationDTO.getTimeReserve());
+        slot.setTime(reservationWIthClient.getTimeReserve());
         slot.setPrice(price);
-        slot.setStatuses(questDTO.getStatuses());
-        slot.setStatusType(reservationDTO.getStatusType());
-        slot.setMinPersons(questDTO.getMinPersons());
-        slot.setMaxPersons(questDTO.getMaxPersons());
+        slot.setStatuses(quest.getStatuses());
+        slot.setStatusType(reservationWIthClient.getStatusType());
+        slot.setMinPersons(quest.getMinPersons());
+        slot.setMaxPersons(quest.getMaxPersons());
         return slot;
     }
 
-    public static Slot emptyFromQuestDateTimePrice(QuestDTO questDTO, LocalDate date, LocalTime time, Integer price) {
+    public static Slot emptyFromQuestDateTimePrice(Quest quest, LocalDate date, LocalTime time, Integer price) {
         Slot slot = new Slot();
-        slot.setCompanyId(questDTO.getCompanyId());
-        slot.setQuestId(questDTO.getId());
-        slot.setQuestName(questDTO.getQuestName());
+        slot.setCompanyId(quest.getCompanyId());
+        slot.setQuestId(quest.getId());
+        slot.setQuestName(quest.getQuestName());
         slot.setDate(date);
         slot.setTime(time);
         slot.setPrice(price);
-        slot.setStatuses(questDTO.getStatuses());
+        slot.setStatuses(quest.getStatuses());
         slot.setStatusType(StatusType.EMPTY);
-        slot.setMinPersons(questDTO.getMinPersons());
-        slot.setMaxPersons(questDTO.getMaxPersons());
+        slot.setMinPersons(quest.getMinPersons());
+        slot.setMaxPersons(quest.getMaxPersons());
         return slot;
     }
 

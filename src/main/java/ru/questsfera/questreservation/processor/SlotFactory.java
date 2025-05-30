@@ -2,6 +2,7 @@ package ru.questsfera.questreservation.processor;
 
 import lombok.AllArgsConstructor;
 import ru.questsfera.questreservation.model.dto.*;
+import ru.questsfera.questreservation.model.entity.Quest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -11,10 +12,10 @@ import java.util.Map;
 
 @AllArgsConstructor
 public class SlotFactory {
-    private QuestDTO questDTO;
+    private Quest quest;
     private LocalDate date;
     private SlotList slotList;
-    private Map<LocalTime, ReservationDTO> reservations;
+    private Map<LocalTime, ReservationWIthClient> reservations;
 
     public List<Slot> getActualSlots() {
         List<Slot> slots = new ArrayList<>();
@@ -46,11 +47,11 @@ public class SlotFactory {
         };
     }
 
-    private Slot createSlotWithReserve(ReservationDTO reserve, Integer price) {
-        return Slot.fromQuestDateReservationPrice(questDTO, date, reserve, price);
+    private Slot createSlotWithReserve(ReservationWIthClient reserve, Integer price) {
+        return Slot.fromQuestDateReservationPrice(quest, date, reserve, price);
     }
 
     private Slot createEmptySlot(LocalTime time, Integer price) {
-        return Slot.emptyFromQuestDateTimePrice(questDTO, date, time, price);
+        return Slot.emptyFromQuestDateTimePrice(quest, date, time, price);
     }
 }

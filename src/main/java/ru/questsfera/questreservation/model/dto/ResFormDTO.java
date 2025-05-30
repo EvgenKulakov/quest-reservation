@@ -43,17 +43,17 @@ public class ResFormDTO {
 
     private String clientComment;
 
-    public static ResFormDTO fromReservationDto(ReservationDTO reservationDTO) {
+    public static ResFormDTO fromReservationDto(ReservationWIthClient reservationWIthClient) {
         ResFormDTO resFormDTO = new ResFormDTO();
-        resFormDTO.setId(reservationDTO.getId());
-        resFormDTO.setStatusType(reservationDTO.getStatusType());
-        resFormDTO.setFirstName(reservationDTO.getClient().getFirstName());
-        resFormDTO.setLastName(reservationDTO.getClient().getLastName());
-        resFormDTO.setPhone(reservationDTO.getClient().getPhones());
-        resFormDTO.setEmail(reservationDTO.getClient().getEmails());
-        resFormDTO.setCountPersons(reservationDTO.getCountPersons());
-        resFormDTO.setAdminComment(reservationDTO.getAdminComment());
-        resFormDTO.setClientComment(reservationDTO.getClientComment());
+        resFormDTO.setId(reservationWIthClient.getId());
+        resFormDTO.setStatusType(reservationWIthClient.getStatusType());
+        resFormDTO.setFirstName(reservationWIthClient.getClient().getFirstName());
+        resFormDTO.setLastName(reservationWIthClient.getClient().getLastName());
+        resFormDTO.setPhone(reservationWIthClient.getClient().getPhones());
+        resFormDTO.setEmail(reservationWIthClient.getClient().getEmails());
+        resFormDTO.setCountPersons(reservationWIthClient.getCountPersons());
+        resFormDTO.setAdminComment(reservationWIthClient.getAdminComment());
+        resFormDTO.setClientComment(reservationWIthClient.getClientComment());
         return resFormDTO;
     }
 }

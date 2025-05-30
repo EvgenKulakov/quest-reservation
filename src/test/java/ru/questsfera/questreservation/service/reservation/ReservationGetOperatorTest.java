@@ -6,8 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.questsfera.questreservation.mapper.QuestMapper;
-import ru.questsfera.questreservation.model.dto.*;
+import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
+import ru.questsfera.questreservation.model.dto.Slot;
+import ru.questsfera.questreservation.model.dto.SlotListPageDTO;
+import ru.questsfera.questreservation.model.dto.StatusType;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
@@ -33,7 +35,6 @@ class ReservationGetOperatorTest {
     @Mock ReservationService reservationService;
     @Mock QuestService questService;
     @Mock Principal principal;
-    @Mock QuestMapper questMapper;
     @InjectMocks ReservationGetOperator reservationGetOperator;
 
     LocalDate date;
@@ -52,9 +53,8 @@ class ReservationGetOperatorTest {
 
     @Test
     void getQuestsAndSlotsByDate_success() {
-        List<ReservationDTO> reservationDTOs = List.of(getResDto());
+        List<ReservationWIthClient> reservationDTOs = List.of(getResWithClient());
         when(reservationService.findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class))).thenReturn(reservationDTOs);
-        when(questMapper.toDto(getQuest())).thenReturn(getQuestDto());
 
         SlotListPageDTO actualSlotListPageDTO = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
         SlotListPageDTO exceptedSlotListPageDTO = new SlotListPageDTO(getQuestNamesAndSlots(), getUseStatuses());
@@ -69,8 +69,8 @@ class ReservationGetOperatorTest {
 
     @Test
     void getQuestsAndSlotsByDate_doubleBlockingFailure() {
-        List<ReservationDTO> reservationDTOs = List.of(getResDto(), getResDto());
-        when(reservationService.findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class))).thenReturn(reservationDTOs);
+        List<ReservationWIthClient> reservationsWithClient = List.of(getResWithClient(), getResWithClient());
+        when(reservationService.findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class))).thenReturn(reservationsWithClient);
 
         assertThatThrownBy(() -> reservationGetOperator.getQuestsAndSlotsByDate(date, principal))
                 .isInstanceOf(RuntimeException.class)
@@ -97,13 +97,13 @@ class ReservationGetOperatorTest {
                 .autoBlock(LocalTime.MIN)
                 .slotList(slotListQuestOne)
                 .companyId(1)
-                .statuses(StatusType.DEFAULT_STATUSES())
+                .statuses(StatusType.DEFAULT_STATUSES)
                 .synchronizedQuests(new HashSet<>())
                 .build();
     }
 
-    private ReservationDTO getResDto() {
-        return ReservationDTO.builder()
+    private ReservationWIthClient getResWithClient() {
+        return ReservationWIthClient.builder()
                 .id(1L)
                 .timeReserve(LocalTime.parse("12:00:00"))
                 .questId(1)
@@ -113,22 +113,9 @@ class ReservationGetOperatorTest {
     }
 
     private Map<String, List<Slot>> getQuestNamesAndSlots() {
-        Slot slot1 = Slot.fromQuestDateReservationPrice(getQuestDto(), LocalDate.now(), getResDto(), 3000);
-        Slot slot2 = Slot.emptyFromQuestDateTimePrice(getQuestDto(), LocalDate.now(), LocalTime.parse("13:00:00"), 3000);
+        Slot slot1 = Slot.fromQuestDateReservationPrice(getQuest(), LocalDate.now(), getResWithClient(), 3000);
+        Slot slot2 = Slot.emptyFromQuestDateTimePrice(getQuest(), LocalDate.now(), LocalTime.parse("13:00:00"), 3000);
         return Map.of("Quest One", List.of(slot1, slot2));
-    }
-
-    private QuestDTO getQuestDto() {
-        return QuestDTO.builder()
-                .id(1)
-                .questName("Quest One")
-                .minPersons(1)
-                .maxPersons(6)
-                .autoBlock(LocalTime.MIN)
-                .companyId(1)
-                .statuses(StatusType.DEFAULT_STATUSES())
-                .synchronizedQuests(new HashSet<>())
-                .build();
     }
 
     private Set<StatusType> getUseStatuses() {

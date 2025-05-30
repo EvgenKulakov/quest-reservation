@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import ru.questsfera.questreservation.mapper.QuestMapper;
 import ru.questsfera.questreservation.mapper.SlotListJsonMapper;
 import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Account;
@@ -32,7 +31,6 @@ public class QuestController {
     private final QuestService questService;
     private final AccountService accountService;
     private final ReservationService reservationService;
-    private final QuestMapper questMapper;
 
     @GetMapping("/")
     public String showQuestList(Principal principal, Model model) {
@@ -51,7 +49,7 @@ public class QuestController {
                 .orElseThrow();
 
         QuestFormDTO questFormDTO = new QuestFormDTO();
-        questFormDTO.setStatuses(StatusType.MANDATORY_STATUSES());
+        questFormDTO.setStatuses(StatusType.MANDATORY_STATUSES);
         questFormDTO.setAutoBlock(LocalTime.MIN);
         questFormDTO.setTypeBuilder(SlotListTypeBuilder.EQUAL_DAYS);
         questFormDTO.setAccounts(new ArrayList<>(List.of(myAccount)));
@@ -63,7 +61,7 @@ public class QuestController {
         model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
         model.addAttribute("slotListJSON", slotListJSON);
         model.addAttribute("allAccounts", allAccounts);
-        model.addAttribute("userStatuses", StatusType.DEFAULT_STATUSES());
+        model.addAttribute("userStatuses", StatusType.DEFAULT_STATUSES);
 
         return "quests/add-quest-form";
     }
@@ -106,7 +104,7 @@ public class QuestController {
             model.addAttribute("questForm", questFormDTO);
             model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
             model.addAttribute("slotListJSON", slotListJSON);
-            model.addAttribute("userStatuses", StatusType.DEFAULT_STATUSES());
+            model.addAttribute("userStatuses", StatusType.DEFAULT_STATUSES);
             model.addAttribute("allAccounts", accountService.findAllAccountsInCompanyByOwnAccountName(principal.getName()));
 
             return "quests/add-quest-form";
@@ -127,9 +125,8 @@ public class QuestController {
 
         SlotList slotList = SlotListJsonMapper.toObject(quest.getSlotList());
         List<List<TimePrice>> allDays = slotList.getAllDays();
-        QuestDTO questDTO = questMapper.toDto(quest);
 
-        model.addAttribute("quest", questDTO);
+        model.addAttribute("quest", quest);
         model.addAttribute("accounts", accounts);
         model.addAttribute("allSlotList", allDays);
 

@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.mapper.ReservationMapper;
 import ru.questsfera.questreservation.mapper.SlotJsonMapper;
 import ru.questsfera.questreservation.model.dto.ResFormDTO;
-import ru.questsfera.questreservation.model.dto.ReservationDTO;
+import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.model.dto.Slot;
 import ru.questsfera.questreservation.model.dto.StatusType;
 import ru.questsfera.questreservation.model.entity.Client;
@@ -48,12 +48,12 @@ public class ReservationSaveOperator {
     }
 
     private void saveExistsReservation(ResFormDTO resFormDTO, Slot slot) {
-        ReservationDTO reservationDTO = reservationService.findReservationDtoById(slot.getReservationId());
-        ReservationDTO editedReservationDTO = reservationDTO.editWithResForm(resFormDTO);
+        ReservationWIthClient reservationWIthClient = reservationService.findReservationDtoById(slot.getReservationId());
+        ReservationWIthClient editedReservationWIthClient = reservationWIthClient.editWithResForm(resFormDTO);
 
-        clientService.saveClient(editedReservationDTO.getClient());
+        clientService.saveClient(editedReservationWIthClient.getClient());
 
-        Reservation reservation = reservationMapper.toEntity(editedReservationDTO);
+        Reservation reservation = reservationMapper.toEntity(editedReservationWIthClient);
         reservation.setTimeLastChange(LocalDateTime.now());
         reservation.setHistoryMessages("default"); //TODO: history message
 

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.questsfera.questreservation.model.dto.ResFormDTO;
-import ru.questsfera.questreservation.model.dto.ReservationDTO;
+import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.service.reservation.ReservationService;
 
 import java.security.Principal;
@@ -21,8 +21,8 @@ public class ReservationRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ResFormDTO> getReserveById(@PathVariable("id") Long id, Principal principal) {
-        ReservationDTO reservationDTO = reservationService.findReservationDtoById(id);
-        ResFormDTO resFormDTO = ResFormDTO.fromReservationDto(reservationDTO);
+        ReservationWIthClient reservationWIthClient = reservationService.findReservationDtoById(id);
+        ResFormDTO resFormDTO = ResFormDTO.fromReservationDto(reservationWIthClient);
         return ResponseEntity.ok(resFormDTO);
     }
 }
