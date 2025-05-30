@@ -7,6 +7,7 @@ import ru.questsfera.questreservation.model.entity.Reservation;
 
 @Mapper(componentModel = "spring")
 public interface ReservationMapper {
+
     @Mapping(source = "client.id", target = "clientId")
     Reservation toEntity(ReservationWIthClient reservationWIthClient);
 }

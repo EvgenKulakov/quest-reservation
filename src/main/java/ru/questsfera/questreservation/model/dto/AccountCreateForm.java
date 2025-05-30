@@ -7,19 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Company;
-import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.validator.Patterns;
 
 import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class AccountDTO {
-
-    private Integer id;
+public class AccountCreateForm {
 
     @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание Email")
     private String login;
@@ -32,23 +27,24 @@ public class AccountDTO {
 
     private String lastName;
 
-    private String phone;
-
     private Account.Role role;
 
     private Company company;
 
-    private Set<Quest> quests = new TreeSet<>();
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AccountDTO account)) return false;
-        return id != null && Objects.equals(getId(), account.getId());
+        if (o == null || getClass() != o.getClass()) return false;
+        AccountCreateForm that = (AccountCreateForm) o;
+        return Objects.equals(login, that.login)
+                && Objects.equals(password, that.password)
+                && Objects.equals(firstName, that.firstName)
+                && Objects.equals(lastName, that.lastName)
+                && role == that.role
+                && Objects.equals(company, that.company);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(login, password, firstName, lastName, role, company);
     }
 }
