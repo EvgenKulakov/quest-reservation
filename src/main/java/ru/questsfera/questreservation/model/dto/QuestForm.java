@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class QuestFormDTO {
+public class QuestForm {
 
     @NotBlank(message = "*Обязательное поле")
     private String questName;
@@ -35,7 +35,7 @@ public class QuestFormDTO {
 
     private Boolean onlySecondPageError;
 
-    private List<StatusType> statuses;
+    private List<Status> statuses;
 
     @NotNull(message = "*Обязательное поле")
     private LocalTime autoBlock;

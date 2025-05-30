@@ -44,9 +44,9 @@
 
         <div class="row row-cols-auto" id="status-info">
           <h6>Статусы</h6>
-          <th:block th:each="status_type : ${use_statuses}">
-            <div class="slot-button custom-status col-auto" th:text="${status_type.text}"
-                 th:attr="data-status=${status_type}">
+          <th:block th:each="status : ${use_statuses}">
+            <div class="slot-button custom-status col-auto" th:text="${status.text}"
+                 th:attr="data-status=${status}">
             </div>
           </th:block>
         </div>
@@ -64,7 +64,7 @@
               <button class="slot-button custom-button"
                       th:value="${slot.getJson()}"
                       onclick="clickSlot(this.value)"
-                      th:attr="data-status=${slot.statusType}" type="button"
+                      th:attr="data-status=${slot.status}" type="button"
                       th:utext="${slot.time} + '<br/>₽' + ${slot.price}">
               </button>
             </form>
@@ -111,7 +111,7 @@
           <div class="mb-3 row">
             <label for="selectStatus" class="col-12 col-lg-3 col-form-label">Статус:</label>
             <div class="col-12 col-lg-6">
-              <select class="form-select" id="selectStatus" th:field="*{statusType}"></select>
+              <select class="form-select" id="selectStatus" th:field="*{status}"></select>
             </div>
           </div>
 

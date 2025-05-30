@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum StatusType {
+public enum Status {
     EMPTY("Свободно"),
     NEW_RESERVE("Новый"),
     CANCEL("Отменён"),
@@ -23,17 +23,17 @@ public enum StatusType {
 
     private final String text;
 
-    public static final List<StatusType> DEFAULT_STATUSES = List.of(
+    public static final List<Status> DEFAULT_STATUSES = List.of(
             NEW_RESERVE, CANCEL, CONFIRMED, NOT_COME, COMPLETED
     );
 
-    public static final List<StatusType> MANDATORY_STATUSES = List.of(
+    public static final List<Status> MANDATORY_STATUSES = List.of(
             NEW_RESERVE, CANCEL
     );
 
     @JsonCreator
-    public static StatusType fromJson(@JsonProperty("name") String name) {
-        return StatusType.valueOf(name);
+    public static Status fromJson(@JsonProperty("name") String name) {
+        return Status.valueOf(name);
     }
 
     public String getName() {

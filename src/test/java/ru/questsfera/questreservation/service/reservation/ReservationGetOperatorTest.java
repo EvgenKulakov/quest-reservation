@@ -8,8 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.model.dto.Slot;
-import ru.questsfera.questreservation.model.dto.SlotListPageDTO;
-import ru.questsfera.questreservation.model.dto.StatusType;
+import ru.questsfera.questreservation.model.dto.SlotListPage;
+import ru.questsfera.questreservation.model.dto.Status;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
@@ -56,12 +56,12 @@ class ReservationGetOperatorTest {
         List<ReservationWIthClient> reservationDTOs = List.of(getResWithClient());
         when(reservationService.findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class))).thenReturn(reservationDTOs);
 
-        SlotListPageDTO actualSlotListPageDTO = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
-        SlotListPageDTO exceptedSlotListPageDTO = new SlotListPageDTO(getQuestNamesAndSlots(), getUseStatuses());
+        SlotListPage actualSlotListPage = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
+        SlotListPage exceptedSlotListPage = new SlotListPage(getQuestNamesAndSlots(), getUseStatuses());
 
-        assertThat(actualSlotListPageDTO)
+        assertThat(actualSlotListPage)
                 .usingRecursiveComparison()
-                .isEqualTo(exceptedSlotListPageDTO);
+                .isEqualTo(exceptedSlotListPage);
 
         verify(questService).findAllByAccount_login(accountLogin);
         verify(reservationService).findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class));
@@ -97,7 +97,7 @@ class ReservationGetOperatorTest {
                 .autoBlock(LocalTime.MIN)
                 .slotList(slotListQuestOne)
                 .companyId(1)
-                .statuses(StatusType.DEFAULT_STATUSES)
+                .statuses(Status.DEFAULT_STATUSES)
                 .synchronizedQuests(new HashSet<>())
                 .build();
     }
@@ -108,7 +108,7 @@ class ReservationGetOperatorTest {
                 .timeReserve(LocalTime.parse("12:00:00"))
                 .questId(1)
                 .price(new BigDecimal(3000))
-                .statusType(StatusType.CONFIRMED)
+                .status(Status.CONFIRMED)
                 .build();
     }
 
@@ -118,7 +118,7 @@ class ReservationGetOperatorTest {
         return Map.of("Quest One", List.of(slot1, slot2));
     }
 
-    private Set<StatusType> getUseStatuses() {
-        return Set.of(StatusType.CONFIRMED);
+    private Set<Status> getUseStatuses() {
+        return Set.of(Status.CONFIRMED);
     }
 }

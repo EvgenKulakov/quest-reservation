@@ -2,7 +2,7 @@ package ru.questsfera.questreservation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.questsfera.questreservation.model.dto.ResFormDTO;
+import ru.questsfera.questreservation.model.dto.ReservationForm;
 
 import java.util.Objects;
 
@@ -41,7 +41,7 @@ public class Client {
     @Column(name = "company_id")
     private Integer companyId;
 
-    public static Client fromResFormAndCompanyId(ResFormDTO resForm, Integer companyId) {
+    public static Client fromResFormAndCompanyId(ReservationForm resForm, Integer companyId) {
         Client client = new Client();
         client.setFirstName(resForm.getFirstName());
         client.setLastName(resForm.getLastName());

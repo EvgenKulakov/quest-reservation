@@ -22,7 +22,7 @@ public class ReservationWIthClient {
     private LocalDateTime timeLastChange;
     private LocalTime changedSlotTime;
     private Integer questId;
-    private StatusType statusType;
+    private Status status;
     private String sourceReserve;
     private BigDecimal price;
     private BigDecimal changedPrice;
@@ -32,16 +32,16 @@ public class ReservationWIthClient {
     private String clientComment;
     private String historyMessages;
 
-    public ReservationWIthClient editWithResForm(ResFormDTO resFormDTO) {
-        this.setStatusType(resFormDTO.getStatusType());
-        this.setCountPersons(resFormDTO.getCountPersons());
-        this.setAdminComment(resFormDTO.getAdminComment());
-        this.setClientComment(resFormDTO.getClientComment());
+    public ReservationWIthClient editWithResForm(ReservationForm reservationForm) {
+        this.setStatus(reservationForm.getStatus());
+        this.setCountPersons(reservationForm.getCountPersons());
+        this.setAdminComment(reservationForm.getAdminComment());
+        this.setClientComment(reservationForm.getClientComment());
 
-        this.getClient().setFirstName(resFormDTO.getFirstName());
-        this.getClient().setLastName(resFormDTO.getLastName());
-        this.getClient().setPhones(resFormDTO.getPhone());
-        this.getClient().setEmails(resFormDTO.getEmail());
+        this.getClient().setFirstName(reservationForm.getFirstName());
+        this.getClient().setLastName(reservationForm.getLastName());
+        this.getClient().setPhones(reservationForm.getPhone());
+        this.getClient().setEmails(reservationForm.getEmail());
         return this;
     }
 

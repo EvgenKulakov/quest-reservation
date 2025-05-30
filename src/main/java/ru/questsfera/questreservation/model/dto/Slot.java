@@ -28,8 +28,8 @@ public class Slot {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
     private Integer price; // TODO BigDecimal
-    private List<StatusType> statuses;
-    private StatusType statusType;
+    private List<Status> statuses;
+    private Status status;
     private Integer minPersons;
     private Integer maxPersons;
 
@@ -43,7 +43,7 @@ public class Slot {
         slot.setTime(reservationWIthClient.getTimeReserve());
         slot.setPrice(price);
         slot.setStatuses(quest.getStatuses());
-        slot.setStatusType(reservationWIthClient.getStatusType());
+        slot.setStatus(reservationWIthClient.getStatus());
         slot.setMinPersons(quest.getMinPersons());
         slot.setMaxPersons(quest.getMaxPersons());
         return slot;
@@ -58,7 +58,7 @@ public class Slot {
         slot.setTime(time);
         slot.setPrice(price);
         slot.setStatuses(quest.getStatuses());
-        slot.setStatusType(StatusType.EMPTY);
+        slot.setStatus(Status.EMPTY);
         slot.setMinPersons(quest.getMinPersons());
         slot.setMaxPersons(quest.getMaxPersons());
         return slot;
@@ -81,7 +81,7 @@ public class Slot {
                 && Objects.equals(time, slot.time)
                 && Objects.equals(price, slot.price)
                 && Objects.equals(statuses, slot.statuses)
-                && Objects.equals(statusType, slot.statusType)
+                && Objects.equals(status, slot.status)
                 && Objects.equals(minPersons, slot.minPersons)
                 && Objects.equals(maxPersons, slot.maxPersons);
     }
@@ -89,6 +89,6 @@ public class Slot {
     @Override
     public int hashCode() {
         return Objects.hash(companyId, questId, questName, reservationId, date,
-                time, price, statuses, statusType, minPersons, maxPersons);
+                time, price, statuses, status, minPersons, maxPersons);
     }
 }

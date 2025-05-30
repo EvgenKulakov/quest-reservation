@@ -25,7 +25,7 @@ public class ReservationGetOperator {
     private final QuestService questService;
 
     @Transactional(readOnly = true)
-    public SlotListPageDTO getQuestsAndSlotsByDate(LocalDate date, Principal principal) {
+    public SlotListPage getQuestsAndSlotsByDate(LocalDate date, Principal principal) {
         Set<Quest> quests = questService.findAllByAccount_login(principal.getName());
 
         List<ReservationWIthClient> reservationsWithClient = reservationService.findActiveByQuestIdsAndDate(
@@ -36,11 +36,11 @@ public class ReservationGetOperator {
 
         Map<String, List<Slot>> questNamesAndSlots = getQuestNamesAndSlots(quests, questIdAndTimeAndReserve, date);
 
-        Set<StatusType> useStatuses = reservationsWithClient.stream()
-                .map(ReservationWIthClient::getStatusType)
+        Set<Status> useStatuses = reservationsWithClient.stream()
+                .map(ReservationWIthClient::getStatus)
                 .collect(Collectors.toSet());
 
-        return new SlotListPageDTO(questNamesAndSlots, useStatuses);
+        return new SlotListPage(questNamesAndSlots, useStatuses);
     }
 
     private Map<Integer, Map<LocalTime, ReservationWIthClient>> splitQuestIdAndTimeAndReserve(List<ReservationWIthClient> reservations) {

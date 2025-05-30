@@ -18,6 +18,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "WHERE r.questId = :questId " +
             "AND r.dateReserve = :dateReserve " +
             "AND r.timeReserve = :timeReserve " +
-            "AND r.statusType != 'CANCEL'")
+            "AND r.status != 'CANCEL'")
     boolean existsByQuestIdAndDateReserveAndTimeReserve(Integer questId, LocalDate dateReserve, LocalTime timeReserve);
 }

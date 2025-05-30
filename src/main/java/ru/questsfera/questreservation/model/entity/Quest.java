@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import ru.questsfera.questreservation.model.dto.QuestFormDTO;
-import ru.questsfera.questreservation.model.dto.StatusType;
+import ru.questsfera.questreservation.model.dto.QuestForm;
+import ru.questsfera.questreservation.model.dto.Status;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -50,7 +50,7 @@ public class Quest implements Comparable<Quest> {
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "statuses", columnDefinition = "VARCHAR ARRAY")
     @Enumerated(EnumType.STRING)
-    private List<StatusType> statuses;
+    private List<Status> statuses;
 
     @ManyToMany
     @JoinTable(name = "synchronized_quests",
@@ -58,15 +58,15 @@ public class Quest implements Comparable<Quest> {
             inverseJoinColumns = @JoinColumn(name = "id_second_quest"))
     private Set<Quest> synchronizedQuests = new HashSet<>();
 
-    public static Quest fromQuestFormSlotListCompanyId(QuestFormDTO questFormDTO, String slotListJson, Integer companyId) {
+    public static Quest fromQuestFormSlotListCompanyId(QuestForm questForm, String slotListJson, Integer companyId) {
         Quest quest = new Quest();
-        quest.questName = questFormDTO.getQuestName();
-        quest.minPersons = questFormDTO.getMinPersons();
-        quest.maxPersons = questFormDTO.getMaxPersons();
-        quest.autoBlock = questFormDTO.getAutoBlock();
+        quest.questName = questForm.getQuestName();
+        quest.minPersons = questForm.getMinPersons();
+        quest.maxPersons = questForm.getMaxPersons();
+        quest.autoBlock = questForm.getAutoBlock();
         quest.slotList = slotListJson;
-        quest.accounts = questFormDTO.getAccounts();
-        quest.statuses = questFormDTO.getStatuses();
+        quest.accounts = questForm.getAccounts();
+        quest.statuses = questForm.getStatuses();
         quest.companyId = companyId;
         return quest;
     }

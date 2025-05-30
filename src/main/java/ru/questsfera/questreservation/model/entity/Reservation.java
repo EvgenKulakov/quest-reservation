@@ -2,9 +2,10 @@ package ru.questsfera.questreservation.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.questsfera.questreservation.model.dto.ResFormDTO;
+import ru.questsfera.questreservation.model.dto.ReservationForm;
 import ru.questsfera.questreservation.model.dto.Slot;
-import ru.questsfera.questreservation.model.dto.StatusType;
+import ru.questsfera.questreservation.model.dto.Status;
+import ru.questsfera.questreservation.model.dto.Status;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -44,8 +45,8 @@ public class Reservation {
     private Integer questId;
 
     @Enumerated(value = EnumType.STRING)
-    @JoinColumn(name = "status_type")
-    private StatusType statusType;
+    @JoinColumn(name = "status")
+    private Status status;
 
     @Column(name = "source_reserve")
     private String sourceReserve;
@@ -72,17 +73,17 @@ public class Reservation {
     @Column(name = "history_messages")
     private String historyMessages;
 
-    public static Reservation fromResFormAndSlot(ResFormDTO resFormDTO, Slot slot) {
+    public static Reservation fromResFormAndSlot(ReservationForm reservationForm, Slot slot) {
         Reservation reservation = new Reservation();
         reservation.setDateReserve(slot.getDate());
         reservation.setTimeReserve(slot.getTime());
         reservation.setDateAndTimeCreated(LocalDateTime.now());
         reservation.setQuestId(slot.getQuestId());
-        reservation.setStatusType(resFormDTO.getStatusType());
+        reservation.setStatus(reservationForm.getStatus());
         reservation.setPrice(new BigDecimal(slot.getPrice()));
-        reservation.setCountPersons(resFormDTO.getCountPersons());
-        reservation.setAdminComment(resFormDTO.getAdminComment());
-        reservation.setClientComment(resFormDTO.getClientComment());
+        reservation.setCountPersons(reservationForm.getCountPersons());
+        reservation.setAdminComment(reservationForm.getAdminComment());
+        reservation.setClientComment(reservationForm.getClientComment());
         return reservation;
     }
 
@@ -92,7 +93,7 @@ public class Reservation {
         reservation.setTimeReserve(slot.getTime());
         reservation.setDateAndTimeCreated(LocalDateTime.now());
         reservation.setQuestId(slot.getQuestId());
-        reservation.setStatusType(StatusType.BLOCK);
+        reservation.setStatus(Status.BLOCK);
         return reservation;
     }
 

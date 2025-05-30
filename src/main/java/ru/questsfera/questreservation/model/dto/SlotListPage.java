@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Value
-public class SlotListPageDTO {
+public class SlotListPage {
     Map<String, List<Slot>> questNamesAndSlots;
-    Set<StatusType> useStatuses;
+    Set<Status> useStatuses;
 }

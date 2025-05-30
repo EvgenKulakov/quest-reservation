@@ -12,14 +12,14 @@ import ru.questsfera.questreservation.validator.ValidType;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ResFormDTO {
+public class ReservationForm {
 
     private static final String ERROR_BLOCK = "*Для блокировки все поля должны быть пустыми";
     private static final String ERROR_PHONE = "*Введите номер телефона в формате +7хххххххххх";
     private static final String ERROR_EMAIL = "*Проверьте правильное написание Email";
 
     private Long id;
-    private StatusType statusType;
+    private Status status;
 
     @NotBlank(message = "*Обязательное поле", groups = ValidType.SaveReserve.class)
     @Size(max = 0, message = ERROR_BLOCK, groups = ValidType.BlockSlot.class)
@@ -43,17 +43,17 @@ public class ResFormDTO {
 
     private String clientComment;
 
-    public static ResFormDTO fromReservationDto(ReservationWIthClient reservationWIthClient) {
-        ResFormDTO resFormDTO = new ResFormDTO();
-        resFormDTO.setId(reservationWIthClient.getId());
-        resFormDTO.setStatusType(reservationWIthClient.getStatusType());
-        resFormDTO.setFirstName(reservationWIthClient.getClient().getFirstName());
-        resFormDTO.setLastName(reservationWIthClient.getClient().getLastName());
-        resFormDTO.setPhone(reservationWIthClient.getClient().getPhones());
-        resFormDTO.setEmail(reservationWIthClient.getClient().getEmails());
-        resFormDTO.setCountPersons(reservationWIthClient.getCountPersons());
-        resFormDTO.setAdminComment(reservationWIthClient.getAdminComment());
-        resFormDTO.setClientComment(reservationWIthClient.getClientComment());
-        return resFormDTO;
+    public static ReservationForm fromReservationWithClient(ReservationWIthClient reservationWIthClient) {
+        ReservationForm reservationForm = new ReservationForm();
+        reservationForm.setId(reservationWIthClient.getId());
+        reservationForm.setStatus(reservationWIthClient.getStatus());
+        reservationForm.setFirstName(reservationWIthClient.getClient().getFirstName());
+        reservationForm.setLastName(reservationWIthClient.getClient().getLastName());
+        reservationForm.setPhone(reservationWIthClient.getClient().getPhones());
+        reservationForm.setEmail(reservationWIthClient.getClient().getEmails());
+        reservationForm.setCountPersons(reservationWIthClient.getCountPersons());
+        reservationForm.setAdminComment(reservationWIthClient.getAdminComment());
+        reservationForm.setClientComment(reservationWIthClient.getClientComment());
+        return reservationForm;
     }
 }

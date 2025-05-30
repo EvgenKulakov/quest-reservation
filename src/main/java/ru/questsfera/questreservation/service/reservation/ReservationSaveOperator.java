@@ -5,10 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.mapper.ReservationMapper;
 import ru.questsfera.questreservation.mapper.SlotJsonMapper;
-import ru.questsfera.questreservation.model.dto.ResFormDTO;
+import ru.questsfera.questreservation.model.dto.ReservationForm;
 import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.model.dto.Slot;
-import ru.questsfera.questreservation.model.dto.StatusType;
+import ru.questsfera.questreservation.model.dto.Status;
 import ru.questsfera.questreservation.model.entity.Client;
 import ru.questsfera.questreservation.model.entity.Reservation;
 import ru.questsfera.questreservation.service.client.ClientService;
@@ -25,18 +25,18 @@ public class ReservationSaveOperator {
     private final ReservationMapper reservationMapper;
 
     @Transactional
-    public void saveUsingResFormAndSlot(ResFormDTO resFormDTO, String slotJSON, Principal principal) {
+    public void saveUsingResFormAndSlot(ReservationForm reservationForm, String slotJSON, Principal principal) {
         Slot slot = SlotJsonMapper.createSlotObject(slotJSON);
-        if (slot.getStatusType() == StatusType.EMPTY) {
-            saveNewReservation(resFormDTO, slot);
+        if (slot.getStatus() == Status.EMPTY) {
+            saveNewReservation(reservationForm, slot);
         } else {
-            saveExistsReservation(resFormDTO, slot);
+            saveExistsReservation(reservationForm, slot);
         }
     }
 
-    private void saveNewReservation(ResFormDTO resFormDTO, Slot slot) {
-        Reservation reservation = Reservation.fromResFormAndSlot(resFormDTO, slot);
-        Client newClient = Client.fromResFormAndCompanyId(resFormDTO, slot.getCompanyId());
+    private void saveNewReservation(ReservationForm reservationForm, Slot slot) {
+        Reservation reservation = Reservation.fromResFormAndSlot(reservationForm, slot);
+        Client newClient = Client.fromResFormAndCompanyId(reservationForm, slot.getCompanyId());
         Client clientSaved = clientService.saveClient(newClient);
 
         reservation.setClientId(clientSaved.getId());
@@ -47,9 +47,9 @@ public class ReservationSaveOperator {
         reservationService.saveReservation(reservation);
     }
 
-    private void saveExistsReservation(ResFormDTO resFormDTO, Slot slot) {
-        ReservationWIthClient reservationWIthClient = reservationService.findReservationDtoById(slot.getReservationId());
-        ReservationWIthClient editedReservationWIthClient = reservationWIthClient.editWithResForm(resFormDTO);
+    private void saveExistsReservation(ReservationForm reservationForm, Slot slot) {
+        ReservationWIthClient reservationWIthClient = reservationService.findReservationWIthClientById(slot.getReservationId());
+        ReservationWIthClient editedReservationWIthClient = reservationWIthClient.editWithResForm(reservationForm);
 
         clientService.saveClient(editedReservationWIthClient.getClient());
 

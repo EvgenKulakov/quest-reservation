@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.mapper.ReservationMapper;
-import ru.questsfera.questreservation.model.dto.ResFormDTO;
+import ru.questsfera.questreservation.model.dto.ReservationForm;
 import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.model.entity.Client;
 import ru.questsfera.questreservation.model.entity.Reservation;
@@ -32,16 +32,16 @@ class ReservationSaveOperatorTest {
         ReservationWIthClient reservationWIthClient = Mockito.mock(ReservationWIthClient.class);
         Client client = Mockito.mock(Client.class);
         Integer clientId = 1;
-        ResFormDTO resFormDTO = Mockito.mock(ResFormDTO.class);
+        ReservationForm reservationForm = Mockito.mock(ReservationForm.class);
         String slotJson = getSLotEmptyJson();
 
         when(clientService.saveClient(any(Client.class))).thenReturn(client);
         when(client.getId()).thenReturn(clientId);
-        reservationSaveOperator.saveUsingResFormAndSlot(resFormDTO, slotJson, principal);
+        reservationSaveOperator.saveUsingResFormAndSlot(reservationForm, slotJson, principal);
 
         verify(clientService).saveClient(any(Client.class));
         verify(reservationService).saveReservation(any(Reservation.class));
-        verify(reservationWIthClient, never()).editWithResForm(resFormDTO);
+        verify(reservationWIthClient, never()).editWithResForm(reservationForm);
     }
 
     @Test
@@ -49,17 +49,17 @@ class ReservationSaveOperatorTest {
         ReservationWIthClient reservationWIthClient = Mockito.mock(ReservationWIthClient.class);
         Client client = Mockito.mock(Client.class);
         Reservation reservation = Mockito.mock(Reservation.class);
-        ResFormDTO resFormDTO = Mockito.mock(ResFormDTO.class);
+        ReservationForm reservationForm = Mockito.mock(ReservationForm.class);
         String slotJson = getSLotWithReserveJson();
 
-        when(reservationService.findReservationDtoById(anyLong())).thenReturn(reservationWIthClient);
-        when(reservationWIthClient.editWithResForm(resFormDTO)).thenReturn(reservationWIthClient);
+        when(reservationService.findReservationWIthClientById(anyLong())).thenReturn(reservationWIthClient);
+        when(reservationWIthClient.editWithResForm(reservationForm)).thenReturn(reservationWIthClient);
         when(reservationWIthClient.getClient()).thenReturn(client);
         when(reservationMapper.toEntity(reservationWIthClient)).thenReturn(reservation);
 
-        reservationSaveOperator.saveUsingResFormAndSlot(resFormDTO, slotJson, principal);
+        reservationSaveOperator.saveUsingResFormAndSlot(reservationForm, slotJson, principal);
 
-        verify(reservationWIthClient).editWithResForm(resFormDTO);
+        verify(reservationWIthClient).editWithResForm(reservationForm);
         verify(clientService).saveClient(client);
         verify(reservationMapper).toEntity(reservationWIthClient);
         verify(reservationService).saveReservation(reservation);
@@ -83,27 +83,22 @@ class ReservationSaveOperatorTest {
                   "time" : "17:00",
                   "price" : 3000,
                   "statuses" : [ {
-                    "id" : 1,
                     "name" : "NEW_RESERVE",
                     "text" : "Новый"
                   }, {
-                    "id" : 2,
                     "name" : "CANCEL",
                     "text" : "Отменён"
                   }, {
-                    "id" : 3,
                     "name" : "CONFIRMED",
                     "text" : "Подтверждён"
                   }, {
-                    "id" : 4,
                     "name" : "NOT_COME",
                     "text" : "Не пришёл"
                   }, {
-                    "id" : 5,
                     "name" : "COMPLETED",
                     "text" : "Завершён"
                   } ],
-                  "statusType" : "NOT_COME",
+                  "status" : "NOT_COME",
                   "minPersons" : 1,
                   "maxPersons" : 6
                 }""";
@@ -120,27 +115,22 @@ class ReservationSaveOperatorTest {
                   "time" : "17:00",
                   "price" : 3000,
                   "statuses" : [ {
-                    "id" : 1,
                     "name" : "NEW_RESERVE",
                     "text" : "Новый"
                   }, {
-                    "id" : 2,
                     "name" : "CANCEL",
                     "text" : "Отменён"
                   }, {
-                    "id" : 3,
                     "name" : "CONFIRMED",
                     "text" : "Подтверждён"
                   }, {
-                    "id" : 4,
                     "name" : "NOT_COME",
                     "text" : "Не пришёл"
                   }, {
-                    "id" : 5,
                     "name" : "COMPLETED",
                     "text" : "Завершён"
                   } ],
-                  "statusType" : "EMPTY",
+                  "status" : "EMPTY",
                   "minPersons" : 1,
                   "maxPersons" : 6
                 }""";

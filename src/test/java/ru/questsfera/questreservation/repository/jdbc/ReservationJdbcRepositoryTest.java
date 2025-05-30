@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.jdbc.Sql;
 import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
-import ru.questsfera.questreservation.model.dto.StatusType;
+import ru.questsfera.questreservation.model.dto.Status;
 import ru.questsfera.questreservation.model.entity.Client;
 
 import java.math.BigDecimal;
@@ -28,14 +28,14 @@ class ReservationJdbcRepositoryTest {
     ReservationJdbcRepository reservationJdbcRepository;
 
     @Test
-    void findReservationDtoById_success() {
-        ReservationWIthClient actualResDto = reservationJdbcRepository.findReservationDtoById(1L);
+    void findReservationWithClientById_success() {
+        ReservationWIthClient actualResDto = reservationJdbcRepository.findReservationWithClientById(1L);
         ReservationWIthClient exceptedResDto = getReservationDto();
         assertThat(actualResDto)
                 .usingRecursiveComparison()
                 .isEqualTo(exceptedResDto);
 
-        ReservationWIthClient actualBlockResDto = reservationJdbcRepository.findReservationDtoById(7L);
+        ReservationWIthClient actualBlockResDto = reservationJdbcRepository.findReservationWithClientById(7L);
         ReservationWIthClient exceptedBlockResDto = getBlockReservationDto();
         assertThat(actualBlockResDto)
                 .usingRecursiveComparison()
@@ -43,8 +43,8 @@ class ReservationJdbcRepositoryTest {
     }
 
     @Test
-    void findReservationDtoById_failure() {
-        assertThatThrownBy(() -> reservationJdbcRepository.findReservationDtoById(1000L))
+    void findReservationWithClientById_failure() {
+        assertThatThrownBy(() -> reservationJdbcRepository.findReservationWithClientById(1000L))
                 .isInstanceOf(EmptyResultDataAccessException.class);
     }
 
@@ -83,7 +83,7 @@ class ReservationJdbcRepositoryTest {
                 LocalDateTime.parse("2025-04-21T00:29:51.006025"),
                 null,
                 1,
-                StatusType.CONFIRMED,
+                Status.CONFIRMED,
                 "default",
                 new BigDecimal("3000.00"),
                 null,
@@ -116,7 +116,7 @@ class ReservationJdbcRepositoryTest {
                 null,
                 null,
                 2,
-                StatusType.BLOCK,
+                Status.BLOCK,
                 "default",
                 null,
                 null,
@@ -133,14 +133,14 @@ class ReservationJdbcRepositoryTest {
                 .id(1L)
                 .timeReserve(LocalTime.parse("16:00:00"))
                 .questId(1)
-                .statusType(StatusType.CONFIRMED)
+                .status(Status.CONFIRMED)
                 .build();
 
         ReservationWIthClient res2 = ReservationWIthClient.builder()
                 .id(2L)
                 .timeReserve(LocalTime.parse("17:00:00"))
                 .questId(1)
-                .statusType(StatusType.BLOCK)
+                .status(Status.BLOCK)
                 .build();
 
         return List.of(res1, res2);

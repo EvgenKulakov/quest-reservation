@@ -43,7 +43,7 @@ VALUES (2, 'Quest Two', 1, 5, '00:00:00', null, e'{
   "sunday" : [ {"time" : "12:30", "price" : 1500}, {"time" : "14:00", "price" : 1500}, {"time" : "16:30", "price" : 1500}, {"time" : "18:30", "price" : 1500}, {"time" : "20:00", "price" : 1500}, {"time" : "22:00", "price" : 1500} ]
 }', 1, ARRAY['NEW_RESERVE', 'CANCEL', 'CONFIRMED', 'NOT_COME', 'COMPLETED']);
 
-INSERT INTO reservations (id, date_reserve, time_reserve, time_created, time_last_change, changed_slot_time, quest_id, status_type, source_reserve, price, changed_price, client_id, count_persons, admin_comment, client_comment, history_messages)
+INSERT INTO reservations (id, date_reserve, time_reserve, time_created, time_last_change, changed_slot_time, quest_id, status, source_reserve, price, changed_price, client_id, count_persons, admin_comment, client_comment, history_messages)
 VALUES
 (1, '2025-04-21', '16:00:00', '2025-04-21 00:29:51.003024', '2025-04-21 00:29:51.006025', null, 1, 'CONFIRMED', 'default', 3000.00, null, 1, 1, 'Hi', null, 'default'),
 (2, '2025-04-21', '17:00:00', '2025-04-21 00:29:53.345590', null, null, 1, 'BLOCK', 'default', null, null, null, null, null, null, 'default'),

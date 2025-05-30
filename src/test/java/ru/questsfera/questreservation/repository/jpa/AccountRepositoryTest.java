@@ -6,7 +6,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import ru.questsfera.questreservation.config.Profile;
-import ru.questsfera.questreservation.model.dto.StatusType;
+import ru.questsfera.questreservation.model.dto.Status;
+import ru.questsfera.questreservation.model.dto.Status;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
 
@@ -160,8 +161,8 @@ class AccountRepositoryTest {
                 .autoBlock(LocalTime.MIN)
                 .slotList(slotListQuestOne)
                 .companyId(1)
-                .statuses(List.of(StatusType.NEW_RESERVE, StatusType.CANCEL, StatusType.CONFIRMED,
-                        StatusType.NOT_COME, StatusType.COMPLETED))
+                .statuses(List.of(Status.NEW_RESERVE, Status.CANCEL, Status.CONFIRMED,
+                        Status.NOT_COME, Status.COMPLETED))
                 .synchronizedQuests(new HashSet<>())
                 .build();
 
@@ -173,8 +174,8 @@ class AccountRepositoryTest {
                 .autoBlock(LocalTime.MIN)
                 .slotList(slotListQuestTwo)
                 .companyId(1)
-                .statuses(List.of(StatusType.NEW_RESERVE, StatusType.CANCEL, StatusType.CONFIRMED,
-                        StatusType.NOT_COME, StatusType.COMPLETED))
+                .statuses(List.of(Status.NEW_RESERVE, Status.CANCEL, Status.CONFIRMED,
+                        Status.NOT_COME, Status.COMPLETED))
                 .synchronizedQuests(new HashSet<>())
                 .build();
 

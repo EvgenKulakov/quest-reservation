@@ -28,9 +28,9 @@ class ReservationServiceTest {
     @InjectMocks ReservationService reservationService;
 
     @Test
-    void findReservationDtoById() {
-        reservationService.findReservationDtoById(anyLong());
-        verify(reservationJdbcRepository).findReservationDtoById(anyLong());
+    void findReservationWIthClientById() {
+        reservationService.findReservationWIthClientById(anyLong());
+        verify(reservationJdbcRepository).findReservationWithClientById(anyLong());
     }
 
     @Test

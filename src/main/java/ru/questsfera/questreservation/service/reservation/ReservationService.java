@@ -23,8 +23,8 @@ public class ReservationService {
     private final ReservationJdbcRepository reservationJdbcRepository;
 
     @Transactional(readOnly = true)
-    public ReservationWIthClient findReservationDtoById(Long id) {
-        return reservationJdbcRepository.findReservationDtoById(id);
+    public ReservationWIthClient findReservationWIthClientById(Long id) {
+        return reservationJdbcRepository.findReservationWithClientById(id);
     }
 
     @Transactional(readOnly = true)

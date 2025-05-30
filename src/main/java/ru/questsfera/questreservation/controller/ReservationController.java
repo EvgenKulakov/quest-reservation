@@ -8,9 +8,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.questsfera.questreservation.mapper.SlotJsonMapper;
-import ru.questsfera.questreservation.model.dto.ResFormDTO;
+import ru.questsfera.questreservation.model.dto.ReservationForm;
 import ru.questsfera.questreservation.model.dto.Slot;
-import ru.questsfera.questreservation.model.dto.SlotListPageDTO;
+import ru.questsfera.questreservation.model.dto.SlotListPage;
 import ru.questsfera.questreservation.service.reservation.ReservationGetOperator;
 import ru.questsfera.questreservation.service.reservation.ReservationSaveOperator;
 import ru.questsfera.questreservation.service.reservation.ReservationService;
@@ -33,11 +33,11 @@ public class ReservationController {
                                Principal principal, Model model) {
 
         if (date == null) date = LocalDate.now();
-        SlotListPageDTO slotListPageDTO = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
+        SlotListPage slotListPage = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
 
-        model.addAttribute("res_form", new ResFormDTO());
-        model.addAttribute("quest_names_and_slots", slotListPageDTO.getQuestNamesAndSlots());
-        model.addAttribute("use_statuses" , slotListPageDTO.getUseStatuses());
+        model.addAttribute("res_form", new ReservationForm());
+        model.addAttribute("quest_names_and_slots", slotListPage.getQuestNamesAndSlots());
+        model.addAttribute("use_statuses" , slotListPage.getUseStatuses());
         model.addAttribute("date", date);
 
         return "reservations/slot-list";
@@ -45,7 +45,7 @@ public class ReservationController {
 
     @PostMapping("/save-reservation")
     public String saveReservation(@Validated(ValidType.SaveReserve.class)
-                                  @ModelAttribute("res_form") ResFormDTO resForm,
+                                  @ModelAttribute("res_form") ReservationForm resForm,
                                   BindingResult bindingResult,
                                   @RequestParam("slot") String slotJSON,
                                   @RequestParam("date") LocalDate date,
@@ -65,7 +65,7 @@ public class ReservationController {
 
     @PostMapping("/block-slot")
     public String blockSlot(@Validated(ValidType.BlockSlot.class)
-                            @ModelAttribute("res_form") ResFormDTO resForm,
+                            @ModelAttribute("res_form") ReservationForm resForm,
                             BindingResult bindingResult,
                             @RequestParam("slot") String slotJSON,
                             @RequestParam("date") LocalDate date,
@@ -93,16 +93,16 @@ public class ReservationController {
     }
 
     private String errorSlotListRendering(LocalDate date, Principal principal,
-                                          String errorSlotJson, ResFormDTO resForm, Model model) {
+                                          String errorSlotJson, ReservationForm resForm, Model model) {
 
-        SlotListPageDTO slotListPageDTO = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
+        SlotListPage slotListPage = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
 
         model.addAttribute("res_form", resForm);
-        model.addAttribute("quest_names_and_slots", slotListPageDTO.getQuestNamesAndSlots());
-        model.addAttribute("use_statuses" , slotListPageDTO.getUseStatuses());
+        model.addAttribute("quest_names_and_slots", slotListPage.getQuestNamesAndSlots());
+        model.addAttribute("use_statuses" , slotListPage.getUseStatuses());
         model.addAttribute("date", date);
         model.addAttribute("error_slot", errorSlotJson);
-        model.addAttribute("change_status", resForm.getStatusType());
+        model.addAttribute("change_status", resForm.getStatus());
         model.addAttribute("change_count_persons", resForm.getCountPersons());
 
         return "reservations/slot-list";
