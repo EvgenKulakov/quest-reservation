@@ -16,7 +16,7 @@ import ru.questsfera.questreservation.config.Profile;
 public interface PostgresTestContainerConnect {
 
     @Container
-    PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17.4");
+    PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17.5");
 
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
