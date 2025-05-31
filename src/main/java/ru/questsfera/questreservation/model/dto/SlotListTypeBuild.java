@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum SlotListTypeBuilder {
+public enum SlotListTypeBuild {
 
     EQUAL_DAYS("Одинаковые дни"),
     WEEKDAYS_WEEKENDS("Будние-выходные"),

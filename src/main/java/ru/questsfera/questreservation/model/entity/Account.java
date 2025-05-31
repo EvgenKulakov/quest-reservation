@@ -1,10 +1,7 @@
 package ru.questsfera.questreservation.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import ru.questsfera.questreservation.validator.Patterns;
 
 import java.util.Objects;
 import java.util.Set;
@@ -23,15 +20,12 @@ public class Account {
     @SequenceGenerator(name = "accounts_seq", sequenceName = "accounts_id_seq", allocationSize = 1)
     private Integer id;
 
-    @Pattern(regexp = Patterns.EMAIL, message = "*Проверьте правильное написание Email")
     @Column(name = "login")
     private String login;
 
-    @Pattern(regexp = Patterns.PASSWORD, message = "*Пароль минимум 8 символов без пробелов")
     @Column(name = "password")
     private String password;
 
-    @NotBlank(message = "*Введите имя")
     @Column(name = "first_name")
     private String firstName;
 

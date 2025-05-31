@@ -44,5 +44,5 @@ public class QuestForm {
 
     private SlotList slotList = new SlotList();
 
-    private SlotListTypeBuilder typeBuilder;
+    private SlotListTypeBuild typeBuild;
 }

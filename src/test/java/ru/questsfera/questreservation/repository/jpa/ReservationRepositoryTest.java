@@ -13,7 +13,7 @@ import java.time.LocalTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles(Profile.H2_TEST)
+@ActiveProfiles(Profile.H2)
 @Sql(scripts = {"classpath:common_test_data.sql"})
 class ReservationRepositoryTest {
 

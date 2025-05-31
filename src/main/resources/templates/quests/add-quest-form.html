@@ -94,8 +94,8 @@
         <h2>Сетка квеста</h2>
         <h6 class="monospace">Шаг 2 из 2-х</h6>
         <label for="radio-slotlist">Выберете шаблон сетки квестов</label>
-        <div id="radio-slotlist" th:each="type : ${typeBuilders}">
-          <input type="radio" name="typeBuilder" th:field="*{typeBuilder}" th:value="${type}">
+        <div id="radio-slotlist" th:each="type : ${typeBuilds}">
+          <input type="radio" name="typeBuilder" th:field="*{typeBuild}" th:value="${type}">
           <label th:text="${type.text}"></label>
         </div>
       </div>

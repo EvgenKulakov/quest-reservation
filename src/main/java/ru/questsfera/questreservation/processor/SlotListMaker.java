@@ -1,7 +1,7 @@
 package ru.questsfera.questreservation.processor;
 
 import ru.questsfera.questreservation.model.dto.SlotList;
-import ru.questsfera.questreservation.model.dto.SlotListTypeBuilder;
+import ru.questsfera.questreservation.model.dto.SlotListTypeBuild;
 import ru.questsfera.questreservation.model.dto.TimePrice;
 
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.stream.IntStream;
 
 public class SlotListMaker {
 
-    public static void makeByType(SlotList slotList, SlotListTypeBuilder typeBuilder) {
-        switch (typeBuilder) {
+    public static void makeByType(SlotList slotList, SlotListTypeBuild typeBuild) {
+        switch (typeBuild) {
             case EQUAL_DAYS -> makeEqualDays(slotList);
             case WEEKDAYS_WEEKENDS -> makeWeekdaysWeekends(slotList);
             // if case == DIFFERENT_DAYS -> return

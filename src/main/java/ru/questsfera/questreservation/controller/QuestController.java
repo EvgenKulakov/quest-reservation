@@ -51,14 +51,14 @@ public class QuestController {
         QuestForm questForm = new QuestForm();
         questForm.setStatuses(Status.MANDATORY_STATUSES);
         questForm.setAutoBlock(LocalTime.MIN);
-        questForm.setTypeBuilder(SlotListTypeBuilder.EQUAL_DAYS);
+        questForm.setTypeBuild(SlotListTypeBuild.EQUAL_DAYS);
         questForm.setAccounts(new ArrayList<>(List.of(myAccount)));
 
         SlotListMaker.addDefaultValues(questForm.getSlotList());
         String slotListJSON = SlotListJsonMapper.toJSON(questForm.getSlotList());
 
         model.addAttribute("questForm", questForm);
-        model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
+        model.addAttribute("typeBuilds", SlotListTypeBuild.values());
         model.addAttribute("slotListJSON", slotListJSON);
         model.addAttribute("allAccounts", allAccounts);
         model.addAttribute("defaultStatuses", Status.DEFAULT_STATUSES);
@@ -77,7 +77,7 @@ public class QuestController {
 //        accountService.checkSecurityForAccounts(questForm.getAccounts(), account); // TODO security
 
         boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompanyId());
-        String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuilder());
+        String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuild());
 
         if (binding.hasErrors() || questForm.getMinPersons() > questForm.getMaxPersons()
                 || existQuestName || !globalErrorMessage.isEmpty()) {
@@ -102,7 +102,7 @@ public class QuestController {
             String slotListJSON = SlotListJsonMapper.toJSON(questForm.getSlotList());
 
             model.addAttribute("questForm", questForm);
-            model.addAttribute("typeBuilders", SlotListTypeBuilder.values());
+            model.addAttribute("typeBuilds", SlotListTypeBuild.values());
             model.addAttribute("slotListJSON", slotListJSON);
             model.addAttribute("defaultStatuses", Status.DEFAULT_STATUSES);
             model.addAttribute("allAccounts", accountService.findAllAccountsInCompanyByOwnAccountName(principal.getName()));
@@ -110,7 +110,7 @@ public class QuestController {
             return "quests/add-quest-form";
         }
 
-        SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuilder());
+        SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuild());
         String slotListJson = SlotListJsonMapper.toJSON(questForm.getSlotList());
         Quest quest =  Quest.fromQuestFormSlotListCompanyId(questForm, slotListJson, account.getCompanyId());
         questService.saveQuest(quest);

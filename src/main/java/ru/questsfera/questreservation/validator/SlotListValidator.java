@@ -1,7 +1,7 @@
 package ru.questsfera.questreservation.validator;
 
 import ru.questsfera.questreservation.model.dto.SlotList;
-import ru.questsfera.questreservation.model.dto.SlotListTypeBuilder;
+import ru.questsfera.questreservation.model.dto.SlotListTypeBuild;
 import ru.questsfera.questreservation.model.dto.TimePrice;
 
 import java.util.Collections;
@@ -14,11 +14,11 @@ public class SlotListValidator {
     private final static String errorHasNull = "*Все поля должны быть заполнены";
     private final static String errorHasDuplicate = "*Все слоты должны быть на разное время";
 
-    public static String checkByType(SlotList slotList, SlotListTypeBuilder typeBuilder) {
+    public static String checkByType(SlotList slotList, SlotListTypeBuild typeBuild) {
         hasNull = false;
         hasDuplicate = false;
 
-        return switch (typeBuilder) {
+        return switch (typeBuild) {
             case EQUAL_DAYS -> checkEqualDays(slotList);
             case WEEKDAYS_WEEKENDS -> checkWeekdaysWeekends(slotList);
             default -> checkDifferentDays(slotList);

@@ -6,7 +6,6 @@ import ru.questsfera.questreservation.model.dto.AccountCreateForm;
 import ru.questsfera.questreservation.model.entity.Account;
 
 @Mapper(componentModel = "spring")
-
 public interface AccountMapper {
 
     @Mapping(source = "company.id", target = "companyId")
