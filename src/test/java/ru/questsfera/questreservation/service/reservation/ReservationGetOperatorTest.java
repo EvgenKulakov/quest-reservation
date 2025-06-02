@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.mapper.SlotListJsonMapper;
 import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Quest;
+import ru.questsfera.questreservation.processor.SlotFactory;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
 import java.math.BigDecimal;
@@ -22,8 +23,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +34,7 @@ class ReservationGetOperatorTest {
     @Mock QuestService questService;
     @Mock Principal principal;
     @Mock SlotListJsonMapper slotListJsonMapper;
+    @Mock SlotFactory slotFactory;
     @InjectMocks ReservationGetOperator reservationGetOperator;
 
     LocalDate date;
@@ -53,11 +54,13 @@ class ReservationGetOperatorTest {
     @Test
     void getQuestsAndSlotsByDate_success() {
         List<ReservationWIthClient> reservationDTOs = List.of(getResWithClient());
+        List<Slot> slots = getSlots();
         String slotListJson = getSlotListJson();
         SlotList slotListObject = getSLotList();
 
-        when(slotListJsonMapper.toObject(slotListJson)).thenReturn(slotListObject);
         when(reservationService.findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class))).thenReturn(reservationDTOs);
+        when(slotListJsonMapper.toObject(slotListJson)).thenReturn(slotListObject);
+        when(slotFactory.getSlots(any(Quest.class), any(LocalDate.class), any(SlotList.class), anyMap())).thenReturn(slots);
 
         SlotListPage actualSlotListPage = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
         SlotListPage exceptedSlotListPage = new SlotListPage(getQuestNamesAndSlots(), getUseStatuses());
@@ -105,9 +108,13 @@ class ReservationGetOperatorTest {
     }
 
     private Map<String, List<Slot>> getQuestNamesAndSlots() {
+        return Map.of("Quest One", getSlots());
+    }
+
+    private List<Slot> getSlots() {
         Slot slot1 = Slot.fromQuestDateReservationPrice(getQuest(), LocalDate.now(), getResWithClient(), 3000);
         Slot slot2 = Slot.emptyFromQuestDateTimePrice(getQuest(), LocalDate.now(), LocalTime.parse("13:00:00"), 3000);
-        return Map.of("Quest One", List.of(slot1, slot2));
+        return List.of(slot1, slot2);
     }
 
     private Set<Status> getUseStatuses() {

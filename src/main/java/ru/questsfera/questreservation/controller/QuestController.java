@@ -11,7 +11,7 @@ import ru.questsfera.questreservation.mapper.SlotListJsonMapper;
 import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
-import ru.questsfera.questreservation.processor.SlotListMaker;
+import ru.questsfera.questreservation.processor.SlotListFactory;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
 import ru.questsfera.questreservation.service.reservation.ReservationService;
@@ -32,6 +32,7 @@ public class QuestController {
     private final AccountService accountService;
     private final ReservationService reservationService;
     private final SlotListJsonMapper slotListJsonMapper;
+    private final SlotListFactory slotListFactory;
 
     @GetMapping("/")
     public String showQuestList(Principal principal, Model model) {
@@ -54,8 +55,8 @@ public class QuestController {
         questForm.setAutoBlock(LocalTime.MIN);
         questForm.setTypeBuild(SlotListTypeBuild.EQUAL_DAYS);
         questForm.setAccounts(new ArrayList<>(List.of(myAccount)));
+        questForm.setSlotList(slotListFactory.createDefaultValues());
 
-        SlotListMaker.addDefaultValues(questForm.getSlotList());
         String slotListJSON = slotListJsonMapper.toJSON(questForm.getSlotList());
 
         model.addAttribute("questForm", questForm);
@@ -111,8 +112,9 @@ public class QuestController {
             return "quests/add-quest-form";
         }
 
-        SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuild());
-        String slotListJson = slotListJsonMapper.toJSON(questForm.getSlotList());
+        SlotList slotList = slotListFactory.makeByType(questForm.getSlotList(), questForm.getTypeBuild());
+        String slotListJson = slotListJsonMapper.toJSON(slotList);
+
         Quest quest =  Quest.fromQuestFormSlotListCompanyId(questForm, slotListJson, account.getCompanyId());
         questService.saveQuest(quest);
 

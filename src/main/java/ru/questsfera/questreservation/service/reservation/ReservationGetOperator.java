@@ -24,20 +24,21 @@ public class ReservationGetOperator {
     private final ReservationService reservationService;
     private final QuestService questService;
     private final SlotListJsonMapper slotListJsonMapper;
+    private final SlotFactory slotFactory;
 
     @Transactional(readOnly = true)
     public SlotListPage getQuestsAndSlotsByDate(LocalDate date, Principal principal) {
         Set<Quest> quests = questService.findAllByAccount_login(principal.getName());
 
-        List<ReservationWIthClient> reservationsWithClient = reservationService.findActiveByQuestIdsAndDate(
+        List<ReservationWIthClient> activeReservationsWithClient = reservationService.findActiveByQuestIdsAndDate(
                 quests.stream().map(Quest::getId).toList(), date);
 
         Map<Integer, Map<LocalTime, ReservationWIthClient>> questIdAndTimeAndReserve =
-                splitQuestIdAndTimeAndReserve(reservationsWithClient);
+                splitQuestIdAndTimeAndReserve(activeReservationsWithClient);
 
         Map<String, List<Slot>> questNamesAndSlots = getQuestNamesAndSlots(quests, questIdAndTimeAndReserve, date);
 
-        Set<Status> useStatuses = reservationsWithClient.stream()
+        Set<Status> useStatuses = activeReservationsWithClient.stream()
                 .map(ReservationWIthClient::getStatus)
                 .collect(Collectors.toSet());
 
@@ -74,8 +75,7 @@ public class ReservationGetOperator {
         for (Quest quest : quests) {
             Map<LocalTime, ReservationWIthClient> reservations = questIdAndTimeAndReserve.getOrDefault(quest.getId(), Collections.emptyMap());
             SlotList slotList = slotListJsonMapper.toObject(quest.getSlotList());
-            SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
-            List<Slot> slots = slotFactory.getActualSlots();
+            List<Slot> slots = slotFactory.getSlots(quest, date, slotList, reservations);
             questNameAndSlots.put(quest.getQuestName(), slots);
         }
 
