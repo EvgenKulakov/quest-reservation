@@ -1,6 +1,7 @@
 package ru.questsfera.questreservation.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class TimePrice implements Comparable<TimePrice> {
 
     @JsonFormat(pattern = "HH:mm")

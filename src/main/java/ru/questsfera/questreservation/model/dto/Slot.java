@@ -1,12 +1,10 @@
 package ru.questsfera.questreservation.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.questsfera.questreservation.mapper.SlotJsonMapper;
 import ru.questsfera.questreservation.model.entity.Quest;
 
 import java.time.LocalDate;
@@ -62,11 +60,6 @@ public class Slot {
         slot.setMinPersons(quest.getMinPersons());
         slot.setMaxPersons(quest.getMaxPersons());
         return slot;
-    }
-
-    @JsonIgnore
-    public String getJson() {
-        return SlotJsonMapper.createJSONSlot(this);
     }
 
     @Override

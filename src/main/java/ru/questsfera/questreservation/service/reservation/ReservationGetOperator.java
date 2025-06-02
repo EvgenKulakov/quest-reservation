@@ -23,6 +23,7 @@ public class ReservationGetOperator {
 
     private final ReservationService reservationService;
     private final QuestService questService;
+    private final SlotListJsonMapper slotListJsonMapper;
 
     @Transactional(readOnly = true)
     public SlotListPage getQuestsAndSlotsByDate(LocalDate date, Principal principal) {
@@ -72,7 +73,7 @@ public class ReservationGetOperator {
 
         for (Quest quest : quests) {
             Map<LocalTime, ReservationWIthClient> reservations = questIdAndTimeAndReserve.getOrDefault(quest.getId(), Collections.emptyMap());
-            SlotList slotList = SlotListJsonMapper.toObject(quest.getSlotList());
+            SlotList slotList = slotListJsonMapper.toObject(quest.getSlotList());
             SlotFactory slotFactory = new SlotFactory(quest, date, slotList, reservations);
             List<Slot> slots = slotFactory.getActualSlots();
             questNameAndSlots.put(quest.getQuestName(), slots);

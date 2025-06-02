@@ -2,18 +2,16 @@ package ru.questsfera.questreservation.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import ru.questsfera.questreservation.model.dto.SlotList;
 
+@Component
+@RequiredArgsConstructor
 public class SlotListJsonMapper {
+    private final ObjectMapper mapper;
 
-    private static final ObjectMapper mapper;
-    static {
-        mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-    }
-
-    public static SlotList toObject(String jsonSlotList) {
+    public SlotList toObject(String jsonSlotList) {
         try {
             return mapper.readValue(jsonSlotList, SlotList.class);
         } catch (JsonProcessingException e) {
@@ -21,7 +19,7 @@ public class SlotListJsonMapper {
         }
     }
 
-    public static String toJSON(SlotList slotList) {
+    public String toJSON(SlotList slotList) {
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(slotList);
         } catch (JsonProcessingException e) {

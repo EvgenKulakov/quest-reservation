@@ -62,7 +62,7 @@
           <td th:each="slot : ${quest_name_with_slots.value}">
             <form>
               <button class="slot-button custom-button"
-                      th:value="${slot.getJson()}"
+                      th:value="${@slotJsonMapper.toJSON(slot)}"
                       onclick="clickSlot(this.value)"
                       th:attr="data-status=${slot.status}" type="button"
                       th:utext="${slot.time} + '<br/>₽' + ${slot.price}">

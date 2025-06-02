@@ -7,13 +7,18 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.mapper.ReservationMapper;
+import ru.questsfera.questreservation.mapper.SlotJsonMapper;
 import ru.questsfera.questreservation.model.dto.ReservationForm;
 import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
+import ru.questsfera.questreservation.model.dto.Slot;
+import ru.questsfera.questreservation.model.dto.Status;
 import ru.questsfera.questreservation.model.entity.Client;
 import ru.questsfera.questreservation.model.entity.Reservation;
 import ru.questsfera.questreservation.service.client.ClientService;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -25,6 +30,7 @@ class ReservationSaveOperatorTest {
     @Mock ClientService clientService;
     @Mock Principal principal;
     @Mock ReservationMapper reservationMapper;
+    @Mock SlotJsonMapper slotJsonMapper;
     @InjectMocks ReservationSaveOperator reservationSaveOperator;
 
     @Test
@@ -34,9 +40,11 @@ class ReservationSaveOperatorTest {
         Integer clientId = 1;
         ReservationForm reservationForm = Mockito.mock(ReservationForm.class);
         String slotJson = getSLotEmptyJson();
+        Slot slotObject = getEmptySlot();
 
         when(clientService.saveClient(any(Client.class))).thenReturn(client);
         when(client.getId()).thenReturn(clientId);
+        when(slotJsonMapper.toObject(slotJson)).thenReturn(slotObject);
         reservationSaveOperator.saveUsingResFormAndSlot(reservationForm, slotJson, principal);
 
         verify(clientService).saveClient(any(Client.class));
@@ -51,11 +59,13 @@ class ReservationSaveOperatorTest {
         Reservation reservation = Mockito.mock(Reservation.class);
         ReservationForm reservationForm = Mockito.mock(ReservationForm.class);
         String slotJson = getSLotWithReserveJson();
+        Slot slotObject = getSLotWithReserve();
 
         when(reservationService.findReservationWIthClientById(anyLong())).thenReturn(reservationWIthClient);
         when(reservationWIthClient.editWithResForm(reservationForm)).thenReturn(reservationWIthClient);
         when(reservationWIthClient.getClient()).thenReturn(client);
         when(reservationMapper.toEntity(reservationWIthClient)).thenReturn(reservation);
+        when(slotJsonMapper.toObject(slotJson)).thenReturn(slotObject);
 
         reservationSaveOperator.saveUsingResFormAndSlot(reservationForm, slotJson, principal);
 
@@ -68,7 +78,11 @@ class ReservationSaveOperatorTest {
     @Test
     void saveBlockReservationUsingSlot() {
         String slotJson = getSLotEmptyJson();
+        Slot slotObject = getEmptySlot();
+
+        when(slotJsonMapper.toObject(slotJson)).thenReturn(slotObject);
         reservationSaveOperator.saveBlockReservationUsingSlot(slotJson);
+
         verify(reservationService).saveReservation(any(Reservation.class));
     }
 
@@ -134,5 +148,37 @@ class ReservationSaveOperatorTest {
                   "minPersons" : 1,
                   "maxPersons" : 6
                 }""";
+    }
+
+    private Slot getSLotWithReserve() {
+        return new Slot(
+                1,
+                1,
+                "Quest One",
+                3L,
+                LocalDate.of(2025, 4, 22),
+                LocalTime.of(17, 0),
+                3000,
+                Status.DEFAULT_STATUSES,
+                Status.NOT_COME,
+                1,
+                6
+        );
+    }
+
+    private Slot getEmptySlot() {
+        return new Slot(
+                1,
+                1,
+                "Quest One",
+                null,
+                LocalDate.of(2025, 4, 22),
+                LocalTime.of(17, 0),
+                3000,
+                Status.DEFAULT_STATUSES,
+                Status.EMPTY,
+                1,
+                6
+        );
     }
 }

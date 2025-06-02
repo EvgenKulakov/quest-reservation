@@ -23,10 +23,11 @@ public class ReservationSaveOperator {
     private final ReservationService reservationService;
     private final ClientService clientService;
     private final ReservationMapper reservationMapper;
+    private final SlotJsonMapper slotJsonMapper;
 
     @Transactional
     public void saveUsingResFormAndSlot(ReservationForm reservationForm, String slotJSON, Principal principal) {
-        Slot slot = SlotJsonMapper.createSlotObject(slotJSON);
+        Slot slot = slotJsonMapper.toObject(slotJSON);
         if (slot.getStatus() == Status.EMPTY) {
             saveNewReservation(reservationForm, slot);
         } else {
@@ -62,7 +63,7 @@ public class ReservationSaveOperator {
 
     @Transactional
     public void saveBlockReservationUsingSlot(String slotJSON) {
-        Slot slot = SlotJsonMapper.createSlotObject(slotJSON);
+        Slot slot = slotJsonMapper.toObject(slotJSON);
         Reservation reservation = Reservation.blockReservationFromSlot(slot);
 
         reservation.setSourceReserve("default"); //TODO: source reserve

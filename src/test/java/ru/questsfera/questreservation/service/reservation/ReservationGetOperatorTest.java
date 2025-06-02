@@ -6,10 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
-import ru.questsfera.questreservation.model.dto.Slot;
-import ru.questsfera.questreservation.model.dto.SlotListPage;
-import ru.questsfera.questreservation.model.dto.Status;
+import ru.questsfera.questreservation.mapper.SlotListJsonMapper;
+import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
@@ -35,6 +33,7 @@ class ReservationGetOperatorTest {
     @Mock ReservationService reservationService;
     @Mock QuestService questService;
     @Mock Principal principal;
+    @Mock SlotListJsonMapper slotListJsonMapper;
     @InjectMocks ReservationGetOperator reservationGetOperator;
 
     LocalDate date;
@@ -54,6 +53,10 @@ class ReservationGetOperatorTest {
     @Test
     void getQuestsAndSlotsByDate_success() {
         List<ReservationWIthClient> reservationDTOs = List.of(getResWithClient());
+        String slotListJson = getSlotListJson();
+        SlotList slotListObject = getSLotList();
+
+        when(slotListJsonMapper.toObject(slotListJson)).thenReturn(slotListObject);
         when(reservationService.findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class))).thenReturn(reservationDTOs);
 
         SlotListPage actualSlotListPage = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
@@ -78,24 +81,13 @@ class ReservationGetOperatorTest {
     }
 
     private Quest getQuest() {
-        String slotListQuestOne = """
-               {
-                 "monday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
-                 "tuesday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
-                 "wednesday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
-                 "thursday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
-                 "friday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
-                 "saturday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
-                 "sunday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ]
-               }""";
-
         return Quest.builder()
                 .id(1)
                 .questName("Quest One")
                 .minPersons(1)
                 .maxPersons(6)
                 .autoBlock(LocalTime.MIN)
-                .slotList(slotListQuestOne)
+                .slotList(getSlotListJson())
                 .companyId(1)
                 .statuses(Status.DEFAULT_STATUSES)
                 .synchronizedQuests(new HashSet<>())
@@ -120,5 +112,36 @@ class ReservationGetOperatorTest {
 
     private Set<Status> getUseStatuses() {
         return Set.of(Status.CONFIRMED);
+    }
+
+    private String getSlotListJson() {
+        return """
+               {
+                 "monday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
+                 "tuesday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
+                 "wednesday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
+                 "thursday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
+                 "friday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
+                 "saturday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ],
+                 "sunday" : [ {"time" : "12:00", "price" : 3000}, {"time" : "13:00", "price" : 3000} ]
+               }""";
+    }
+
+    private SlotList getSLotList() {
+        List<TimePrice> timePriceList = List.of(
+                new TimePrice(LocalTime.parse("12:00"), 3000),
+                new TimePrice(LocalTime.parse("13:00"), 3000)
+        );
+
+        SlotList slotList = new SlotList();
+        slotList.setMonday(timePriceList);
+        slotList.setTuesday(timePriceList);
+        slotList.setWednesday(timePriceList);
+        slotList.setThursday(timePriceList);
+        slotList.setFriday(timePriceList);
+        slotList.setSaturday(timePriceList);
+        slotList.setSunday(timePriceList);
+
+        return slotList;
     }
 }

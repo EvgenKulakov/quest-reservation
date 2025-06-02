@@ -31,6 +31,7 @@ public class QuestController {
     private final QuestService questService;
     private final AccountService accountService;
     private final ReservationService reservationService;
+    private final SlotListJsonMapper slotListJsonMapper;
 
     @GetMapping("/")
     public String showQuestList(Principal principal, Model model) {
@@ -55,7 +56,7 @@ public class QuestController {
         questForm.setAccounts(new ArrayList<>(List.of(myAccount)));
 
         SlotListMaker.addDefaultValues(questForm.getSlotList());
-        String slotListJSON = SlotListJsonMapper.toJSON(questForm.getSlotList());
+        String slotListJSON = slotListJsonMapper.toJSON(questForm.getSlotList());
 
         model.addAttribute("questForm", questForm);
         model.addAttribute("typeBuilds", SlotListTypeBuild.values());
@@ -99,7 +100,7 @@ public class QuestController {
                 binding.addError(new ObjectError("global", globalErrorMessage));
             }
 
-            String slotListJSON = SlotListJsonMapper.toJSON(questForm.getSlotList());
+            String slotListJSON = slotListJsonMapper.toJSON(questForm.getSlotList());
 
             model.addAttribute("questForm", questForm);
             model.addAttribute("typeBuilds", SlotListTypeBuild.values());
@@ -111,7 +112,7 @@ public class QuestController {
         }
 
         SlotListMaker.makeByType(questForm.getSlotList(), questForm.getTypeBuild());
-        String slotListJson = SlotListJsonMapper.toJSON(questForm.getSlotList());
+        String slotListJson = slotListJsonMapper.toJSON(questForm.getSlotList());
         Quest quest =  Quest.fromQuestFormSlotListCompanyId(questForm, slotListJson, account.getCompanyId());
         questService.saveQuest(quest);
 
@@ -123,7 +124,7 @@ public class QuestController {
 
         List<Account> accounts = accountService.getAccountsByQuest(quest);
 
-        SlotList slotList = SlotListJsonMapper.toObject(quest.getSlotList());
+        SlotList slotList = slotListJsonMapper.toObject(quest.getSlotList());
         List<List<TimePrice>> allDays = slotList.getAllDays();
 
         model.addAttribute("quest", quest);

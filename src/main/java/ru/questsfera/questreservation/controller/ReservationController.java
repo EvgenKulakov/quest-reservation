@@ -27,6 +27,7 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final ReservationSaveOperator reservationSaveOperator;
     private final ReservationGetOperator reservationGetOperator;
+    private final SlotJsonMapper slotJsonMapper;
 
     @GetMapping("/slot-list")
     public String showSlotList(@RequestParam(value = "date", required = false) LocalDate date,
@@ -86,7 +87,7 @@ public class ReservationController {
     @PostMapping("/unBlock")
     public String deleteBlockReserve(@RequestParam("slot") String slotJSON, RedirectAttributes redirectAttributes) {
         //TODO: редактирование вместо удаления
-        Slot slot = SlotJsonMapper.createSlotObject(slotJSON);
+        Slot slot = slotJsonMapper.toObject(slotJSON);
         reservationService.deleteBlockedReservation(slot.getReservationId());
         redirectAttributes.addAttribute("date", slot.getDate());
         return "redirect:/reservations/slot-list";
