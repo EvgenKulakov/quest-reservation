@@ -13,9 +13,12 @@ import java.util.Map;
 @Component
 public class SlotFactory {
 
-    public List<Slot> getSlots(Quest quest, LocalDate date, SlotList slotList,
-                               Map<LocalTime, ReservationWIthClient> reservations) {
-
+    public List<Slot> getSlots(
+            Quest quest,
+            LocalDate date,
+            SlotList slotList,
+            Map<LocalTime, ReservationWIthClient> reservations
+    ) {
         List<Slot> slots = new ArrayList<>();
         List<TimePrice> timePriceList = switchDay(date, slotList);
 
