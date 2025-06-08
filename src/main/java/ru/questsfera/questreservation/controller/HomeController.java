@@ -46,11 +46,6 @@ public class HomeController {
                     "*Такой пользователь уже зарегистрирован");
         }
 
-        if (accountCreateForm.getCompany().getName().isBlank()) {
-            bindingResult.rejectValue("company.name", "errorCode",
-                    "*Введите название компании");
-        }
-
         if (!accountCreateForm.getPassword().equals(duplicatePass)) {
             bindingResult.rejectValue("password", "errorCode",
                     "*Повторный пароль не совпадает");
@@ -61,7 +56,8 @@ public class HomeController {
             return "home/register";
         }
 
-        Company company = accountCreateForm.getCompany();
+        Company company = new Company();
+        company.setName(accountCreateForm.getCompanyName());
         company.setMoney(new BigDecimal("10000.00")); //TODO default
         companyService.saveCompany(company);
 
@@ -70,7 +66,7 @@ public class HomeController {
 
         accountCreateForm.setRole(Account.Role.ROLE_OWNER);
 
-        accountService.saveAccount(accountMapper.toEntity(accountCreateForm));
+        accountService.saveAccount(accountMapper.toEntity(accountCreateForm, company.getId()));
         return "redirect:/login?new_account";
     }
 

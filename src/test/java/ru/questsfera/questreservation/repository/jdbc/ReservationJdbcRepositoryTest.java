@@ -30,13 +30,13 @@ class ReservationJdbcRepositoryTest {
     @Test
     void findReservationWithClientById_success() {
         ReservationWIthClient actualResDto = reservationJdbcRepository.findReservationWithClientById(1L);
-        ReservationWIthClient exceptedResDto = getReservationDto();
+        ReservationWIthClient exceptedResDto = getReservationWithClient();
         assertThat(actualResDto)
                 .usingRecursiveComparison()
                 .isEqualTo(exceptedResDto);
 
         ReservationWIthClient actualBlockResDto = reservationJdbcRepository.findReservationWithClientById(7L);
-        ReservationWIthClient exceptedBlockResDto = getBlockReservationDto();
+        ReservationWIthClient exceptedBlockResDto = getBlockReservationWIthClient();
         assertThat(actualBlockResDto)
                 .usingRecursiveComparison()
                 .isEqualTo(exceptedBlockResDto);
@@ -52,7 +52,7 @@ class ReservationJdbcRepositoryTest {
     void findActiveByQuestIdsAndDate_success() {
         List<ReservationWIthClient> actualReservations = reservationJdbcRepository
                 .findActiveByQuestIdsAndDate(List.of(1), LocalDate.parse("2025-04-21"));
-        List<ReservationWIthClient> exceptedReservations = getReservationDTOs();
+        List<ReservationWIthClient> exceptedReservations = getReservationsWIthClient();
 
         assertThat(actualReservations)
                 .usingRecursiveComparison()
@@ -74,7 +74,7 @@ class ReservationJdbcRepositoryTest {
         assertThat(emptyResultQuery3.isEmpty()).isTrue();
     }
 
-    private ReservationWIthClient getReservationDto() {
+    private ReservationWIthClient getReservationWithClient() {
         return new ReservationWIthClient(
                 1L,
                 LocalDate.parse("2025-04-21"),
@@ -107,7 +107,7 @@ class ReservationJdbcRepositoryTest {
         );
     }
 
-    private ReservationWIthClient getBlockReservationDto() {
+    private ReservationWIthClient getBlockReservationWIthClient() {
         return new ReservationWIthClient(
                 7L,
                 LocalDate.parse("2025-04-21"),
@@ -128,7 +128,7 @@ class ReservationJdbcRepositoryTest {
         );
     }
 
-    private List<ReservationWIthClient> getReservationDTOs() {
+    private List<ReservationWIthClient> getReservationsWIthClient() {
         ReservationWIthClient res1 = ReservationWIthClient.builder()
                 .id(1L)
                 .timeReserve(LocalTime.parse("16:00:00"))

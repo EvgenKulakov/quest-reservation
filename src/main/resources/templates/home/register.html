@@ -19,7 +19,7 @@
         <div><p> Фамилия:<input type="text" maxlength="50" placeholder="необязательное поле"
                               class="form-control" th:field="*{lastName}"/></div>
         <div><p> Название компании:<input type="text" maxlength="100" placeholder="название в свободной форме"
-                              class="form-control" th:field="*{company.name}"/></div>
+                              class="form-control" th:field="*{companyName}"/></div>
         <div><p> Пароль:<input type="password" maxlength="50" placeholder="минимум 8 символов"
                                class="form-control" th:field="*{password}"/></p></div>
         <div><p> Повторите пароль:<input type="password" maxlength="50"
@@ -27,7 +27,7 @@
 
         <div class="message error" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></div>
         <div class="message error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
-        <div class="message error" th:if="${#fields.hasErrors('company.name')}" th:errors="*{company.name}"></div>
+        <div class="message error" th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}"></div>
         <div class="message error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
         <div class="mt-4"><input type="submit" class="btn btn-success button" value="Зарегистрироваться"/></div>
     </form>

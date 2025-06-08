@@ -6,10 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.questsfera.questreservation.model.entity.Account;
-import ru.questsfera.questreservation.model.entity.Company;
 import ru.questsfera.questreservation.validator.Patterns;
-
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -29,5 +26,6 @@ public class AccountCreateForm {
 
     private Account.Role role;
 
-    private Company company;
+    @NotBlank(message = "*Введите название компании")
+    private String companyName;
 }
