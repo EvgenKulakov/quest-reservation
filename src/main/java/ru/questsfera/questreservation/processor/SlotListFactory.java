@@ -53,9 +53,9 @@ public class SlotListFactory {
                 .mapToObj(i -> new TimePrice())
                 .toList();
 
-        SlotList slotListSrc = new SlotList();
-        slotListSrc.setMonday(defaultDay);
+        SlotList slotList = new SlotList();
+        slotList.setMonday(defaultDay);
 
-        return makeEqualDays(slotListSrc);
+        return makeEqualDays(slotList);
     }
 }

@@ -39,14 +39,14 @@ class SlotFactoryTest {
         assertThat(resultSlots).hasSize(timePriceList.size());
 
         for (int i = 0; i < timePriceList.size(); i++) {
-            TimePrice tp = timePriceList.get(i);
+            TimePrice timePrice = timePriceList.get(i);
             Slot slot = resultSlots.get(i);
 
             assertThat(slot.getQuestId()).isEqualTo(testQuest.getId());
             assertThat(slot.getDate()).isEqualTo(mondayDate);
             assertThat(slot.getReservationId()).isNull();
-            assertThat(slot.getTime()).isEqualTo(tp.getTime());
-            assertThat(slot.getPrice()).isEqualTo(tp.getPrice());
+            assertThat(slot.getTime()).isEqualTo(timePrice.getTime());
+            assertThat(slot.getPrice()).isEqualTo(timePrice.getPrice());
         }
     }
 
@@ -63,15 +63,15 @@ class SlotFactoryTest {
         assertThat(resultSlots).hasSize(timePriceList.size());
 
         for (int i = 0; i < timePriceList.size(); i++) {
-            TimePrice tp = timePriceList.get(i);
+            TimePrice timePrice = timePriceList.get(i);
             Slot slot = resultSlots.get(i);
 
             assertThat(slot.getQuestId()).isEqualTo(testQuest.getId());
             assertThat(slot.getDate()).isEqualTo(tuesdayDate);
-            assertThat(slot.getTime()).isEqualTo(tp.getTime());
-            assertThat(slot.getPrice()).isEqualTo(tp.getPrice());
+            assertThat(slot.getTime()).isEqualTo(timePrice.getTime());
+            assertThat(slot.getPrice()).isEqualTo(timePrice.getPrice());
 
-            if (tp.getTime().equals(LocalTime.of(12, 0))) {
+            if (timePrice.getTime().equals(LocalTime.of(12, 0))) {
                 assertThat(slot.getReservationId()).isNotNull();
                 assertThat(slot.getReservationId()).isEqualTo(reservation12.getId());
             } else {
