@@ -112,7 +112,10 @@ class ReservationSaveOperatorTest {
                     "name" : "COMPLETED",
                     "text" : "Завершён"
                   } ],
-                  "status" : "NOT_COME",
+                  "status" : {
+                    "name" : "NOT_COME",
+                    "text" : "Не пришёл"
+                  },
                   "minPersons" : 1,
                   "maxPersons" : 6
                 }""";
@@ -144,7 +147,10 @@ class ReservationSaveOperatorTest {
                     "name" : "COMPLETED",
                     "text" : "Завершён"
                   } ],
-                  "status" : "EMPTY",
+                  "status" : {
+                    "name" : "NOT_COME",
+                    "text" : "Не пришёл"
+                  },
                   "minPersons" : 1,
                   "maxPersons" : 6
                 }""";

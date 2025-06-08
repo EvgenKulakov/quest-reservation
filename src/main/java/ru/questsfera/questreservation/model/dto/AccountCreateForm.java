@@ -30,21 +30,4 @@ public class AccountCreateForm {
     private Account.Role role;
 
     private Company company;
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        AccountCreateForm that = (AccountCreateForm) o;
-        return Objects.equals(login, that.login)
-                && Objects.equals(password, that.password)
-                && Objects.equals(firstName, that.firstName)
-                && Objects.equals(lastName, that.lastName)
-                && role == that.role
-                && Objects.equals(company, that.company);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(login, password, firstName, lastName, role, company);
-    }
 }
