@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
-import ru.questsfera.questreservation.processor.PasswordGenerator;
+import ru.questsfera.questreservation.security.PasswordGenerator;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
 import ru.questsfera.questreservation.validator.Patterns;
@@ -24,6 +24,7 @@ public class AccountController {
 
     private final AccountService accountService;
     private final QuestService questService;
+    private final PasswordGenerator passwordGenerator;
 
     @GetMapping("/")
     public String showAccountsList(Principal principal, Model model) {
@@ -40,7 +41,7 @@ public class AccountController {
 
         Account newAccount = new Account();
         newAccount.setCompanyId(myAccount.getCompanyId());
-        newAccount.setPassword(PasswordGenerator.createRandomPassword());
+        newAccount.setPassword(passwordGenerator.createRandomPassword());
 
         Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
 
@@ -94,7 +95,7 @@ public class AccountController {
         }
 
         if (account.getId() == null) {
-            String passwordHash = PasswordGenerator.createBCrypt(account.getPassword());
+            String passwordHash = passwordGenerator.createPasswordHash(account.getPassword());
             account.setPassword(passwordHash);
         }
 
@@ -130,7 +131,7 @@ public class AccountController {
             return "accounts/password-form";
         }
 
-        account.setPassword(PasswordGenerator.createBCrypt(newPassword));
+        account.setPassword(passwordGenerator.createPasswordHash(newPassword));
         accountService.saveAccount(account);
         return "redirect:/accounts/";
     }

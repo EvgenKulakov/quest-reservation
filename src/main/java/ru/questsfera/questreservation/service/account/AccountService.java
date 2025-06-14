@@ -1,9 +1,6 @@
 package ru.questsfera.questreservation.service.account;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,27 +9,15 @@ import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.repository.jdbc.AccountJdbcRepository;
 import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AccountService implements UserDetailsService {
+public class AccountService {
 
     private final AccountRepository accountRepository;
     private final AccountJdbcRepository accountJdbcRepository;
-
-    @Override
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = getAccountByLogin(username);
-        return new org.springframework.security.core.userdetails.User(
-                account.getLogin(),
-                account.getPassword(),
-                Collections.singleton(new SimpleGrantedAuthority(account.getRole().name()))
-        );
-    }
 
     @Transactional(readOnly = true)
     public Account getAccountByLogin(String login) {

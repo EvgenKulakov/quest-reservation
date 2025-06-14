@@ -10,7 +10,7 @@ import ru.questsfera.questreservation.mapper.AccountMapper;
 import ru.questsfera.questreservation.model.dto.AccountCreateForm;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Company;
-import ru.questsfera.questreservation.processor.PasswordGenerator;
+import ru.questsfera.questreservation.security.PasswordGenerator;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.company.CompanyService;
 
@@ -23,6 +23,7 @@ public class HomeController {
     private final AccountService accountService;
     private final CompanyService companyService;
     private final AccountMapper accountMapper;
+    private final PasswordGenerator passwordGenerator;
 
     @RequestMapping("/login")
     public String login() {
@@ -61,7 +62,7 @@ public class HomeController {
         company.setMoney(new BigDecimal("10000.00")); //TODO default
         companyService.saveCompany(company);
 
-        String passwordHash = PasswordGenerator.createBCrypt(accountCreateForm.getPassword());
+        String passwordHash = passwordGenerator.createPasswordHash(accountCreateForm.getPassword());
         accountCreateForm.setPassword(passwordHash);
 
         accountCreateForm.setRole(Account.Role.ROLE_OWNER);

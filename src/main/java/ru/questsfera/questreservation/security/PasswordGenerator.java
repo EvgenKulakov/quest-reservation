@@ -1,12 +1,18 @@
-package ru.questsfera.questreservation.processor;
+package ru.questsfera.questreservation.security;
 
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
+@Component
+@RequiredArgsConstructor
 public class PasswordGenerator {
 
-    public static String createRandomPassword() {
+    private final PasswordEncoder passwordEncoder;
+
+    public String createRandomPassword() {
         int passwordSize = 8;
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder password = new StringBuilder(passwordSize);
@@ -21,8 +27,8 @@ public class PasswordGenerator {
         return password.toString();
     }
 
-    public static String createBCrypt(String password) {
-        String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+    public String createPasswordHash(String password) {
+        String passwordHash = passwordEncoder.encode(password);
         return passwordHash;
     }
 }

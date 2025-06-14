@@ -6,8 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
@@ -15,7 +13,6 @@ import ru.questsfera.questreservation.repository.jdbc.AccountJdbcRepository;
 import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,35 +32,6 @@ class AccountServiceTest {
     @Mock AccountRepository accountRepository;
     @Mock AccountJdbcRepository accountJdbcRepository;
     @InjectMocks AccountService accountService;
-
-    @Test
-    void loadUserByUsername_success() {
-        Account account = Mockito.mock(Account.class);
-        when(account.getLogin()).thenReturn(ACCOUNT_LOGIN);
-        when(account.getPassword()).thenReturn("");
-        when(account.getRole()).thenReturn(Account.Role.ROLE_OWNER);
-
-        when(accountRepository.findAccountByLogin(anyString())).thenReturn(Optional.of(account));
-        UserDetails userDetails = accountService.loadUserByUsername(anyString());
-
-        assertThat(userDetails)
-                .extracting(UserDetails::getUsername, UserDetails::getPassword, UserDetails::getAuthorities)
-                .containsExactly(
-                        account.getLogin(),
-                        account.getPassword(),
-                        Collections.singleton(new SimpleGrantedAuthority(account.getRole().name()))
-                );
-
-        verify(accountRepository).findAccountByLogin(anyString());
-    }
-
-    @Test
-    void loadUserByUsername_failure() {
-        when(accountRepository.findAccountByLogin(NOT_EXISTS_LOGIN)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> accountService.loadUserByUsername(NOT_EXISTS_LOGIN))
-                .isInstanceOf(UsernameNotFoundException.class)
-                .hasMessage(String.format("Пользователь %s не найден", NOT_EXISTS_LOGIN));
-    }
 
     @Test
     void getAccountByLogin_success() {
