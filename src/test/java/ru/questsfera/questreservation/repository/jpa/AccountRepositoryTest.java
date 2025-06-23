@@ -75,19 +75,6 @@ class AccountRepositoryTest {
     }
 
     @Test
-    void existsAccountByIdAndCompanyId() {
-        boolean existsAccount = accountRepository.existsAccountByIdAndCompanyId(1, 1);
-        boolean notExistsAccount1 = accountRepository.existsAccountByIdAndCompanyId(100, 1);
-        boolean notExistsAccount2 = accountRepository.existsAccountByIdAndCompanyId(1, 100);
-        boolean notExistsAccount3 = accountRepository.existsAccountByIdAndCompanyId(100, 100);
-
-        assertThat(existsAccount).isTrue();
-        assertThat(notExistsAccount1).isFalse();
-        assertThat(notExistsAccount2).isFalse();
-        assertThat(notExistsAccount3).isFalse();
-    }
-
-    @Test
     void findAllByCompanyId_success() {
         List<Account> actualAccounts = accountRepository.findAllByCompanyId(1);
         assertThat(actualAccounts.size()).isEqualTo(3);

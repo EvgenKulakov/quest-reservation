@@ -2,8 +2,12 @@ package ru.questsfera.questreservation.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import ru.questsfera.questreservation.model.dto.AccountCreateForm;
 import ru.questsfera.questreservation.model.entity.Account;
+import ru.questsfera.questreservation.security.AccountUserDetails;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,10 +33,28 @@ class AccountMapperTest {
         assertThat(actual).isNull();
     }
 
+    @Test
+    void toAccountUserDetails_success() {
+        Account account = getAccount();
+        AccountUserDetails actual = accountMapper.toAccountUserDetails(account);
+        AccountUserDetails excepted = getAccountUserDetails();
+
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(excepted);
+    }
+
+    @Test
+    void toAccountUserDetails_returnNull() {
+        AccountUserDetails actual = accountMapper.toAccountUserDetails(null);
+        assertThat(actual).isNull();
+    }
+
     private Account getAccount() {
         return Account.builder()
-                .login("admin@gmail.com")
-                .password("$2a$10$I6WnbfYRb2Z8uBysTKy5l.uSazvJYhqFgsj4LQ.5vZc65TmGlcat6")
+                .id(1)
+                .login("login")
+                .password("password")
                 .firstName("Test")
                 .lastName("Ivan")
                 .role(Account.Role.ROLE_OWNER)
@@ -43,13 +65,24 @@ class AccountMapperTest {
     private AccountCreateForm getAccountCreateForm() {
         AccountCreateForm accountCreateForm = new AccountCreateForm();
 
-        accountCreateForm.setLogin("admin@gmail.com");
-        accountCreateForm.setPassword("$2a$10$I6WnbfYRb2Z8uBysTKy5l.uSazvJYhqFgsj4LQ.5vZc65TmGlcat6");
+        accountCreateForm.setLogin("login");
+        accountCreateForm.setPassword("password");
         accountCreateForm.setFirstName("Test");
         accountCreateForm.setLastName("Ivan");
         accountCreateForm.setRole(Account.Role.ROLE_OWNER);
         accountCreateForm.setCompanyName("Some Company");
 
         return accountCreateForm;
+    }
+
+    private AccountUserDetails getAccountUserDetails() {
+        return new AccountUserDetails(
+                1,
+                Account.Role.ROLE_OWNER,
+                1,
+                "login",
+                "password",
+                Collections.singleton(new SimpleGrantedAuthority(Account.Role.ROLE_OWNER.name()))
+        );
     }
 }

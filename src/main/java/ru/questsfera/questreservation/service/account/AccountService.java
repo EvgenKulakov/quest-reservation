@@ -60,12 +60,6 @@ public class AccountService {
         return accountRepository.existsAccountByLogin(login);
     }
 
-    // TODO security
-    @Transactional(readOnly = true)
-    public boolean existAccountByCompanyId(Account account, Integer companyId) {
-        return accountRepository.existsAccountByIdAndCompanyId(account.getId(), companyId);
-    }
-
     @Transactional
     public void saveAccount(Account account) {
         accountRepository.save(account);
@@ -74,27 +68,5 @@ public class AccountService {
     @Transactional
     public void deleteById(Integer id) {
         accountRepository.deleteById(id);
-    }
-
-    // TODO security
-    @Transactional
-    public void checkSecurityForAccount(Account changeAccount, Account myAccount) {
-        boolean existAccountByCompany = existAccountByCompanyId(changeAccount, myAccount.getCompanyId());
-
-        boolean haveAccess = myAccount.getRole() == Account.Role.ROLE_OWNER
-                || changeAccount.getRole() == Account.Role.ROLE_USER;
-
-        if (!existAccountByCompany || !haveAccess) {
-            throw new SecurityException("Нет доступа для изменения данного пользователя");
-        }
-    }
-
-    // TODO security
-    @Transactional
-    public void checkSecurityForAccounts(List<Account> changeAccounts, Account myAccount) {
-        List<Account> usersByAdmin = findAllAccountsByCompanyId(myAccount.getCompanyId());
-        if (!usersByAdmin.containsAll(changeAccounts)) {
-            throw new SecurityException("Нет доступа для изменения данных пользователей");
-        }
     }
 }

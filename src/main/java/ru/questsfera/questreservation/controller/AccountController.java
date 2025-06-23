@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
+import ru.questsfera.questreservation.security.HasAccountPermission;
 import ru.questsfera.questreservation.security.PasswordGenerator;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
@@ -52,10 +53,8 @@ public class AccountController {
     }
 
     @PostMapping("/update-form")
-    public String updateAccount(@RequestParam("account") Account account, Principal principal, Model model) {
-
-//        Account myAccount = accountService.getAccountByLogin(principal.getName());
-//        accountService.checkSecurityForAccount(account, myAccount); // TODO security
+    @HasAccountPermission
+    public String updateAccount(@RequestParam("account") Account account, Model model) {
 
         List<Quest> allQuests = questService.getQuestsByCompany(account.getCompanyId());
         Account.Role[] roles = {Account.Role.ROLE_USER, Account.Role.ROLE_ADMIN};
@@ -67,14 +66,11 @@ public class AccountController {
     }
 
     @PostMapping("/save-account")
+    @HasAccountPermission
     public String saveAccount(@Valid @ModelAttribute("account") Account account,
                               BindingResult bindingResult,
                               @RequestParam("oldLogin") String oldLogin,
-                              Principal principal,
                               Model model) {
-
-//        Account myAccount = accountService.getAccountByLogin(principal.getName()); // TODO security
-//        if (account.getId() != null) accountService.checkSecurityForAccount(account, myAccount);
 
         if (!account.getLogin().equals(oldLogin)) {
             boolean existsUsername = accountService.existAccountByLogin(account.getLogin());
@@ -104,11 +100,8 @@ public class AccountController {
     }
 
     @PostMapping("/update-account-password")
-    public String updatePassword(@RequestParam("account") Account account, Principal principal, Model model) {
-
-//        Account myAccount = accountService.getAccountByLogin(principal.getName());
-//        accountService.checkSecurityForAccount(account, myAccount); // TODO security
-
+    @HasAccountPermission
+    public String updatePassword(@RequestParam("account") Account account, Model model) {
         model.addAttribute("account", account);
         model.addAttribute("newPassword", "");
         model.addAttribute("errorPassword", false);
@@ -116,12 +109,10 @@ public class AccountController {
     }
 
     @PostMapping("/save-new-password")
+    @HasAccountPermission
     public String saveNewPassword(@RequestParam("account") Account account,
                                   @RequestParam("newPassword") String newPassword,
-                                  Principal principal, Model model) {
-
-//        Account myAccount = accountService.getAccountByLogin(principal.getName());
-//        accountService.checkSecurityForAccount(account, myAccount); // TODO security
+                                  Model model) {
 
         //TODO: safe update password: *********
         if (!newPassword.matches(Patterns.PASSWORD)) {
@@ -137,9 +128,8 @@ public class AccountController {
     }
 
     @PostMapping("/delete")
-    public String deleteAccount(@RequestParam("account") Account account, Principal principal) {
-//        Account myAccount = accountService.getAccountByLogin(principal.getName());
-//        accountService.checkSecurityForAccount(account, myAccount); // TODO security
+    @HasAccountPermission
+    public String deleteAccount(@RequestParam("account") Account account) {
         accountService.deleteById(account.getId());
         return "redirect:/accounts/";
     }

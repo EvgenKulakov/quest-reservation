@@ -17,8 +17,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     boolean existsAccountByLogin(String login);
 
-    boolean existsAccountByIdAndCompanyId(Integer accountId, Integer companyId);
-
     List<Account> findAllByCompanyId(Integer companyId);
 
     @Query("SELECT ac FROM Account ac " +
