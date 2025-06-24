@@ -2,13 +2,13 @@ package ru.questsfera.questreservation.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
-import ru.questsfera.questreservation.security.HasAccountPermission;
 import ru.questsfera.questreservation.security.PasswordGenerator;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
@@ -53,7 +53,7 @@ public class AccountController {
     }
 
     @PostMapping("/update-form")
-    @HasAccountPermission
+    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER')")
     public String updateAccount(@RequestParam("account") Account account, Model model) {
 
         List<Quest> allQuests = questService.getQuestsByCompany(account.getCompanyId());
@@ -66,7 +66,7 @@ public class AccountController {
     }
 
     @PostMapping("/save-account")
-    @HasAccountPermission
+    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER')")
     public String saveAccount(@Valid @ModelAttribute("account") Account account,
                               BindingResult bindingResult,
                               @RequestParam("oldLogin") String oldLogin,
@@ -100,7 +100,7 @@ public class AccountController {
     }
 
     @PostMapping("/update-account-password")
-    @HasAccountPermission
+    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER')")
     public String updatePassword(@RequestParam("account") Account account, Model model) {
         model.addAttribute("account", account);
         model.addAttribute("newPassword", "");
@@ -109,7 +109,7 @@ public class AccountController {
     }
 
     @PostMapping("/save-new-password")
-    @HasAccountPermission
+    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER')")
     public String saveNewPassword(@RequestParam("account") Account account,
                                   @RequestParam("newPassword") String newPassword,
                                   Model model) {
@@ -128,7 +128,7 @@ public class AccountController {
     }
 
     @PostMapping("/delete")
-    @HasAccountPermission
+    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER')")
     public String deleteAccount(@RequestParam("account") Account account) {
         accountService.deleteById(account.getId());
         return "redirect:/accounts/";

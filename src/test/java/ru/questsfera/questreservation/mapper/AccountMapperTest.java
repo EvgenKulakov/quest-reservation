@@ -2,11 +2,13 @@ package ru.questsfera.questreservation.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import ru.questsfera.questreservation.model.dto.AccountCreateForm;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.security.AccountUserDetails;
 
+import java.util.Collection;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +22,7 @@ class AccountMapperTest {
         AccountCreateForm accountCreateForm = getAccountCreateForm();
         Integer companyId = 1;
         Account actual = accountMapper.toEntity(accountCreateForm, companyId);
-        Account excepted = getAccount();
+        Account excepted = getAccountWithoutId();
 
         assertThat(actual)
                 .usingRecursiveComparison()
@@ -50,9 +52,29 @@ class AccountMapperTest {
         assertThat(actual).isNull();
     }
 
+    @Test
+    void roleToAuthorities_success() {
+        Account.Role role = Account.Role.ROLE_OWNER;
+        Collection<GrantedAuthority> actual = accountMapper.roleToAuthorities(role);
+        Collection<GrantedAuthority> excepted = Collections.singleton(new SimpleGrantedAuthority(role.name()));
+
+        assertThat(actual).isEqualTo(excepted);
+    }
+
     private Account getAccount() {
         return Account.builder()
                 .id(1)
+                .login("login")
+                .password("password")
+                .firstName("Test")
+                .lastName("Ivan")
+                .role(Account.Role.ROLE_OWNER)
+                .companyId(1)
+                .build();
+    }
+
+    private Account getAccountWithoutId() {
+        return Account.builder()
                 .login("login")
                 .password("password")
                 .firstName("Test")

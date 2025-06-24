@@ -2,6 +2,7 @@ package ru.questsfera.questreservation.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -69,14 +70,13 @@ public class QuestController {
     }
 
     @PostMapping("/save-quest")
+    @PreAuthorize("hasPermission(#questForm.accounts, 'LIST_ACCOUNTS', 'ONLY_OWNER')")
     public String saveQuest(@Valid @ModelAttribute("questForm") QuestForm questForm,
                             BindingResult binding,
                             Principal principal,
                             Model model) {
 
         Account account = accountService.getAccountByLogin(principal.getName());
-
-//        accountService.checkSecurityForAccounts(questForm.getAccounts(), account); // TODO security
 
         boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompanyId());
         String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuild());
@@ -122,6 +122,7 @@ public class QuestController {
     }
 
     @PostMapping("/quest-info")
+    @PreAuthorize("hasPermission(#quest, 'OWNER_AND_ADMIN')")
     public String showQuest(@RequestParam("quest") Quest quest, Model model) {
 
         List<Account> accounts = accountService.getAccountsByQuest(quest);
@@ -137,8 +138,8 @@ public class QuestController {
     }
 
     @PostMapping("/delete")
-    public String deleteQuest(@RequestParam("quest") Quest quest,
-                              Principal principal, Model model) {
+    @PreAuthorize("hasPermission(#quest, 'ONLY_OWNER')")
+    public String deleteQuest(@RequestParam("quest") Quest quest, Model model) {
 
         if (reservationService.hasReservationsByQuest(quest)) {
             model.addAttribute("quest", quest);
@@ -150,7 +151,8 @@ public class QuestController {
     }
 
     @PostMapping("/delete-final")
-    public String deleteQuestFinal(@RequestParam("quest") Quest quest, Principal principal) {
+    @PreAuthorize("hasPermission(#quest, 'ONLY_OWNER')")
+    public String deleteQuestFinal(@RequestParam("quest") Quest quest) {
         questService.deleteQuest(quest);
         return "redirect:/quests/";
     }
