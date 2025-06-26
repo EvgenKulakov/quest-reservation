@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.mapper.ReservationMapper;
-import ru.questsfera.questreservation.mapper.SlotJsonMapper;
 import ru.questsfera.questreservation.model.dto.ReservationForm;
 import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.model.dto.Slot;
@@ -13,7 +12,6 @@ import ru.questsfera.questreservation.model.entity.Client;
 import ru.questsfera.questreservation.model.entity.Reservation;
 import ru.questsfera.questreservation.service.client.ClientService;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 
 @Service
@@ -23,11 +21,9 @@ public class ReservationSaveOperator {
     private final ReservationService reservationService;
     private final ClientService clientService;
     private final ReservationMapper reservationMapper;
-    private final SlotJsonMapper slotJsonMapper;
 
     @Transactional
-    public void saveUsingResFormAndSlot(ReservationForm reservationForm, String slotJSON, Principal principal) {
-        Slot slot = slotJsonMapper.toObject(slotJSON);
+    public void saveUsingResFormAndSlot(ReservationForm reservationForm, Slot slot) {
         if (slot.getStatus() == Status.EMPTY) {
             saveNewReservation(reservationForm, slot);
         } else {
@@ -62,8 +58,7 @@ public class ReservationSaveOperator {
     }
 
     @Transactional
-    public void saveBlockReservationUsingSlot(String slotJSON) {
-        Slot slot = slotJsonMapper.toObject(slotJSON);
+    public void saveBlockReservationUsingSlot(Slot slot) {
         Reservation reservation = Reservation.blockReservationFromSlot(slot);
 
         reservation.setSourceReserve("default"); //TODO: source reserve

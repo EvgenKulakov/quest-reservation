@@ -170,7 +170,7 @@
 
           <input type="hidden" id="selected-slot" name="slot">
           <input type="hidden" name="date" th:value="${date}">
-          <input type="hidden" id="error-slot" th:value="${error_slot}">
+          <input type="hidden" id="error-slot" th:value="${@slotJsonMapper.toJSON(error_slot)}">
           <input type="hidden" id="change-status" th:value="${change_status}">
           <input type="hidden" id="change-count-persons" th:value="${change_count_persons}">
 

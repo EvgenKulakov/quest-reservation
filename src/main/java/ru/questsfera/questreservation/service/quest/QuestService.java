@@ -53,9 +53,6 @@ public class QuestService {
 
     @Transactional
     public void deleteQuest(Quest quest) {
-
-//        checkSecurityForQuest(quest, companyId); // TODO security
-
         reservationRepository.deleteByQuestId(quest.getId());
 
         for (Account account : accountRepository.findAllByQuestIdOrderByName(quest.getId())) {
@@ -70,16 +67,6 @@ public class QuestService {
 //        }
         questRepository.deleteById(quest.getId());
     }
-
-    // TODO security
-    @Transactional
-    public void checkSecurityForQuest(Quest quest, Integer companyId) {
-        boolean existQuestByCompany = existQuestByCompany(quest, companyId);
-        if (!existQuestByCompany) {
-            throw new SecurityException("Нет доступа для изменения данного квеста");
-        }
-    }
-
 
     //TODO: SynchronizeQuests
 //    @Transactional

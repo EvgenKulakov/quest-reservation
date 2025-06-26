@@ -75,6 +75,7 @@ class SlotJsonMapperTest {
         return new Slot(
                 1,
                 1,
+                1,
                 "Quest One",
                 3L,
                 LocalDate.of(2025, 4, 22),
@@ -91,6 +92,7 @@ class SlotJsonMapperTest {
         return """
                 {
                   "companyId" : 1,
+                  "slotId" : 1,
                   "questId" : 1,
                   "questName" : "Quest One",
                   "reservationId" : 3,

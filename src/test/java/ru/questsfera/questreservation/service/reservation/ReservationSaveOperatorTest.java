@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.mapper.ReservationMapper;
-import ru.questsfera.questreservation.mapper.SlotJsonMapper;
 import ru.questsfera.questreservation.model.dto.ReservationForm;
 import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.model.dto.Slot;
@@ -28,9 +27,7 @@ class ReservationSaveOperatorTest {
 
     @Mock ReservationService reservationService;
     @Mock ClientService clientService;
-    @Mock Principal principal;
     @Mock ReservationMapper reservationMapper;
-    @Mock SlotJsonMapper slotJsonMapper;
     @InjectMocks ReservationSaveOperator reservationSaveOperator;
 
     @Test
@@ -39,13 +36,11 @@ class ReservationSaveOperatorTest {
         Client client = Mockito.mock(Client.class);
         Integer clientId = 1;
         ReservationForm reservationForm = Mockito.mock(ReservationForm.class);
-        String slotJson = getSLotEmptyJson();
         Slot slotObject = getEmptySlot();
 
         when(clientService.saveClient(any(Client.class))).thenReturn(client);
         when(client.getId()).thenReturn(clientId);
-        when(slotJsonMapper.toObject(slotJson)).thenReturn(slotObject);
-        reservationSaveOperator.saveUsingResFormAndSlot(reservationForm, slotJson, principal);
+        reservationSaveOperator.saveUsingResFormAndSlot(reservationForm, slotObject);
 
         verify(clientService).saveClient(any(Client.class));
         verify(reservationService).saveReservation(any(Reservation.class));
@@ -58,16 +53,14 @@ class ReservationSaveOperatorTest {
         Client client = Mockito.mock(Client.class);
         Reservation reservation = Mockito.mock(Reservation.class);
         ReservationForm reservationForm = Mockito.mock(ReservationForm.class);
-        String slotJson = getSLotWithReserveJson();
         Slot slotObject = getSLotWithReserve();
 
         when(reservationService.findReservationWIthClientById(anyLong())).thenReturn(reservationWIthClient);
         when(reservationWIthClient.editWithResForm(reservationForm)).thenReturn(reservationWIthClient);
         when(reservationWIthClient.getClient()).thenReturn(client);
         when(reservationMapper.toEntity(reservationWIthClient)).thenReturn(reservation);
-        when(slotJsonMapper.toObject(slotJson)).thenReturn(slotObject);
 
-        reservationSaveOperator.saveUsingResFormAndSlot(reservationForm, slotJson, principal);
+        reservationSaveOperator.saveUsingResFormAndSlot(reservationForm, slotObject);
 
         verify(reservationWIthClient).editWithResForm(reservationForm);
         verify(clientService).saveClient(client);
@@ -77,87 +70,14 @@ class ReservationSaveOperatorTest {
 
     @Test
     void saveBlockReservationUsingSlot() {
-        String slotJson = getSLotEmptyJson();
         Slot slotObject = getEmptySlot();
-
-        when(slotJsonMapper.toObject(slotJson)).thenReturn(slotObject);
-        reservationSaveOperator.saveBlockReservationUsingSlot(slotJson);
-
+        reservationSaveOperator.saveBlockReservationUsingSlot(slotObject);
         verify(reservationService).saveReservation(any(Reservation.class));
-    }
-
-    private String getSLotWithReserveJson() {
-        return """
-                {
-                  "companyId" : 1,
-                  "questId" : 1,
-                  "questName" : "Quest One",
-                  "reservationId" : 3,
-                  "date" : "22-04-2025 (вторник)",
-                  "time" : "17:00",
-                  "price" : 3000,
-                  "statuses" : [ {
-                    "name" : "NEW_RESERVE",
-                    "text" : "Новый"
-                  }, {
-                    "name" : "CANCEL",
-                    "text" : "Отменён"
-                  }, {
-                    "name" : "CONFIRMED",
-                    "text" : "Подтверждён"
-                  }, {
-                    "name" : "NOT_COME",
-                    "text" : "Не пришёл"
-                  }, {
-                    "name" : "COMPLETED",
-                    "text" : "Завершён"
-                  } ],
-                  "status" : {
-                    "name" : "NOT_COME",
-                    "text" : "Не пришёл"
-                  },
-                  "minPersons" : 1,
-                  "maxPersons" : 6
-                }""";
-    }
-
-    private String getSLotEmptyJson() {
-        return """
-                {
-                  "companyId" : 1,
-                  "questId" : 1,
-                  "questName" : "Quest One",
-                  "reservationId" : null,
-                  "date" : "22-04-2025 (вторник)",
-                  "time" : "17:00",
-                  "price" : 3000,
-                  "statuses" : [ {
-                    "name" : "NEW_RESERVE",
-                    "text" : "Новый"
-                  }, {
-                    "name" : "CANCEL",
-                    "text" : "Отменён"
-                  }, {
-                    "name" : "CONFIRMED",
-                    "text" : "Подтверждён"
-                  }, {
-                    "name" : "NOT_COME",
-                    "text" : "Не пришёл"
-                  }, {
-                    "name" : "COMPLETED",
-                    "text" : "Завершён"
-                  } ],
-                  "status" : {
-                    "name" : "NOT_COME",
-                    "text" : "Не пришёл"
-                  },
-                  "minPersons" : 1,
-                  "maxPersons" : 6
-                }""";
     }
 
     private Slot getSLotWithReserve() {
         return new Slot(
+                1,
                 1,
                 1,
                 "Quest One",
@@ -174,6 +94,7 @@ class ReservationSaveOperatorTest {
 
     private Slot getEmptySlot() {
         return new Slot(
+                1,
                 1,
                 1,
                 "Quest One",

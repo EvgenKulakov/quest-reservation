@@ -17,6 +17,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Slot {
+    private Integer slotId;
     private Integer companyId;
     private Integer questId;
     private String questName;
@@ -31,8 +32,9 @@ public class Slot {
     private Integer minPersons;
     private Integer maxPersons;
 
-    public static Slot fromQuestDateReservationPrice(Quest quest, LocalDate date, ReservationWIthClient reservationWIthClient, Integer price) {
+    public static Slot withReserve(Integer slotId, Quest quest, LocalDate date, ReservationWIthClient reservationWIthClient, Integer price) {
         Slot slot = new Slot();
+        slot.setSlotId(slotId);
         slot.setCompanyId(quest.getCompanyId());
         slot.setQuestId(quest.getId());
         slot.setQuestName(quest.getQuestName());
@@ -47,8 +49,9 @@ public class Slot {
         return slot;
     }
 
-    public static Slot emptyFromQuestDateTimePrice(Quest quest, LocalDate date, LocalTime time, Integer price) {
+    public static Slot empty(Integer slotId, Quest quest, LocalDate date, LocalTime time, Integer price) {
         Slot slot = new Slot();
+        slot.setSlotId(slotId);
         slot.setCompanyId(quest.getCompanyId());
         slot.setQuestId(quest.getId());
         slot.setQuestName(quest.getQuestName());
@@ -66,7 +69,8 @@ public class Slot {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Slot slot = (Slot) o;
-        return Objects.equals(companyId, slot.companyId)
+        return Objects.equals(slotId, slot.slotId)
+                && Objects.equals(companyId, slot.companyId)
                 && Objects.equals(questId, slot.questId)
                 && Objects.equals(questName, slot.questName)
                 && Objects.equals(reservationId, slot.reservationId)
@@ -81,7 +85,7 @@ public class Slot {
 
     @Override
     public int hashCode() {
-        return Objects.hash(companyId, questId, questName, reservationId, date,
-                time, price, statuses, status, minPersons, maxPersons);
+        return Objects.hash(slotId, companyId, questId, questName, reservationId,
+                date, time, price, statuses, status, minPersons, maxPersons);
     }
 }

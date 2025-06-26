@@ -9,9 +9,12 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class SlotFactory {
+
+    private final AtomicInteger slotIdGenerate = new AtomicInteger(0);
 
     public List<Slot> getSlots(
             Quest quest,
@@ -27,9 +30,9 @@ public class SlotFactory {
             Integer price = timePrice.getPrice();
 
             if (reservations.containsKey(time)) {
-                slots.add(createSlotWithReserve(quest, date, reservations.get(time), price));
+                slots.add(createSlotWithReserve(slotIdGenerate.getAndIncrement(), quest, date, reservations.get(time), price));
             } else {
-                slots.add(createEmptySlot(quest, date, time, price));
+                slots.add(createEmptySlot(slotIdGenerate.getAndIncrement(), quest, date, time, price));
             }
         }
 
@@ -48,11 +51,11 @@ public class SlotFactory {
         };
     }
 
-    private Slot createSlotWithReserve(Quest quest, LocalDate date, ReservationWIthClient reserve, Integer price) {
-        return Slot.fromQuestDateReservationPrice(quest, date, reserve, price);
+    private Slot createSlotWithReserve(Integer slotId, Quest quest, LocalDate date, ReservationWIthClient reserve, Integer price) {
+        return Slot.withReserve(slotId, quest, date, reserve, price);
     }
 
-    private Slot createEmptySlot(Quest quest, LocalDate date, LocalTime time, Integer price) {
-        return Slot.emptyFromQuestDateTimePrice(quest, date, time, price);
+    private Slot createEmptySlot(Integer slotId, Quest quest, LocalDate date, LocalTime time, Integer price) {
+        return Slot.empty(slotId, quest, date, time, price);
     }
 }

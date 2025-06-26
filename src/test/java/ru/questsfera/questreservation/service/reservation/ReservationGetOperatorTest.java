@@ -112,8 +112,8 @@ class ReservationGetOperatorTest {
     }
 
     private List<Slot> getSlots() {
-        Slot slot1 = Slot.fromQuestDateReservationPrice(getQuest(), LocalDate.now(), getResWithClient(), 3000);
-        Slot slot2 = Slot.emptyFromQuestDateTimePrice(getQuest(), LocalDate.now(), LocalTime.parse("13:00:00"), 3000);
+        Slot slot1 = Slot.withReserve(1, getQuest(), LocalDate.now(), getResWithClient(), 3000);
+        Slot slot2 = Slot.empty(1, getQuest(), LocalDate.now(), LocalTime.parse("13:00:00"), 3000);
         return List.of(slot1, slot2);
     }
 

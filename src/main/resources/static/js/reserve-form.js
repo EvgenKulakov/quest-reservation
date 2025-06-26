@@ -31,7 +31,7 @@ const unBlockButton = document.querySelector('#unBlockButton')
 
 async function clickSlot(slotButton) {
     const slot = JSON.parse(slotButton)
-    selectedSlot.value = slotButton
+    selectedSlot.value = slot.slotId
 
     body.style.overflowY = 'hidden'
 

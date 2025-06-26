@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
-import ru.questsfera.questreservation.model.entity.Company;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.model.entity.Reservation;
 import ru.questsfera.questreservation.repository.jdbc.ReservationJdbcRepository;
@@ -41,21 +40,12 @@ public class ReservationService {
     @Transactional
     public void saveReservation(Reservation reservation) {
         doubleCheck(reservation);
-//        checkSecurityForReserve(reservation, account);
         reservationRepository.save(reservation);
     }
 
     @Transactional
     public void deleteBlockedReservation(Long reservationId) {
-//        checkSecurityForReserve(reservation, account);
         reservationRepository.deleteById(reservationId);
-    }
-
-    // TODO security
-    public void checkSecurityForReserve(Reservation reservation, Company company) {
-//        if (!company.getQuests().contains(reservation.getQuest())) {
-//            throw new SecurityException("Нет доступа для редактирования данного бронирования");
-//        }
     }
 
     private void doubleCheck(Reservation reservation) {
