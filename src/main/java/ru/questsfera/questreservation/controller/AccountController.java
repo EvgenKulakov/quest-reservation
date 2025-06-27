@@ -66,7 +66,7 @@ public class AccountController {
     }
 
     @PostMapping("/save-account")
-    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER')")
+    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER') && hasPermission(#account.quests, 'LIST_QUESTS', 'ONLY_OWNER')")
     public String saveAccount(@Valid @ModelAttribute("account") Account account,
                               BindingResult bindingResult,
                               @RequestParam("oldLogin") String oldLogin,

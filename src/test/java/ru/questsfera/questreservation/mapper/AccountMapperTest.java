@@ -5,11 +5,16 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import ru.questsfera.questreservation.model.dto.AccountCreateForm;
+import ru.questsfera.questreservation.model.dto.Status;
 import ru.questsfera.questreservation.model.entity.Account;
+import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.security.AccountUserDetails;
 
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -70,6 +75,7 @@ class AccountMapperTest {
                 .lastName("Ivan")
                 .role(Account.Role.ROLE_OWNER)
                 .companyId(1)
+                .quests(Set.of(getQuest()))
                 .build();
     }
 
@@ -102,9 +108,23 @@ class AccountMapperTest {
                 1,
                 Account.Role.ROLE_OWNER,
                 1,
+                Set.of(1),
                 "login",
                 "password",
                 Collections.singleton(new SimpleGrantedAuthority(Account.Role.ROLE_OWNER.name()))
         );
+    }
+
+    private Quest getQuest() {
+        return Quest.builder()
+                .id(1)
+                .questName("Quest One")
+                .minPersons(1)
+                .maxPersons(6)
+                .autoBlock(LocalTime.MIN)
+                .companyId(1)
+                .statuses(Status.DEFAULT_STATUSES)
+                .synchronizedQuests(new HashSet<>())
+                .build();
     }
 }

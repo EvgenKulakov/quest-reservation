@@ -12,7 +12,7 @@ import ru.questsfera.questreservation.service.account.AccountService;
 
 @Service
 @RequiredArgsConstructor
-public class SecurityAccountService implements UserDetailsService {
+public class AccountUserDetailsService implements UserDetailsService {
 
     private final AccountService accountService;
     private final AccountMapper accountMapper;
@@ -20,7 +20,7 @@ public class SecurityAccountService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountService.getAccountByLogin(username);
+        Account account = accountService.findAccountByLoginWithQuests(username);
         return accountMapper.toAccountUserDetails(account);
     }
 }

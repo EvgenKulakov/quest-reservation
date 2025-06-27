@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +13,7 @@ import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.service.account.AccountService;
 
 import java.util.Collections;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,35 +23,36 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SecurityAccountServiceTest {
+class AccountUserDetailsServiceTest {
 
     @Mock AccountService accountService;
     @Mock AccountMapper accountMapper;
-    @InjectMocks SecurityAccountService securityAccountService;
+    @InjectMocks
+    AccountUserDetailsService accountUserDetailsService;
 
     @Test
     void loadUserByUsername_success() {
-        Account account = getAccount();
+        Account account = Mockito.mock(Account.class);
         AccountUserDetails accountUserDetailsExcepted = getSecurityAccount();
 
-        when(accountService.getAccountByLogin(anyString())).thenReturn(account);
+        when(accountService.findAccountByLoginWithQuests(anyString())).thenReturn(account);
         when(accountMapper.toAccountUserDetails(account)).thenReturn(accountUserDetailsExcepted);
-        AccountUserDetails accountUserDetailsActual = (AccountUserDetails) securityAccountService.loadUserByUsername(anyString());
+        AccountUserDetails accountUserDetailsActual = (AccountUserDetails) accountUserDetailsService.loadUserByUsername(anyString());
 
         assertThat(accountUserDetailsActual)
                 .usingRecursiveComparison()
                         .isEqualTo(accountUserDetailsExcepted);
 
-        verify(accountService).getAccountByLogin(anyString());
+        verify(accountService).findAccountByLoginWithQuests(anyString());
     }
 
     @Test
     void loadUserByUsername_failure() {
         String notExistsLogin = "login";
-        when(accountService.getAccountByLogin(notExistsLogin)).thenThrow(
+        when(accountService.findAccountByLoginWithQuests(notExistsLogin)).thenThrow(
                 new UsernameNotFoundException(format("Пользователь %s не найден", notExistsLogin)));
 
-        assertThatThrownBy(() -> securityAccountService.loadUserByUsername(notExistsLogin))
+        assertThatThrownBy(() -> accountUserDetailsService.loadUserByUsername(notExistsLogin))
                 .isInstanceOf(UsernameNotFoundException.class)
                 .hasMessage(format("Пользователь %s не найден", notExistsLogin));
     }
@@ -69,6 +72,7 @@ class SecurityAccountServiceTest {
                 1,
                 Account.Role.ROLE_OWNER,
                 1,
+                Set.of(1),
                 "login",
                 "password",
                 Collections.singleton(new SimpleGrantedAuthority(Account.Role.ROLE_OWNER.name()))

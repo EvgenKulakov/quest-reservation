@@ -8,6 +8,8 @@ import ru.questsfera.questreservation.model.entity.Quest;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static ru.questsfera.questreservation.model.entity.Account.Role.*;
 
@@ -25,7 +27,7 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
 
         return switch (targetDomainObject) {
             case Account account -> hasCommonCompanyByAccount(principal, account, permissionType);
-            case Quest quest -> hasPermissionQuest(principal, quest, permissionType);
+            case Quest quest -> hasOwnerQuest(principal, quest, permissionType);
             default -> throw new IllegalStateException("Unexpected value: " + targetDomainObject);
         };
     }
@@ -42,6 +44,7 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
 
         return switch (TargetType.valueOf(targetType)) {
             case LIST_ACCOUNTS -> hasCommonCompanyByListAccounts(principal, (ArrayList<Account>) targetId, permissionType);
+            case LIST_QUESTS -> hasOwnerListQuests(principal, (Set<Quest>) targetId, permissionType);
         };
     }
 
@@ -58,7 +61,6 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
             case GRADATION_ROLES ->
                     principal.getRole() == ROLE_OWNER && targetAccount.getRole() != ROLE_OWNER ||
                             principal.getRole() == ROLE_ADMIN && targetAccount.getRole() == ROLE_USER;
-            case ANY -> true;
             default -> throw new IllegalStateException("Unexpected value: " + permissionType);
         };
 
@@ -95,19 +97,18 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
                                             .stream()
                                             .map(Account::getRole)
                                             .allMatch(role -> role == ROLE_USER);
-            case ANY -> true;
             default -> throw new IllegalStateException("Unexpected value: " + permissionType);
         };
 
         return isCommonCompany && isAllowedRole;
     }
 
-    private boolean hasPermissionQuest(
+    private boolean hasOwnerQuest(
             AccountUserDetails principal,
             Quest quest,
             PermissionType permissionType
     ) {
-        boolean isCommonCompany = principal.getCompanyId().equals(quest.getCompanyId());
+        boolean isOwnerQuest = principal.getQuestIds().contains(quest.getId());
 
         boolean isAllowedRole = switch (permissionType) {
             case ONLY_OWNER -> principal.getRole() == ROLE_OWNER;
@@ -115,11 +116,32 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
             default -> throw new IllegalStateException("Unexpected value: " + permissionType);
         };
 
-        return isCommonCompany && isAllowedRole;
+        return isOwnerQuest && isAllowedRole;
+    }
+
+    private boolean hasOwnerListQuests(
+            AccountUserDetails principal,
+            Set<Quest> targetQuests,
+            PermissionType permissionType
+    ) {
+        boolean isOwnerQuests = principal.getQuestIds()
+                .containsAll(targetQuests
+                        .stream()
+                        .map(Quest::getId)
+                        .collect(Collectors.toSet()));
+
+        boolean isAllowedRole = switch (permissionType) {
+            case ONLY_OWNER -> principal.getRole() == ROLE_OWNER;
+            case OWNER_AND_ADMIN -> principal.getRole() == ROLE_OWNER  || principal.getRole() == ROLE_ADMIN;
+            default -> throw new IllegalStateException("Unexpected value: " + permissionType);
+        };
+
+        return isOwnerQuests && isAllowedRole;
     }
 
     public enum TargetType {
-        LIST_ACCOUNTS
+        LIST_ACCOUNTS,
+        LIST_QUESTS
     }
 
     public enum PermissionType {
