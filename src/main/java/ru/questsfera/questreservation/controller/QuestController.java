@@ -1,9 +1,9 @@
 package ru.questsfera.questreservation.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,12 +14,12 @@ import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.processor.SlotListFactory;
+import ru.questsfera.questreservation.security.AccountUserDetails;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
 import ru.questsfera.questreservation.service.reservation.ReservationService;
 import ru.questsfera.questreservation.validator.SlotListValidator;
 
-import java.security.Principal;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,18 +37,20 @@ public class QuestController {
     private final SlotListFactory slotListFactory;
 
     @GetMapping("/")
-    public String showQuestList(Principal principal, Model model) {
-        Set<Quest> quests = questService.findAllByAccount_login(principal.getName());
+    public String showQuestList(Authentication authentication, Model model) {
+        AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
+        Set<Quest> quests = questService.findAllByAccount_id(principal.getId());
         model.addAttribute("quests", quests);
         return "quests/quests-list";
     }
 
     @PostMapping("/add-form")
-    public String addQuest(Principal principal, Model model) {
+    public String addQuest(Authentication authentication, Model model) {
+        AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
 
-        List<Account> allAccounts = accountService.findAllAccountsInCompanyByOwnAccountName(principal.getName());
+        List<Account> allAccounts = accountService.findAllAccountsInCompanyByOwnAccountId(principal.getId());
         Account myAccount = allAccounts.stream()
-                .filter(ac -> ac.getLogin().equals(principal.getName()))
+                .filter(ac -> ac.getLogin().equals(principal.getUsername()))
                 .findFirst()
                 .orElseThrow();
 
@@ -74,11 +76,11 @@ public class QuestController {
     @PreAuthorize("hasPermission(#questForm.accounts, 'LIST_ACCOUNTS', 'ONLY_OWNER')")
     public String saveQuest(@Valid @ModelAttribute("questForm") QuestForm questForm,
                             BindingResult binding,
-                            Principal principal,
-                            Model model,
-                            HttpServletRequest request) {
+                            Authentication authentication,
+                            Model model) {
 
-        Account account = accountService.findAccountByLogin(principal.getName());
+        AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
+        Account account = accountService.findAccountById(principal.getId());
 
         boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompanyId());
         String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuild());
@@ -104,12 +106,13 @@ public class QuestController {
             }
 
             String slotListJSON = slotListJsonMapper.toJSON(questForm.getSlotList());
+            List<Account> allAccountsInCompany = accountService.findAllAccountsInCompanyByOwnAccountId(principal.getId());
 
             model.addAttribute("questForm", questForm);
             model.addAttribute("typeBuilds", SlotListTypeBuild.values());
             model.addAttribute("slotListJSON", slotListJSON);
             model.addAttribute("defaultStatuses", Status.DEFAULT_STATUSES);
-            model.addAttribute("allAccounts", accountService.findAllAccountsInCompanyByOwnAccountName(principal.getName()));
+            model.addAttribute("allAccounts", allAccountsInCompany);
 
             return "quests/add-quest-form";
         }

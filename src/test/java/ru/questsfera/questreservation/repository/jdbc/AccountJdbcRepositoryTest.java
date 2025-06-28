@@ -46,9 +46,9 @@ class AccountJdbcRepositoryTest {
     }
 
     @Test
-    void findAllAccountsInCompanyByOwnAccountName_success() {
+    void findAllAccountsInCompanyByOwnAccountId_success() {
         List<Account> actualAccByExistsLogin =
-                accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(ACCOUNT_ROLE_OWNER_LOGIN);
+                accountJdbcRepository.findAllAccountsInCompanyByOwnAccountId(1);
         List<Account> exceptedAccByExistsLogin = List.of(getAccountOwner(), getAccountAdmin(), getAccountUser());
         assertThat(actualAccByExistsLogin)
                 .usingRecursiveComparison()
@@ -56,9 +56,9 @@ class AccountJdbcRepositoryTest {
     }
 
     @Test
-    void findAllAccountsInCompanyByOwnAccountName_empty() {
+    void findAllAccountsInCompanyByOwnAccountId_empty() {
         List<Account> actualAccByNotExistingLogin =
-                accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(NOT_EXISTS_LOGIN);
+                accountJdbcRepository.findAllAccountsInCompanyByOwnAccountId(100);
         assertThat(actualAccByNotExistingLogin.isEmpty()).isTrue();
     }
 

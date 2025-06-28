@@ -49,14 +49,14 @@ public class AccountJdbcRepository {
         return jdbcTemplate.query(sql, params, (rs, rowNum) -> accountResultSetMapping(rs));
     }
 
-    public List<Account> findAllAccountsInCompanyByOwnAccountName(String accountName) {
+    public List<Account> findAllAccountsInCompanyByOwnAccountId(Integer accountId) {
         String sql =
                 "SELECT * FROM accounts ac " +
                         "WHERE ac.company_id = " +
-                        "(SELECT a.company_id FROM accounts a WHERE a.login = :accountName) " +
+                        "(SELECT a.company_id FROM accounts a WHERE a.id = :accountId) " +
                         "ORDER BY ac.first_name, ac.last_name";
 
-        Map<String, Object> params = Map.of("accountName", accountName);
+        Map<String, Object> params = Map.of("accountId", accountId);
 
         return jdbcTemplate.query(sql, params, (rs, rowNum) -> accountResultSetMapping(rs));
     }

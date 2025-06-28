@@ -30,6 +30,11 @@ public class QuestService {
         return questRepository.findAllByAccount_login(login);
     }
 
+    @Transactional(readOnly = true)
+    public Set<Quest> findAllByAccount_id(Integer accountId) {
+        return questRepository.findAllByAccount_id(accountId);
+    }
+
     @Transactional
     public boolean existQuestNameByCompany(String questName, Integer companyId) {
         return questRepository.existsQuestByQuestNameAndCompanyId(questName, companyId);

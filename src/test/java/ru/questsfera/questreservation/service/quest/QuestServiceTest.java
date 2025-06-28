@@ -48,6 +48,17 @@ class QuestServiceTest {
     }
 
     @Test
+    void findAllByAccount_id() {
+        Set<Quest> exceptedQuests = new HashSet<>();
+        when(questRepository.findAllByAccount_id(anyInt())).thenReturn(exceptedQuests);
+        Set<Quest> actualQuests = questService.findAllByAccount_id(anyInt());
+
+        assertThat(actualQuests).isSameAs(exceptedQuests);
+
+        verify(questRepository).findAllByAccount_id(anyInt());
+    }
+
+    @Test
     void existQuestNameByCompany() {
         when(questRepository.existsQuestByQuestNameAndCompanyId(anyString(), anyInt())).thenReturn(Boolean.TRUE);
         boolean existsQuestName = questService.existQuestNameByCompany(anyString(), anyInt());

@@ -42,6 +42,11 @@ public class AccountService {
     }
 
     @Transactional(readOnly = true)
+    public Account findAccountById(Integer accountId) {
+        return accountRepository.findById(accountId).orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
     public Account findAccountByIdWithQuests(Integer accountId) {
         return accountRepository.findAccountByIdWithQuests(accountId).orElseThrow();
     }
@@ -52,8 +57,8 @@ public class AccountService {
     }
 
     @Transactional(readOnly = true)
-    public List<Account> findAllAccountsInCompanyByOwnAccountName(String accountName) {
-        return accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(accountName);
+    public List<Account> findAllAccountsInCompanyByOwnAccountId(Integer accountId) {
+        return accountJdbcRepository.findAllAccountsInCompanyByOwnAccountId(accountId);
     }
 
     @Transactional(readOnly = true)

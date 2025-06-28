@@ -85,6 +85,24 @@ class QuestRepositoryTest {
         assertThat(emptyResult.isEmpty()).isTrue();
     }
 
+    @Test
+    void findAllByAccount_id_success() {
+        Set<Quest> actualQuests = questRepository.findAllByAccount_id(1);
+        Set<Quest> exceptedQuests = Set.copyOf(getQuestsWithoutAccounts());
+
+        assertThat(actualQuests)
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .ignoringFields("accounts")
+                .isEqualTo(exceptedQuests);
+    }
+
+    @Test
+    void findAllByAccount_id_empty() {
+        Set<Quest> emptyResult = questRepository.findAllByAccount_id(100);
+        assertThat(emptyResult.isEmpty()).isTrue();
+    }
+
     private List<Quest> getQuestsWithoutAccounts() {
         String slotListQuestOne = """
                {

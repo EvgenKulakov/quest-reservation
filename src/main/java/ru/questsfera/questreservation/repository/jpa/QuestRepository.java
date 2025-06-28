@@ -2,6 +2,7 @@ package ru.questsfera.questreservation.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.questsfera.questreservation.model.entity.Quest;
 
 import java.util.List;
@@ -16,5 +17,8 @@ public interface QuestRepository extends JpaRepository<Quest, Integer> {
     List<Quest> findAllByCompanyIdOrderByQuestName(Integer companyId);
 
     @Query("SELECT qu FROM Quest qu JOIN qu.accounts ac WHERE ac.login = :login")
-    Set<Quest> findAllByAccount_login(String login);
+    Set<Quest> findAllByAccount_login(@Param("login") String login);
+
+    @Query("SELECT qu FROM Quest qu INNER JOIN qu.accounts ac WHERE ac.id = :accountId")
+    Set<Quest> findAllByAccount_id(@Param("accountId") Integer accountId);
 }

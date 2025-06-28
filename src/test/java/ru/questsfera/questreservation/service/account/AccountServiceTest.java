@@ -54,6 +54,24 @@ class AccountServiceTest {
     }
 
     @Test
+    void findAccountById_success() {
+        Account exceptedAccount = Mockito.mock(Account.class);
+        when(accountRepository.findById(anyInt())).thenReturn(Optional.of(exceptedAccount));
+        Account actualAccount = accountService.findAccountById(anyInt());
+
+        assertThat(actualAccount).isSameAs(exceptedAccount);
+
+        verify(accountRepository).findById(anyInt());
+    }
+
+    @Test
+    void findAccountById_failure() {
+        when(accountRepository.findById(anyInt())).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> accountService.findAccountById(anyInt()))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
     void findAccountByLoginWithQuests_success() {
         Account exceptedAccount = Mockito.mock(Account.class);
 
@@ -114,25 +132,25 @@ class AccountServiceTest {
     }
 
     @Test
-    void findAllAccountsInCompanyByOwnAccountName_success() {
+    void findAllAccountsInCompanyByOwnAccountId_success() {
         List<Account> exceptedAccounts = List.of(Mockito.mock(Account.class));
-        when(accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(anyString())).thenReturn(exceptedAccounts);
-        List<Account> actualAccounts = accountService.findAllAccountsInCompanyByOwnAccountName(anyString());
+        when(accountJdbcRepository.findAllAccountsInCompanyByOwnAccountId(anyInt())).thenReturn(exceptedAccounts);
+        List<Account> actualAccounts = accountService.findAllAccountsInCompanyByOwnAccountId(anyInt());
 
         assertThat(actualAccounts).isSameAs(exceptedAccounts);
 
-        verify(accountJdbcRepository).findAllAccountsInCompanyByOwnAccountName(anyString());
+        verify(accountJdbcRepository).findAllAccountsInCompanyByOwnAccountId(anyInt());
     }
 
     @Test
-    void findAllAccountsInCompanyByOwnAccountName_empty() {
-        when(accountJdbcRepository.findAllAccountsInCompanyByOwnAccountName(anyString()))
+    void findAllAccountsInCompanyByOwnAccountId_empty() {
+        when(accountJdbcRepository.findAllAccountsInCompanyByOwnAccountId(anyInt()))
                 .thenReturn(new ArrayList<>());
-        List<Account> actualAccounts = accountService.findAllAccountsInCompanyByOwnAccountName(anyString());
+        List<Account> actualAccounts = accountService.findAllAccountsInCompanyByOwnAccountId(anyInt());
 
         assertThat(actualAccounts.isEmpty()).isTrue();
 
-        verify(accountJdbcRepository).findAllAccountsInCompanyByOwnAccountName(anyString());
+        verify(accountJdbcRepository).findAllAccountsInCompanyByOwnAccountId(anyInt());
     }
 
     @Test
