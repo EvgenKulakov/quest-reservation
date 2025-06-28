@@ -3,18 +3,19 @@ package ru.questsfera.questreservation.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
+import ru.questsfera.questreservation.security.AccountUserDetails;
 import ru.questsfera.questreservation.security.PasswordGenerator;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
 import ru.questsfera.questreservation.validator.Patterns;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -28,16 +29,17 @@ public class AccountController {
     private final PasswordGenerator passwordGenerator;
 
     @GetMapping("/")
-    public String showAccountsList(Principal principal, Model model) {
-        List<Account> accounts = accountService.findOwnAccountsByAccountName(principal.getName());
+    public String showAccountsList(Authentication authentication, Model model) {
+        AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
+        List<Account> accounts = accountService.findOwnAccountsByAccountId(principal.getId());
         model.addAttribute("accounts", accounts);
         return "accounts/accounts-list";
     }
 
     @GetMapping("/add-form")
-    public String addAccount(Principal principal, Model model) {
-
-        Account myAccount = accountService.findAccountByLoginWithQuests(principal.getName());
+    public String addAccount(Authentication authentication, Model model) {
+        AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
+        Account myAccount = accountService.findAccountByIdWithQuests(principal.getId());
         Set<Quest> allQuests = myAccount.getQuests();
 
         Account newAccount = new Account();

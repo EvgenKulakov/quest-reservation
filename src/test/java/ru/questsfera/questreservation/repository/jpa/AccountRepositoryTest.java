@@ -67,6 +67,29 @@ class AccountRepositoryTest {
     }
 
     @Test
+    void findAccountByIdWithQuests_success() {
+        Account actualAccount = accountRepository.findAccountByIdWithQuests(1).orElseThrow();
+        Account exceptedAccount = getAccount();
+        assertThat(actualAccount)
+                .usingRecursiveComparison()
+                .ignoringFields("quests")
+                .isEqualTo(exceptedAccount);
+
+        Set<Quest> actualQuests = new TreeSet<>(actualAccount.getQuests());
+        Set<Quest> exceptedQuests = exceptedAccount.getQuests();
+        assertThat(actualQuests)
+                .usingRecursiveComparison()
+                .ignoringFields("accounts")
+                .isEqualTo(exceptedQuests);
+    }
+
+    @Test
+    void findAccountByIdWithQuests_failure() {
+        assertThatThrownBy(() -> accountRepository.findAccountByIdWithQuests(100).orElseThrow())
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
     void existsAccountByLogin() {
         boolean existsAccount = accountRepository.existsAccountByLogin(ACCOUNT_LOGIN);
         boolean notExistsAccount = accountRepository.existsAccountByLogin(NOT_EXISTS_LOGIN);

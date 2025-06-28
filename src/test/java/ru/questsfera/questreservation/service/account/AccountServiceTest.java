@@ -14,6 +14,7 @@ import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,6 +66,33 @@ class AccountServiceTest {
     }
 
     @Test
+    void findAccountByLoginWithQuests_failure() {
+        when(accountRepository.findAccountByLoginWithQuests(NOT_EXISTS_LOGIN)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> accountService.findAccountByLoginWithQuests(NOT_EXISTS_LOGIN))
+                .isInstanceOf(UsernameNotFoundException.class)
+                .hasMessage(String.format("Пользователь %s не найден", NOT_EXISTS_LOGIN));
+    }
+
+    @Test
+    void findAccountByIdWithQuests_success() {
+        Account exceptedAccount = Mockito.mock(Account.class);
+
+        when(accountRepository.findAccountByIdWithQuests(anyInt())).thenReturn(Optional.of(exceptedAccount));
+        Account actualAccount = accountService.findAccountByIdWithQuests(anyInt());
+
+        assertThat(actualAccount).isSameAs(exceptedAccount);
+
+        verify(accountRepository).findAccountByIdWithQuests(anyInt());
+    }
+
+    @Test
+    void findAccountByIdWithQuests_failure() {
+        when(accountRepository.findAccountByIdWithQuests(anyInt())).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> accountService.findAccountByIdWithQuests(anyInt()))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
     void findAllAccountsByCompanyId_success() {
         List<Account> exceptedAccounts = List.of(Mockito.mock(Account.class));
         when(accountRepository.findAllByCompanyId(anyInt())).thenReturn(exceptedAccounts);
@@ -108,12 +136,12 @@ class AccountServiceTest {
     }
 
     @Test
-    void findOwnAccountsByAccountName_success() {
+    void findOwnAccountsByAccountId_success() {
         Account account = Mockito.mock(Account.class);
         List<Account> exceptedAccounts = List.of(account);
-        when(accountRepository.findAccountByLogin(anyString())).thenReturn(Optional.of(account));
+        when(accountRepository.findById(anyInt())).thenReturn(Optional.of(account));
         when(accountJdbcRepository.findOwnAccountsByMyAccountOrderByName(account)).thenReturn(exceptedAccounts);
-        List<Account> actualAccounts = accountService.findOwnAccountsByAccountName(anyString());
+        List<Account> actualAccounts = accountService.findOwnAccountsByAccountId(anyInt());
 
         assertThat(actualAccounts).isSameAs(exceptedAccounts);
 
@@ -121,11 +149,11 @@ class AccountServiceTest {
     }
 
     @Test
-    void findOwnAccountsByAccountName_empty() {
+    void findOwnAccountsByAccountId_empty() {
         Account account = Mockito.mock(Account.class);
-        when(accountRepository.findAccountByLogin(anyString())).thenReturn(Optional.of(account));
+        when(accountRepository.findById(anyInt())).thenReturn(Optional.of(account));
         when(accountJdbcRepository.findOwnAccountsByMyAccountOrderByName(account)).thenReturn(new ArrayList<>());
-        List<Account> actualAccounts = accountService.findOwnAccountsByAccountName(anyString());
+        List<Account> actualAccounts = accountService.findOwnAccountsByAccountId(anyInt());
 
         assertThat(actualAccounts.isEmpty()).isTrue();
 
