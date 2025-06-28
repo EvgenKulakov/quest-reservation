@@ -1,6 +1,7 @@
 package ru.questsfera.questreservation.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +12,7 @@ import ru.questsfera.questreservation.model.dto.ReservationForm;
 import ru.questsfera.questreservation.model.dto.Slot;
 import ru.questsfera.questreservation.model.dto.SlotListPage;
 import ru.questsfera.questreservation.model.session.SlotListPageSession;
+import ru.questsfera.questreservation.security.AccountUserDetails;
 import ru.questsfera.questreservation.service.reservation.ReservationGetOperator;
 import ru.questsfera.questreservation.service.reservation.ReservationSaveOperator;
 import ru.questsfera.questreservation.service.reservation.ReservationService;
@@ -31,9 +33,10 @@ public class ReservationController {
 
     @GetMapping("/slot-list")
     public String showSlotList(@RequestParam(value = "date", required = false) LocalDate date,
-                               Principal principal, Model model) {
+                               Authentication authentication, Model model) {
 
         if (date == null) date = LocalDate.now();
+        AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
         SlotListPage slotListPage = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);
         slotListPageSession.setSlotListPage(slotListPage);
 
@@ -51,9 +54,11 @@ public class ReservationController {
                                   BindingResult bindingResult,
                                   @RequestParam("slot") Integer slotId,
                                   @RequestParam("date") LocalDate date,
-                                  Principal principal,
+                                  Authentication authentication,
                                   Model model,
                                   RedirectAttributes redirectAttributes) {
+
+        AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
 
         SlotListPage slotListPage = slotListPageSession.getSlotListPage();
         Slot slot = slotListPage.getSlotById(slotId).orElseThrow(SecurityException::new);
@@ -74,9 +79,11 @@ public class ReservationController {
                             BindingResult bindingResult,
                             @RequestParam("slot") Integer slotId,
                             @RequestParam("date") LocalDate date,
-                            Principal principal,
+                            Authentication authentication,
                             Model model,
                             RedirectAttributes redirectAttributes) {
+
+        AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
 
         SlotListPage slotListPage = slotListPageSession.getSlotListPage();
         Slot slot = slotListPage.getSlotById(slotId).orElseThrow(SecurityException::new);
@@ -101,7 +108,7 @@ public class ReservationController {
         return "redirect:/reservations/slot-list";
     }
 
-    private String errorSlotListRendering(LocalDate date, Principal principal,
+    private String errorSlotListRendering(LocalDate date, AccountUserDetails principal,
                                           Slot errorSlot, ReservationForm resForm, Model model) {
 
         SlotListPage slotListPage = reservationGetOperator.getQuestsAndSlotsByDate(date, principal);

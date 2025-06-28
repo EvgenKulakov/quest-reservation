@@ -10,6 +10,7 @@ import ru.questsfera.questreservation.mapper.SlotListJsonMapper;
 import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.processor.SlotFactory;
+import ru.questsfera.questreservation.security.AccountUserDetails;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
 import java.math.BigDecimal;
@@ -32,23 +33,23 @@ class ReservationGetOperatorTest {
 
     @Mock ReservationService reservationService;
     @Mock QuestService questService;
-    @Mock Principal principal;
+    @Mock AccountUserDetails principal;
     @Mock SlotListJsonMapper slotListJsonMapper;
     @Mock SlotFactory slotFactory;
     @InjectMocks ReservationGetOperator reservationGetOperator;
 
     LocalDate date;
-    String accountLogin;
+    Integer accountId;
     Set<Quest> quests;
 
     @BeforeEach
     void setUp() {
         date = LocalDate.now();
-        accountLogin = "login";
+        accountId = 1;
         quests = Set.of(getQuest());
 
-        when(principal.getName()).thenReturn(accountLogin);
-        when(questService.findAllByAccount_login(accountLogin)).thenReturn(quests);
+        when(principal.getId()).thenReturn(accountId);
+        when(questService.findAllByAccount_id(accountId)).thenReturn(quests);
     }
 
     @Test
@@ -69,7 +70,7 @@ class ReservationGetOperatorTest {
                 .usingRecursiveComparison()
                 .isEqualTo(exceptedSlotListPage);
 
-        verify(questService).findAllByAccount_login(accountLogin);
+        verify(questService).findAllByAccount_id(accountId);
         verify(reservationService).findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class));
     }
 

@@ -37,17 +37,6 @@ class QuestServiceTest {
     }
 
     @Test
-    void findAllByAccount_login() {
-        Set<Quest> exceptedQuests = new HashSet<>();
-        when(questRepository.findAllByAccount_login(anyString())).thenReturn(exceptedQuests);
-        Set<Quest> actualQuests = questService.findAllByAccount_login(anyString());
-
-        assertThat(actualQuests).isSameAs(exceptedQuests);
-
-        verify(questRepository).findAllByAccount_login(anyString());
-    }
-
-    @Test
     void findAllByAccount_id() {
         Set<Quest> exceptedQuests = new HashSet<>();
         when(questRepository.findAllByAccount_id(anyInt())).thenReturn(exceptedQuests);

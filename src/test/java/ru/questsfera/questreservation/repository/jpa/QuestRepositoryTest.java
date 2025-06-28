@@ -68,24 +68,6 @@ class QuestRepositoryTest {
     }
 
     @Test
-    void findAllByAccount_login_success() {
-        Set<Quest> actualQuests = questRepository.findAllByAccount_login("admin@gmail.com");
-        Set<Quest> exceptedQuests = Set.copyOf(getQuestsWithoutAccounts());
-
-        assertThat(actualQuests)
-                .usingRecursiveComparison()
-                .ignoringCollectionOrder()
-                .ignoringFields("accounts")
-                .isEqualTo(exceptedQuests);
-    }
-
-    @Test
-    void findAllByAccount_login_empty() {
-        Set<Quest> emptyResult = questRepository.findAllByAccount_login("not_exists-acc@gmail.com");
-        assertThat(emptyResult.isEmpty()).isTrue();
-    }
-
-    @Test
     void findAllByAccount_id_success() {
         Set<Quest> actualQuests = questRepository.findAllByAccount_id(1);
         Set<Quest> exceptedQuests = Set.copyOf(getQuestsWithoutAccounts());

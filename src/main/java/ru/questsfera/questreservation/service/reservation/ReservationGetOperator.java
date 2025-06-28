@@ -8,6 +8,7 @@ import ru.questsfera.questreservation.mapper.SlotListJsonMapper;
 import ru.questsfera.questreservation.model.dto.*;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.processor.SlotFactory;
+import ru.questsfera.questreservation.security.AccountUserDetails;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
 import java.security.Principal;
@@ -27,8 +28,8 @@ public class ReservationGetOperator {
     private final SlotFactory slotFactory;
 
     @Transactional(readOnly = true)
-    public SlotListPage getQuestsAndSlotsByDate(LocalDate date, Principal principal) {
-        Set<Quest> quests = questService.findAllByAccount_login(principal.getName());
+    public SlotListPage getQuestsAndSlotsByDate(LocalDate date, AccountUserDetails principal) {
+        Set<Quest> quests = questService.findAllByAccount_id(principal.getId());
 
         List<ReservationWIthClient> activeReservationsWithClient = reservationService.findActiveByQuestIdsAndDate(
                 quests.stream().map(Quest::getId).toList(), date);

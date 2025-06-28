@@ -26,11 +26,6 @@ public class QuestService {
     }
 
     @Transactional(readOnly = true)
-    public Set<Quest> findAllByAccount_login(String login) {
-        return questRepository.findAllByAccount_login(login);
-    }
-
-    @Transactional(readOnly = true)
     public Set<Quest> findAllByAccount_id(Integer accountId) {
         return questRepository.findAllByAccount_id(accountId);
     }
