@@ -80,9 +80,9 @@ public class QuestController {
                             Model model) {
 
         AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
-        Account account = accountService.findAccountById(principal.getId());
+        Account myAccount = accountService.findAccountById(principal.getId());
 
-        boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompanyId());
+        boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), myAccount.getCompanyId());
         String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuild());
 
         if (binding.hasErrors() || questForm.getMinPersons() > questForm.getMaxPersons()
@@ -120,10 +120,8 @@ public class QuestController {
         SlotList slotList = slotListFactory.makeByType(questForm.getSlotList(), questForm.getTypeBuild());
         String slotListJson = slotListJsonMapper.toJSON(slotList);
 
-        Quest quest = Quest.fromQuestFormSlotListCompanyId(questForm, slotListJson, account.getCompanyId());
-        account.getQuests().add(quest);
-        questService.saveQuest(quest);
-        accountService.updateCurrentAccount(account);
+        Quest quest = Quest.fromQuestFormSlotListCompanyId(questForm, slotListJson, myAccount.getCompanyId());
+        questService.saveNewQuest(quest, myAccount);
 
         return "redirect:/quests/";
     }
@@ -132,7 +130,7 @@ public class QuestController {
     @PreAuthorize("hasPermission(#quest, 'OWNER_AND_ADMIN')")
     public String showQuest(@RequestParam("quest") Quest quest, Model model) {
 
-        List<Account> accounts = accountService.getAccountsByQuest(quest);
+        List<Account> accounts = accountService.getAccountsByQuestId(quest.getId());
 
         SlotList slotList = slotListJsonMapper.toObject(quest.getSlotList());
         List<List<TimePrice>> allDays = slotList.getAllDays();

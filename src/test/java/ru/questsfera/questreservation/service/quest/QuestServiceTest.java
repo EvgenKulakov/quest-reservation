@@ -8,9 +8,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
-import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 import ru.questsfera.questreservation.repository.jpa.QuestRepository;
 import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
+import ru.questsfera.questreservation.service.account.AccountService;
 
 import java.util.*;
 
@@ -22,7 +22,7 @@ class QuestServiceTest {
 
     @Mock QuestRepository questRepository;
     @Mock ReservationRepository reservationRepository;
-    @Mock AccountRepository accountRepository;
+    @Mock AccountService accountService;
     @InjectMocks QuestService questService;
 
     @Test
@@ -73,29 +73,31 @@ class QuestServiceTest {
     }
 
     @Test
-    void saveQuest_saveAccount() {
+    void saveNewQuest_saveAccount() {
         Quest quest = Mockito.mock(Quest.class);
         Account account = Mockito.mock(Account.class);
 
         when(quest.getAccounts()).thenReturn(List.of(account));
         when(account.getQuests()).thenReturn(new HashSet<>());
-        questService.saveQuest(quest);
+        questService.saveNewQuest(quest, account);
 
         verify(questRepository).save(quest);
-        verify(accountRepository).save(account);
+        verify(accountService).saveAccount(account);
+        verify(accountService).updateCurrentAccount(account);
     }
 
     @Test
-    void saveQuest_notSaveAccount() {
+    void saveNewQuest_notSaveAccount() {
         Quest quest = Mockito.mock(Quest.class);
         Account account = Mockito.mock(Account.class);
 
         when(quest.getAccounts()).thenReturn(List.of(account));
         when(account.getQuests()).thenReturn(Set.of(quest));
-        questService.saveQuest(quest);
+        questService.saveNewQuest(quest, account);
 
         verify(questRepository).save(quest);
-        verify(accountRepository, never()).save(account);
+        verify(accountService, never()).saveAccount(account);
+        verify(accountService, never()).updateCurrentAccount(account);
     }
 
     @Test
@@ -107,13 +109,13 @@ class QuestServiceTest {
 
         when(quest.getId()).thenReturn(questId);
         when(account.getQuests()).thenReturn(questsInAccountSpy);
-        when(accountRepository.findAllByQuestIdOrderByName(anyInt())).thenReturn(List.of(account));
+        when(accountService.getAccountsByQuestId(anyInt())).thenReturn(List.of(account));
         questService.deleteQuest(quest);
 
         verify(reservationRepository).deleteByQuestId(questId);
-        verify(accountRepository).findAllByQuestIdOrderByName(questId);
+        verify(accountService).getAccountsByQuestId(questId);
         verify(questsInAccountSpy).remove(quest);
-        verify(accountRepository).save(account);
+        verify(accountService).saveAccount(account);
         verify(questRepository).deleteById(questId);
     }
 
@@ -124,13 +126,13 @@ class QuestServiceTest {
         Account account = Mockito.mock(Account.class);
 
         when(quest.getId()).thenReturn(questId);
-        when(accountRepository.findAllByQuestIdOrderByName(anyInt())).thenReturn(new ArrayList<>());
+        when(accountService.getAccountsByQuestId(anyInt())).thenReturn(new ArrayList<>());
         questService.deleteQuest(quest);
 
         verify(reservationRepository).deleteByQuestId(questId);
-        verify(accountRepository).findAllByQuestIdOrderByName(questId);
+        verify(accountService).getAccountsByQuestId(questId);
         verify(account, never()).getQuests();
-        verify(accountRepository, never()).save(account);
+        verify(accountService, never()).saveAccount(account);
         verify(questRepository).deleteById(questId);
     }
 }

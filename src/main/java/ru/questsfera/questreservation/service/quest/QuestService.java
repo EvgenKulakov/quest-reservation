@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
-import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 import ru.questsfera.questreservation.repository.jpa.QuestRepository;
 import ru.questsfera.questreservation.repository.jpa.ReservationRepository;
+import ru.questsfera.questreservation.service.account.AccountService;
 
 import java.util.List;
 import java.util.Set;
@@ -18,7 +18,7 @@ public class QuestService {
 
     private final QuestRepository questRepository;
     private final ReservationRepository reservationRepository;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
 
     @Transactional(readOnly = true)
     public List<Quest> getQuestsByCompany(Integer companyId) {
@@ -41,12 +41,13 @@ public class QuestService {
     }
 
     @Transactional
-    public void saveQuest(Quest quest) {
+    public void saveNewQuest(Quest quest, Account myAccount) {
         questRepository.save(quest);
         for (Account account : quest.getAccounts()) {
             if (!account.getQuests().contains(quest)) {
                 account.getQuests().add(quest);
-                accountRepository.save(account);
+                accountService.saveAccount(account);
+                if (account.equals(myAccount)) accountService.updateCurrentAccount(myAccount);
             }
         }
     }
@@ -55,15 +56,15 @@ public class QuestService {
     public void deleteQuest(Quest quest) {
         reservationRepository.deleteByQuestId(quest.getId());
 
-        for (Account account : accountRepository.findAllByQuestIdOrderByName(quest.getId())) {
+        for (Account account : accountService.getAccountsByQuestId(quest.getId())) {
             account.getQuests().remove(quest);
-            accountRepository.save(account);
+            accountService.saveAccount(account);
         }
 
 //        if (!quest.getSynchronizedQuests().isEmpty()) { // TODO SynchronizeQuests
 //            dontSynchronizeQuests(quest);
 //            System.out.println("Синхронизация по квесту id:" + quest.getId()
-//                    + " и всем связаным квестам отменена"); //TODO: вывести сообщение на страницу
+//                    + " и всем связаным квестам отменена");
 //        }
         questRepository.deleteById(quest.getId());
     }
