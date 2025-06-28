@@ -34,10 +34,10 @@ class AccountServiceTest {
     @InjectMocks AccountService accountService;
 
     @Test
-    void getAccountByLogin_success() {
+    void findAccountByLogin_success() {
         Account exceptedAccount = Mockito.mock(Account.class);
         when(accountRepository.findAccountByLogin(anyString())).thenReturn(Optional.of(exceptedAccount));
-        Account actualAccount = accountService.getAccountByLogin(anyString());
+        Account actualAccount = accountService.findAccountByLogin(anyString());
 
         assertThat(actualAccount).isSameAs(exceptedAccount);
 
@@ -45,9 +45,9 @@ class AccountServiceTest {
     }
 
     @Test
-    void getAccountByLogin_failure() {
+    void findAccountByLogin_failure() {
         when(accountRepository.findAccountByLogin(NOT_EXISTS_LOGIN)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> accountService.getAccountByLogin(NOT_EXISTS_LOGIN))
+        assertThatThrownBy(() -> accountService.findAccountByLogin(NOT_EXISTS_LOGIN))
                 .isInstanceOf(UsernameNotFoundException.class)
                 .hasMessage(String.format("Пользователь %s не найден", NOT_EXISTS_LOGIN));
     }

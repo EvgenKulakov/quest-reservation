@@ -1,5 +1,6 @@
 package ru.questsfera.questreservation.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -74,9 +75,10 @@ public class QuestController {
     public String saveQuest(@Valid @ModelAttribute("questForm") QuestForm questForm,
                             BindingResult binding,
                             Principal principal,
-                            Model model) {
+                            Model model,
+                            HttpServletRequest request) {
 
-        Account account = accountService.getAccountByLogin(principal.getName());
+        Account account = accountService.findAccountByLogin(principal.getName());
 
         boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), account.getCompanyId());
         String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuild());
@@ -115,8 +117,10 @@ public class QuestController {
         SlotList slotList = slotListFactory.makeByType(questForm.getSlotList(), questForm.getTypeBuild());
         String slotListJson = slotListJsonMapper.toJSON(slotList);
 
-        Quest quest =  Quest.fromQuestFormSlotListCompanyId(questForm, slotListJson, account.getCompanyId());
+        Quest quest = Quest.fromQuestFormSlotListCompanyId(questForm, slotListJson, account.getCompanyId());
+        account.getQuests().add(quest);
         questService.saveQuest(quest);
+        accountService.updateCurrentAccount(account);
 
         return "redirect:/quests/";
     }

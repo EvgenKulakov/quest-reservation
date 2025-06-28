@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.questsfera.questreservation.mapper.AccountMapper;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.repository.jdbc.AccountJdbcRepository;
 import ru.questsfera.questreservation.repository.jpa.AccountRepository;
+import ru.questsfera.questreservation.security.AccountUserDetailsService;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +20,11 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final AccountJdbcRepository accountJdbcRepository;
+    private final AccountMapper accountMapper;
+    private final AccountUserDetailsService accountUserDetailsService;
 
     @Transactional(readOnly = true)
-    public Account getAccountByLogin(String login) {
+    public Account findAccountByLogin(String login) {
         Optional<Account> accountOptional = accountRepository.findAccountByLogin(login);
         if (accountOptional.isPresent()) {
             return accountOptional.get();
@@ -30,7 +34,11 @@ public class AccountService {
 
     @Transactional(readOnly = true)
     public Account findAccountByLoginWithQuests(String login) {
-        return accountRepository.findAccountByLoginWithQuests(login).orElseThrow();
+        Optional<Account> accountOptional = accountRepository.findAccountByLoginWithQuests(login);
+        if (accountOptional.isPresent()) {
+            return accountOptional.get();
+        }
+        throw new UsernameNotFoundException(String.format("Пользователь %s не найден", login));
     }
 
     @Transactional(readOnly = true)
@@ -45,7 +53,7 @@ public class AccountService {
 
     @Transactional(readOnly = true)
     public List<Account> findOwnAccountsByAccountName(String accountName) {
-        Account myAccount = getAccountByLogin(accountName);
+        Account myAccount = findAccountByLogin(accountName);
         return accountJdbcRepository.findOwnAccountsByMyAccountOrderByName(myAccount);
     }
 
@@ -63,6 +71,12 @@ public class AccountService {
     @Transactional
     public void saveAccount(Account account) {
         accountRepository.save(account);
+    }
+
+    @Transactional
+    public void updateCurrentAccount(Account account) {
+        accountRepository.save(account);
+        accountUserDetailsService.updateAccountUserDetails(accountMapper.toAccountUserDetails(account));
     }
 
     @Transactional

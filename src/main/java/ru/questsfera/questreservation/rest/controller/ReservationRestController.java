@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.controller;
+package ru.questsfera.questreservation.rest.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +10,6 @@ import ru.questsfera.questreservation.model.dto.ReservationForm;
 import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.service.reservation.ReservationService;
 
-import java.security.Principal;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/reservation")
@@ -20,7 +18,7 @@ public class ReservationRestController {
     private final ReservationService reservationService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReservationForm> getReserveById(@PathVariable("id") Long id, Principal principal) {
+    public ResponseEntity<ReservationForm> getReserveById(@PathVariable("id") Long id) {
         ReservationWIthClient reservationWIthClient = reservationService.findReservationWIthClientById(id);
         ReservationForm reservationForm = ReservationForm.fromReservationWithClient(reservationWIthClient);
         return ResponseEntity.ok(reservationForm);

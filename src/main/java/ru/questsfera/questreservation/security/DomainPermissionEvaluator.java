@@ -3,6 +3,7 @@ package ru.questsfera.questreservation.security;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
 
@@ -17,28 +18,20 @@ import static ru.questsfera.questreservation.model.entity.Account.Role.*;
 public class DomainPermissionEvaluator implements PermissionEvaluator {
 
     @Override
-    public boolean hasPermission(
-            Authentication authentication,
-            Object targetDomainObject,
-            Object permission
-    ) {
+    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
         AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
         PermissionType permissionType = PermissionType.valueOf((String) permission);
 
         return switch (targetDomainObject) {
             case Account account -> hasCommonCompanyByAccount(principal, account, permissionType);
             case Quest quest -> hasOwnerQuest(principal, quest, permissionType);
+            case ReservationWIthClient reservation -> hasOwnerReservation(principal, reservation, permissionType);
             default -> throw new IllegalStateException("Unexpected value: " + targetDomainObject);
         };
     }
 
     @Override
-    public boolean hasPermission(
-            Authentication authentication,
-            Serializable targetId,
-            String targetType,
-            Object permission
-    ) {
+    public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
         AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
         PermissionType permissionType = PermissionType.valueOf((String) permission);
 
@@ -48,11 +41,7 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
         };
     }
 
-    private boolean hasCommonCompanyByAccount(
-            AccountUserDetails principal,
-            Account targetAccount,
-            PermissionType permissionType
-    ) {
+    private boolean hasCommonCompanyByAccount(AccountUserDetails principal, Account targetAccount, PermissionType permissionType) {
         boolean isCommonCompany = principal.getCompanyId().equals(targetAccount.getCompanyId());
 
         boolean isAllowedRole = switch (permissionType) {
@@ -67,11 +56,7 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
         return isCommonCompany && isAllowedRole;
     }
 
-    private boolean hasCommonCompanyByListAccounts(
-            AccountUserDetails principal,
-            ArrayList<Account> listAccounts,
-            PermissionType permissionType
-    ) {
+    private boolean hasCommonCompanyByListAccounts(AccountUserDetails principal, ArrayList<Account> listAccounts, PermissionType permissionType) {
         boolean isCommonCompany = listAccounts
                 .stream()
                 .map(Account::getCompanyId)
@@ -103,11 +88,7 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
         return isCommonCompany && isAllowedRole;
     }
 
-    private boolean hasOwnerQuest(
-            AccountUserDetails principal,
-            Quest quest,
-            PermissionType permissionType
-    ) {
+    private boolean hasOwnerQuest(AccountUserDetails principal, Quest quest, PermissionType permissionType) {
         boolean isOwnerQuest = principal.getQuestIds().contains(quest.getId());
 
         boolean isAllowedRole = switch (permissionType) {
@@ -119,11 +100,7 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
         return isOwnerQuest && isAllowedRole;
     }
 
-    private boolean hasOwnerListQuests(
-            AccountUserDetails principal,
-            Set<Quest> targetQuests,
-            PermissionType permissionType
-    ) {
+    private boolean hasOwnerListQuests(AccountUserDetails principal, Set<Quest> targetQuests, PermissionType permissionType) {
         boolean isOwnerQuests = principal.getQuestIds()
                 .containsAll(targetQuests
                         .stream()
@@ -137,6 +114,11 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
         };
 
         return isOwnerQuests && isAllowedRole;
+    }
+
+    private boolean hasOwnerReservation(AccountUserDetails principal, ReservationWIthClient reservation, PermissionType permissionType) {
+        if (permissionType != PermissionType.ANY) throw new IllegalStateException("Unexpected value: " + permissionType);
+        return principal.getQuestIds().contains(reservation.getQuestId());
     }
 
     public enum TargetType {

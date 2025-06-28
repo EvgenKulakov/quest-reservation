@@ -10,9 +10,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.questsfera.questreservation.mapper.AccountMapper;
 import ru.questsfera.questreservation.model.entity.Account;
-import ru.questsfera.questreservation.service.account.AccountService;
+import ru.questsfera.questreservation.repository.jpa.AccountRepository;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.lang.String.format;
@@ -25,17 +26,16 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AccountUserDetailsServiceTest {
 
-    @Mock AccountService accountService;
+    @Mock AccountRepository accountRepository;
     @Mock AccountMapper accountMapper;
-    @InjectMocks
-    AccountUserDetailsService accountUserDetailsService;
+    @InjectMocks AccountUserDetailsService accountUserDetailsService;
 
     @Test
     void loadUserByUsername_success() {
         Account account = Mockito.mock(Account.class);
         AccountUserDetails accountUserDetailsExcepted = getSecurityAccount();
 
-        when(accountService.findAccountByLoginWithQuests(anyString())).thenReturn(account);
+        when(accountRepository.findAccountByLoginWithQuests(anyString())).thenReturn(Optional.of(account));
         when(accountMapper.toAccountUserDetails(account)).thenReturn(accountUserDetailsExcepted);
         AccountUserDetails accountUserDetailsActual = (AccountUserDetails) accountUserDetailsService.loadUserByUsername(anyString());
 
@@ -43,14 +43,13 @@ class AccountUserDetailsServiceTest {
                 .usingRecursiveComparison()
                         .isEqualTo(accountUserDetailsExcepted);
 
-        verify(accountService).findAccountByLoginWithQuests(anyString());
+        verify(accountRepository).findAccountByLoginWithQuests(anyString());
     }
 
     @Test
     void loadUserByUsername_failure() {
         String notExistsLogin = "login";
-        when(accountService.findAccountByLoginWithQuests(notExistsLogin)).thenThrow(
-                new UsernameNotFoundException(format("Пользователь %s не найден", notExistsLogin)));
+        when(accountRepository.findAccountByLoginWithQuests(notExistsLogin)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> accountUserDetailsService.loadUserByUsername(notExistsLogin))
                 .isInstanceOf(UsernameNotFoundException.class)
