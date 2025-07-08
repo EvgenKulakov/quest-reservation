@@ -18,7 +18,7 @@ class SlotFactoryTest {
     private Quest testQuest;
     private SlotList slotList;
     private List<TimePrice> timePriceList;
-    private Map<LocalTime, ReservationWIthClient> reservations;
+    private Map<LocalTime, ReservationWithClient> reservations;
 
     @BeforeEach
     void setUp() {
@@ -55,7 +55,7 @@ class SlotFactoryTest {
         LocalDate tuesdayDate = LocalDate.of(2025, 6, 3);
         slotList.setTuesday(timePriceList);
 
-        ReservationWIthClient reservation12 = getResWithClient(tuesdayDate);
+        ReservationWithClient reservation12 = getResWithClient(tuesdayDate);
         reservations.put(LocalTime.of(12, 0), reservation12);
 
         List<Slot> resultSlots = slotFactory.getSlots(testQuest, tuesdayDate, slotList, reservations);
@@ -119,8 +119,8 @@ class SlotFactoryTest {
                 .build();
     }
 
-    private ReservationWIthClient getResWithClient(LocalDate dateReserve) {
-        return ReservationWIthClient.builder()
+    private ReservationWithClient getResWithClient(LocalDate dateReserve) {
+        return ReservationWithClient.builder()
                 .id(1L)
                 .dateReserve(dateReserve)
                 .timeReserve(LocalTime.parse("12:00:00"))

@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.repository.jdbc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
+import ru.questsfera.questreservation.model.dto.ReservationWithClient;
 import ru.questsfera.questreservation.model.dto.Status;
 import ru.questsfera.questreservation.model.entity.Client;
 
@@ -22,7 +22,7 @@ public class ReservationJdbcRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public ReservationWIthClient findReservationWithClientById(Long id) {
+    public ReservationWithClient findReservationWithClientById(Long id) {
         String sql =
                 "SELECT res.id AS reservation_id, cl.id AS client_id, res.*, cl.* " +
                         "FROM (SELECT * FROM reservations r WHERE r.id = :id) AS res " +
@@ -35,7 +35,7 @@ public class ReservationJdbcRepository {
         });
     }
 
-    public List<ReservationWIthClient> findActiveByQuestIdsAndDate(Collection<Integer> questIds, LocalDate dateReserve) {
+    public List<ReservationWithClient> findActiveByQuestIdsAndDate(Collection<Integer> questIds, LocalDate dateReserve) {
         String sql =
                 "SELECT res.id, res.time_reserve, res.quest_id, res.status " +
                         "FROM reservations res " +
@@ -45,7 +45,7 @@ public class ReservationJdbcRepository {
         Map<String, Object> params = Map.of("questIds", questIds, "dateReserve", dateReserve);
 
         return jdbcTemplate.query(sql, params, (rs, rowNum) ->
-                ReservationWIthClient.builder()
+                ReservationWithClient.builder()
                         .id(rs.getObject("id", Long.class))
                         .timeReserve(rs.getObject("time_reserve", LocalTime.class))
                         .questId(rs.getObject("quest_id", Integer.class))
@@ -68,8 +68,8 @@ public class ReservationJdbcRepository {
         );
     }
 
-    private ReservationWIthClient resWIthClientResultSetMapping(ResultSet rs, Client client) throws SQLException {
-        return new ReservationWIthClient(
+    private ReservationWithClient resWIthClientResultSetMapping(ResultSet rs, Client client) throws SQLException {
+        return new ReservationWithClient(
                 rs.getObject("reservation_id", Long.class),
                 rs.getObject("date_reserve", LocalDate.class),
                 rs.getObject("time_reserve", LocalTime.class),

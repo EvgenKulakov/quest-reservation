@@ -6,7 +6,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.jdbc.Sql;
-import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
+import ru.questsfera.questreservation.model.dto.ReservationWithClient;
 import ru.questsfera.questreservation.model.dto.Status;
 import ru.questsfera.questreservation.model.entity.Client;
 
@@ -29,14 +29,14 @@ class ReservationJdbcRepositoryTest {
 
     @Test
     void findReservationWithClientById_success() {
-        ReservationWIthClient actualResDto = reservationJdbcRepository.findReservationWithClientById(1L);
-        ReservationWIthClient exceptedResDto = getReservationWithClient();
+        ReservationWithClient actualResDto = reservationJdbcRepository.findReservationWithClientById(1L);
+        ReservationWithClient exceptedResDto = getReservationWithClient();
         assertThat(actualResDto)
                 .usingRecursiveComparison()
                 .isEqualTo(exceptedResDto);
 
-        ReservationWIthClient actualBlockResDto = reservationJdbcRepository.findReservationWithClientById(7L);
-        ReservationWIthClient exceptedBlockResDto = getBlockReservationWIthClient();
+        ReservationWithClient actualBlockResDto = reservationJdbcRepository.findReservationWithClientById(7L);
+        ReservationWithClient exceptedBlockResDto = getBlockReservationWIthClient();
         assertThat(actualBlockResDto)
                 .usingRecursiveComparison()
                 .isEqualTo(exceptedBlockResDto);
@@ -50,9 +50,9 @@ class ReservationJdbcRepositoryTest {
 
     @Test
     void findActiveByQuestIdsAndDate_success() {
-        List<ReservationWIthClient> actualReservations = reservationJdbcRepository
+        List<ReservationWithClient> actualReservations = reservationJdbcRepository
                 .findActiveByQuestIdsAndDate(List.of(1), LocalDate.parse("2025-04-21"));
-        List<ReservationWIthClient> exceptedReservations = getReservationsWIthClient();
+        List<ReservationWithClient> exceptedReservations = getReservationsWIthClient();
 
         assertThat(actualReservations)
                 .usingRecursiveComparison()
@@ -62,11 +62,11 @@ class ReservationJdbcRepositoryTest {
 
     @Test
     void findActiveByQuestIdsAndDate_empty() {
-        List<ReservationWIthClient> emptyResultQuery1 = reservationJdbcRepository
+        List<ReservationWithClient> emptyResultQuery1 = reservationJdbcRepository
                 .findActiveByQuestIdsAndDate(List.of(100, 101), LocalDate.parse("2025-04-21"));
-        List<ReservationWIthClient> emptyResultQuery2 = reservationJdbcRepository
+        List<ReservationWithClient> emptyResultQuery2 = reservationJdbcRepository
                 .findActiveByQuestIdsAndDate(List.of(1), LocalDate.parse("2099-04-21"));
-        List<ReservationWIthClient> emptyResultQuery3 = reservationJdbcRepository
+        List<ReservationWithClient> emptyResultQuery3 = reservationJdbcRepository
                 .findActiveByQuestIdsAndDate(List.of(100, 101), LocalDate.parse("2099-04-21"));
 
         assertThat(emptyResultQuery1.isEmpty()).isTrue();
@@ -74,8 +74,8 @@ class ReservationJdbcRepositoryTest {
         assertThat(emptyResultQuery3.isEmpty()).isTrue();
     }
 
-    private ReservationWIthClient getReservationWithClient() {
-        return new ReservationWIthClient(
+    private ReservationWithClient getReservationWithClient() {
+        return new ReservationWithClient(
                 1L,
                 LocalDate.parse("2025-04-21"),
                 LocalTime.parse("16:00:00"),
@@ -107,8 +107,8 @@ class ReservationJdbcRepositoryTest {
         );
     }
 
-    private ReservationWIthClient getBlockReservationWIthClient() {
-        return new ReservationWIthClient(
+    private ReservationWithClient getBlockReservationWIthClient() {
+        return new ReservationWithClient(
                 7L,
                 LocalDate.parse("2025-04-21"),
                 LocalTime.parse("16:30:00"),
@@ -128,15 +128,15 @@ class ReservationJdbcRepositoryTest {
         );
     }
 
-    private List<ReservationWIthClient> getReservationsWIthClient() {
-        ReservationWIthClient res1 = ReservationWIthClient.builder()
+    private List<ReservationWithClient> getReservationsWIthClient() {
+        ReservationWithClient res1 = ReservationWithClient.builder()
                 .id(1L)
                 .timeReserve(LocalTime.parse("16:00:00"))
                 .questId(1)
                 .status(Status.CONFIRMED)
                 .build();
 
-        ReservationWIthClient res2 = ReservationWIthClient.builder()
+        ReservationWithClient res2 = ReservationWithClient.builder()
                 .id(2L)
                 .timeReserve(LocalTime.parse("17:00:00"))
                 .questId(1)

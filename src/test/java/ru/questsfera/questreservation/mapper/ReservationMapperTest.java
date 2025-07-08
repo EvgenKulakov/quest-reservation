@@ -2,7 +2,7 @@ package ru.questsfera.questreservation.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
+import ru.questsfera.questreservation.model.dto.ReservationWithClient;
 import ru.questsfera.questreservation.model.dto.Status;
 import ru.questsfera.questreservation.model.entity.Client;
 import ru.questsfera.questreservation.model.entity.Reservation;
@@ -20,8 +20,8 @@ class ReservationMapperTest {
 
     @Test
     void toEntity_success() {
-        ReservationWIthClient reservationWIthClient = getReservationWithClient();
-        Reservation actual = reservationMapper.toEntity(reservationWIthClient);
+        ReservationWithClient reservationWithClient = getReservationWithClient();
+        Reservation actual = reservationMapper.toEntity(reservationWithClient);
         Reservation excepted = getReservation();
 
         assertThat(actual)
@@ -35,8 +35,8 @@ class ReservationMapperTest {
         assertThat(actual).isNull();
     }
 
-    private ReservationWIthClient getReservationWithClient() {
-        return new ReservationWIthClient(
+    private ReservationWithClient getReservationWithClient() {
+        return new ReservationWithClient(
                 1L,
                 LocalDate.parse("2025-04-21"),
                 LocalTime.parse("16:00:00"),

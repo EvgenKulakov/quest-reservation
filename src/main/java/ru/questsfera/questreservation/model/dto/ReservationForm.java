@@ -43,7 +43,7 @@ public class ReservationForm {
 
     private String clientComment;
 
-    public static ReservationForm fromReservationWithClient(ReservationWIthClient reservationWIthClient) {
+    public static ReservationForm fromReservationWithClient(ReservationWithClient reservationWIthClient) {
         ReservationForm reservationForm = new ReservationForm();
         reservationForm.setId(reservationWIthClient.getId());
         reservationForm.setStatus(reservationWIthClient.getStatus());

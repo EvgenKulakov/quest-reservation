@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
+import ru.questsfera.questreservation.model.dto.ReservationWithClient;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.model.entity.Reservation;
 import ru.questsfera.questreservation.repository.jdbc.ReservationJdbcRepository;
@@ -24,12 +24,12 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     @PostAuthorize("hasPermission(returnObject, 'ANY')")
-    public ReservationWIthClient findReservationWIthClientById(Long id) {
+    public ReservationWithClient findReservationWIthClientById(Long id) {
         return reservationJdbcRepository.findReservationWithClientById(id);
     }
 
     @Transactional(readOnly = true)
-    public List<ReservationWIthClient> findActiveByQuestIdsAndDate(Collection<Integer> questIds, LocalDate dateReserve) {
+    public List<ReservationWithClient> findActiveByQuestIdsAndDate(Collection<Integer> questIds, LocalDate dateReserve) {
         if (questIds.isEmpty()) return Collections.emptyList();
         return reservationJdbcRepository.findActiveByQuestIdsAndDate(questIds, dateReserve);
     }

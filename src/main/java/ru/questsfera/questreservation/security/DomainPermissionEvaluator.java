@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.security;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
+import ru.questsfera.questreservation.model.dto.ReservationWithClient;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
 
@@ -25,7 +25,7 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
         return switch (targetDomainObject) {
             case Account account -> hasCommonCompanyByAccount(principal, account, permissionType);
             case Quest quest -> hasOwnerQuest(principal, quest, permissionType);
-            case ReservationWIthClient reservation -> hasOwnerReservation(principal, reservation, permissionType);
+            case ReservationWithClient reservation -> hasOwnerReservation(principal, reservation, permissionType);
             default -> throw new IllegalStateException("Unexpected value: " + targetDomainObject);
         };
     }
@@ -116,7 +116,7 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
         return isOwnerQuests && isAllowedRole;
     }
 
-    private boolean hasOwnerReservation(AccountUserDetails principal, ReservationWIthClient reservation, PermissionType permissionType) {
+    private boolean hasOwnerReservation(AccountUserDetails principal, ReservationWithClient reservation, PermissionType permissionType) {
         if (permissionType != PermissionType.ANY) throw new IllegalStateException("Unexpected value: " + permissionType);
         return principal.getQuestIds().contains(reservation.getQuestId());
     }

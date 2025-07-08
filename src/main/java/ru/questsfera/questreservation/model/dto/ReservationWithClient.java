@@ -13,7 +13,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @Builder
-public class ReservationWIthClient {
+public class ReservationWithClient {
 
     private Long id;
     private LocalDate dateReserve;
@@ -32,7 +32,7 @@ public class ReservationWIthClient {
     private String clientComment;
     private String historyMessages;
 
-    public ReservationWIthClient editWithResForm(ReservationForm reservationForm) {
+    public ReservationWithClient editWithResForm(ReservationForm reservationForm) {
         this.setStatus(reservationForm.getStatus());
         this.setCountPersons(reservationForm.getCountPersons());
         this.setAdminComment(reservationForm.getAdminComment());
@@ -48,7 +48,7 @@ public class ReservationWIthClient {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ReservationWIthClient that)) return false;
+        if (!(o instanceof ReservationWithClient that)) return false;
         return id != null && Objects.equals(getId(), that.getId());
     }
 

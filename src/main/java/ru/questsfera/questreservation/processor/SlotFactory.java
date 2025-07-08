@@ -20,7 +20,7 @@ public class SlotFactory {
             Quest quest,
             LocalDate date,
             SlotList slotList,
-            Map<LocalTime, ReservationWIthClient> reservations
+            Map<LocalTime, ReservationWithClient> reservations
     ) {
         List<Slot> slots = new ArrayList<>();
         List<TimePrice> timePriceList = switchDay(date, slotList);
@@ -51,7 +51,7 @@ public class SlotFactory {
         };
     }
 
-    private Slot createSlotWithReserve(Integer slotId, Quest quest, LocalDate date, ReservationWIthClient reserve, Integer price) {
+    private Slot createSlotWithReserve(Integer slotId, Quest quest, LocalDate date, ReservationWithClient reserve, Integer price) {
         return Slot.withReserve(slotId, quest, date, reserve, price);
     }
 

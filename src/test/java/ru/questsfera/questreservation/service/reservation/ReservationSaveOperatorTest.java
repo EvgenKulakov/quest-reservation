@@ -8,14 +8,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.questsfera.questreservation.mapper.ReservationMapper;
 import ru.questsfera.questreservation.model.dto.ReservationForm;
-import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
+import ru.questsfera.questreservation.model.dto.ReservationWithClient;
 import ru.questsfera.questreservation.model.dto.Slot;
 import ru.questsfera.questreservation.model.dto.Status;
 import ru.questsfera.questreservation.model.entity.Client;
 import ru.questsfera.questreservation.model.entity.Reservation;
 import ru.questsfera.questreservation.service.client.ClientService;
 
-import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -32,7 +31,7 @@ class ReservationSaveOperatorTest {
 
     @Test
     void saveUsingResFormAndSlot_saveNew() {
-        ReservationWIthClient reservationWIthClient = Mockito.mock(ReservationWIthClient.class);
+        ReservationWithClient reservationWIthClient = Mockito.mock(ReservationWithClient.class);
         Client client = Mockito.mock(Client.class);
         Integer clientId = 1;
         ReservationForm reservationForm = Mockito.mock(ReservationForm.class);
@@ -49,7 +48,7 @@ class ReservationSaveOperatorTest {
 
     @Test
     void saveUsingResFormAndSlot_saveExists() {
-        ReservationWIthClient reservationWIthClient = Mockito.mock(ReservationWIthClient.class);
+        ReservationWithClient reservationWIthClient = Mockito.mock(ReservationWithClient.class);
         Client client = Mockito.mock(Client.class);
         Reservation reservation = Mockito.mock(Reservation.class);
         ReservationForm reservationForm = Mockito.mock(ReservationForm.class);

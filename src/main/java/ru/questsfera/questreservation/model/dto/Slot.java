@@ -32,7 +32,7 @@ public class Slot {
     private Integer minPersons;
     private Integer maxPersons;
 
-    public static Slot withReserve(Integer slotId, Quest quest, LocalDate date, ReservationWIthClient reservationWIthClient, Integer price) {
+    public static Slot withReserve(Integer slotId, Quest quest, LocalDate date, ReservationWithClient reservationWIthClient, Integer price) {
         Slot slot = new Slot();
         slot.setSlotId(slotId);
         slot.setCompanyId(quest.getCompanyId());

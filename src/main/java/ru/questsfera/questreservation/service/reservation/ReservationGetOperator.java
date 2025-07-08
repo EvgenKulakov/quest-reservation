@@ -11,7 +11,6 @@ import ru.questsfera.questreservation.processor.SlotFactory;
 import ru.questsfera.questreservation.security.AccountUserDetails;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
-import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -31,26 +30,26 @@ public class ReservationGetOperator {
     public SlotListPage getQuestsAndSlotsByDate(LocalDate date, AccountUserDetails principal) {
         Set<Quest> quests = questService.findAllByAccount_id(principal.getId());
 
-        List<ReservationWIthClient> activeReservationsWithClient = reservationService.findActiveByQuestIdsAndDate(
+        List<ReservationWithClient> activeReservationsWithClient = reservationService.findActiveByQuestIdsAndDate(
                 quests.stream().map(Quest::getId).toList(), date);
 
-        Map<Integer, Map<LocalTime, ReservationWIthClient>> questIdAndTimeAndReserve =
+        Map<Integer, Map<LocalTime, ReservationWithClient>> questIdAndTimeAndReserve =
                 splitQuestIdAndTimeAndReserve(activeReservationsWithClient);
 
         Map<String, List<Slot>> questNamesAndSlots = getQuestNamesAndSlots(quests, questIdAndTimeAndReserve, date);
 
         Set<Status> useStatuses = activeReservationsWithClient.stream()
-                .map(ReservationWIthClient::getStatus)
+                .map(ReservationWithClient::getStatus)
                 .collect(Collectors.toSet());
 
         return new SlotListPage(questNamesAndSlots, useStatuses);
     }
 
-    private Map<Integer, Map<LocalTime, ReservationWIthClient>> splitQuestIdAndTimeAndReserve(List<ReservationWIthClient> reservations) {
-        Map<Integer, Map<LocalTime, ReservationWIthClient>> questIdAndTimeAndReserve = new HashMap<>();
+    private Map<Integer, Map<LocalTime, ReservationWithClient>> splitQuestIdAndTimeAndReserve(List<ReservationWithClient> reservations) {
+        Map<Integer, Map<LocalTime, ReservationWithClient>> questIdAndTimeAndReserve = new HashMap<>();
 
-        for (ReservationWIthClient resWithClient : reservations) {
-            Map<LocalTime, ReservationWIthClient> timeAndReserve = questIdAndTimeAndReserve.get(resWithClient.getQuestId());
+        for (ReservationWithClient resWithClient : reservations) {
+            Map<LocalTime, ReservationWithClient> timeAndReserve = questIdAndTimeAndReserve.get(resWithClient.getQuestId());
             if (timeAndReserve != null) {
                 // TODO create notification mechanism for double blocking
                 if (timeAndReserve.containsKey(resWithClient.getTimeReserve())) {
@@ -68,13 +67,13 @@ public class ReservationGetOperator {
 
     private Map<String, List<Slot>> getQuestNamesAndSlots(
             Set<Quest> quests,
-            Map<Integer, Map<LocalTime, ReservationWIthClient>> questIdAndTimeAndReserve,
+            Map<Integer, Map<LocalTime, ReservationWithClient>> questIdAndTimeAndReserve,
             LocalDate date
     ) {
         Map<String, List<Slot>> questNameAndSlots = new LinkedHashMap<>();
 
         for (Quest quest : quests) {
-            Map<LocalTime, ReservationWIthClient> reservations = questIdAndTimeAndReserve.getOrDefault(quest.getId(), Collections.emptyMap());
+            Map<LocalTime, ReservationWithClient> reservations = questIdAndTimeAndReserve.getOrDefault(quest.getId(), Collections.emptyMap());
             SlotList slotList = slotListJsonMapper.toObject(quest.getSlotList());
             List<Slot> slots = slotFactory.getSlots(quest, date, slotList, reservations);
             questNameAndSlots.put(quest.getQuestName(), slots);

@@ -19,7 +19,6 @@ class AccountJdbcRepositoryTest {
     static final String ACCOUNT_ROLE_OWNER_LOGIN = "admin@gmail.com";
     static final String ACCOUNT_ROLE_ADMIN_LOGIN = "second@gmail.com";
     static final String ACCOUNT_ROLE_USER_LOGIN = "third@gmail.com";
-    static final String NOT_EXISTS_LOGIN = "not-exists-login@gmail.com";
 
     @Autowired
     AccountJdbcRepository accountJdbcRepository;

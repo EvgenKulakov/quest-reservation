@@ -14,7 +14,6 @@ import ru.questsfera.questreservation.security.AccountUserDetails;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
@@ -54,7 +53,7 @@ class ReservationGetOperatorTest {
 
     @Test
     void getQuestsAndSlotsByDate_success() {
-        List<ReservationWIthClient> reservationDTOs = List.of(getResWithClient());
+        List<ReservationWithClient> reservationDTOs = List.of(getResWithClient());
         List<Slot> slots = getSlots();
         String slotListJson = getSlotListJson();
         SlotList slotListObject = getSLotList();
@@ -76,7 +75,7 @@ class ReservationGetOperatorTest {
 
     @Test
     void getQuestsAndSlotsByDate_doubleBlockingFailure() {
-        List<ReservationWIthClient> reservationsWithClient = List.of(getResWithClient(), getResWithClient());
+        List<ReservationWithClient> reservationsWithClient = List.of(getResWithClient(), getResWithClient());
         when(reservationService.findActiveByQuestIdsAndDate(anyList(), any(LocalDate.class))).thenReturn(reservationsWithClient);
 
         assertThatThrownBy(() -> reservationGetOperator.getQuestsAndSlotsByDate(date, principal))
@@ -98,8 +97,8 @@ class ReservationGetOperatorTest {
                 .build();
     }
 
-    private ReservationWIthClient getResWithClient() {
-        return ReservationWIthClient.builder()
+    private ReservationWithClient getResWithClient() {
+        return ReservationWithClient.builder()
                 .id(1L)
                 .timeReserve(LocalTime.parse("12:00:00"))
                 .questId(1)

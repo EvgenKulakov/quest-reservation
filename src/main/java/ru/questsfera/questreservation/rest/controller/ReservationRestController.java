@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.questsfera.questreservation.model.dto.ReservationForm;
-import ru.questsfera.questreservation.model.dto.ReservationWIthClient;
+import ru.questsfera.questreservation.model.dto.ReservationWithClient;
 import ru.questsfera.questreservation.service.reservation.ReservationService;
 
 @RestController
@@ -19,7 +19,7 @@ public class ReservationRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ReservationForm> getReserveById(@PathVariable("id") Long id) {
-        ReservationWIthClient reservationWIthClient = reservationService.findReservationWIthClientById(id);
+        ReservationWithClient reservationWIthClient = reservationService.findReservationWIthClientById(id);
         ReservationForm reservationForm = ReservationForm.fromReservationWithClient(reservationWIthClient);
         return ResponseEntity.ok(reservationForm);
     }
