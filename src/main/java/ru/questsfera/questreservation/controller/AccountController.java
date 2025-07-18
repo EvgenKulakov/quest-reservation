@@ -37,7 +37,7 @@ public class AccountController {
     }
 
     @GetMapping("/add-form")
-    public String addAccount(Authentication authentication, Model model) {
+    public String addAccountForm(Authentication authentication, Model model) {
         AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
         Account myAccount = accountService.findAccountByIdWithQuests(principal.getId());
         Set<Quest> allQuests = myAccount.getQuests();
