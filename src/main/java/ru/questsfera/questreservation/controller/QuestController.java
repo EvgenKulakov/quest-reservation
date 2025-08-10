@@ -73,7 +73,7 @@ public class QuestController {
     }
 
     @PostMapping("/save-quest")
-    @PreAuthorize("hasPermission(#questForm.accounts, 'LIST_ACCOUNTS', 'ONLY_OWNER')")
+    @PreAuthorize("hasPermission(#questForm.accounts, 'LIST_ACCOUNTS', 'OWNER')")
     public String saveQuest(@Valid @ModelAttribute("questForm") QuestForm questForm,
                             BindingResult binding,
                             Authentication authentication,
@@ -127,7 +127,7 @@ public class QuestController {
     }
 
     @PostMapping("/quest-info")
-    @PreAuthorize("hasPermission(#quest, 'OWNER_AND_ADMIN')")
+    @PreAuthorize("hasPermission(#quest, 'OWNER_OR_ADMIN')")
     public String showQuest(@RequestParam("quest") Quest quest, Model model) {
 
         List<Account> accounts = accountService.getAccountsByQuestId(quest.getId());
@@ -143,7 +143,7 @@ public class QuestController {
     }
 
     @PostMapping("/delete")
-    @PreAuthorize("hasPermission(#quest, 'ONLY_OWNER')")
+    @PreAuthorize("hasPermission(#quest, 'OWNER')")
     public String deleteQuest(@RequestParam("quest") Quest quest, Model model) {
 
         if (reservationService.hasReservationsByQuest(quest)) {
@@ -156,7 +156,7 @@ public class QuestController {
     }
 
     @PostMapping("/delete-final")
-    @PreAuthorize("hasPermission(#quest, 'ONLY_OWNER')")
+    @PreAuthorize("hasPermission(#quest, 'OWNER')")
     public String deleteQuestFinal(@RequestParam("quest") Quest quest) {
         questService.deleteQuest(quest);
         return "redirect:/quests/";

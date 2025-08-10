@@ -3,7 +3,7 @@ package ru.questsfera.questreservation.security;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import ru.questsfera.questreservation.model.dto.ReservationWithClient;
+import ru.questsfera.questreservation.model.dto.ReservationForm;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
 
@@ -25,7 +25,7 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
         return switch (targetDomainObject) {
             case Account account -> hasCommonCompanyByAccount(principal, account, permissionType);
             case Quest quest -> hasOwnerQuest(principal, quest, permissionType);
-            case ReservationWithClient reservation -> hasOwnerReservation(principal, reservation, permissionType);
+            case ReservationForm reservation -> hasOwnerReservation(principal, reservation, permissionType);
             default -> throw new IllegalStateException("Unexpected value: " + targetDomainObject);
         };
     }
@@ -45,7 +45,7 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
         boolean isCommonCompany = principal.getCompanyId().equals(targetAccount.getCompanyId());
 
         boolean isAllowedRole = switch (permissionType) {
-            case ONLY_OWNER ->
+            case OWNER ->
                     principal.getRole() == ROLE_OWNER && targetAccount.getRole() != ROLE_OWNER;
             case GRADATION_ROLES ->
                     principal.getRole() == ROLE_OWNER && targetAccount.getRole() != ROLE_OWNER ||
@@ -63,7 +63,7 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
                 .allMatch(principal.getCompanyId()::equals);
 
         boolean isAllowedRole = switch (permissionType) {
-            case ONLY_OWNER ->
+            case OWNER ->
                     principal.getRole() == ROLE_OWNER &&
                             listAccounts
                                     .stream()
@@ -92,8 +92,8 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
         boolean isOwnerQuest = principal.getQuestIds().contains(quest.getId());
 
         boolean isAllowedRole = switch (permissionType) {
-            case ONLY_OWNER -> principal.getRole() == ROLE_OWNER;
-            case OWNER_AND_ADMIN -> principal.getRole() == ROLE_OWNER || principal.getRole() == ROLE_ADMIN;
+            case OWNER -> principal.getRole() == ROLE_OWNER;
+            case OWNER_OR_ADMIN -> principal.getRole() == ROLE_OWNER || principal.getRole() == ROLE_ADMIN;
             default -> throw new IllegalStateException("Unexpected value: " + permissionType);
         };
 
@@ -108,16 +108,16 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
                         .collect(Collectors.toSet()));
 
         boolean isAllowedRole = switch (permissionType) {
-            case ONLY_OWNER -> principal.getRole() == ROLE_OWNER;
-            case OWNER_AND_ADMIN -> principal.getRole() == ROLE_OWNER  || principal.getRole() == ROLE_ADMIN;
+            case OWNER -> principal.getRole() == ROLE_OWNER;
+            case OWNER_OR_ADMIN -> principal.getRole() == ROLE_OWNER  || principal.getRole() == ROLE_ADMIN;
             default -> throw new IllegalStateException("Unexpected value: " + permissionType);
         };
 
         return isOwnerQuests && isAllowedRole;
     }
 
-    private boolean hasOwnerReservation(AccountUserDetails principal, ReservationWithClient reservation, PermissionType permissionType) {
-        if (permissionType != PermissionType.ANY) throw new IllegalStateException("Unexpected value: " + permissionType);
+    private boolean hasOwnerReservation(AccountUserDetails principal, ReservationForm reservation, PermissionType permissionType) {
+        if (permissionType != PermissionType.ANY_ROLE) throw new IllegalStateException("Unexpected value: " + permissionType);
         return principal.getQuestIds().contains(reservation.getQuestId());
     }
 
@@ -127,9 +127,9 @@ public class DomainPermissionEvaluator implements PermissionEvaluator {
     }
 
     public enum PermissionType {
-        ONLY_OWNER,
-        OWNER_AND_ADMIN,
+        OWNER,
+        OWNER_OR_ADMIN,
         GRADATION_ROLES,
-        ANY
+        ANY_ROLE
     }
 }

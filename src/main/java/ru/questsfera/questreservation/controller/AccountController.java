@@ -55,7 +55,7 @@ public class AccountController {
     }
 
     @PostMapping("/update-form")
-    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER')")
+    @PreAuthorize("hasPermission(#account, 'OWNER')")
     public String updateAccount(@RequestParam("account") Account account, Model model) {
 
         List<Quest> allQuests = questService.getQuestsByCompany(account.getCompanyId());
@@ -68,7 +68,7 @@ public class AccountController {
     }
 
     @PostMapping("/save-account")
-    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER') && hasPermission(#account.quests, 'LIST_QUESTS', 'ONLY_OWNER')")
+    @PreAuthorize("hasPermission(#account, 'OWNER') && hasPermission(#account.quests, 'LIST_QUESTS', 'OWNER')")
     public String saveAccount(@Valid @ModelAttribute("account") Account account,
                               BindingResult bindingResult,
                               @RequestParam("oldLogin") String oldLogin,
@@ -102,7 +102,7 @@ public class AccountController {
     }
 
     @PostMapping("/update-account-password")
-    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER')")
+    @PreAuthorize("hasPermission(#account, 'OWNER')")
     public String updatePassword(@RequestParam("account") Account account, Model model) {
         model.addAttribute("account", account);
         model.addAttribute("newPassword", "");
@@ -111,7 +111,7 @@ public class AccountController {
     }
 
     @PostMapping("/save-new-password")
-    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER')")
+    @PreAuthorize("hasPermission(#account, 'OWNER')")
     public String saveNewPassword(@RequestParam("account") Account account,
                                   @RequestParam("newPassword") String newPassword,
                                   Model model) {
@@ -130,7 +130,7 @@ public class AccountController {
     }
 
     @PostMapping("/delete")
-    @PreAuthorize("hasPermission(#account, 'ONLY_OWNER')")
+    @PreAuthorize("hasPermission(#account, 'OWNER')")
     public String deleteAccount(@RequestParam("account") Account account) {
         accountService.deleteById(account.getId());
         return "redirect:/accounts/";

@@ -1,7 +1,6 @@
 package ru.questsfera.questreservation.service.reservation;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.questsfera.questreservation.model.dto.ReservationWithClient;
@@ -23,7 +22,6 @@ public class ReservationService {
     private final ReservationJdbcRepository reservationJdbcRepository;
 
     @Transactional(readOnly = true)
-    @PostAuthorize("hasPermission(returnObject, 'ANY')")
     public ReservationWithClient findReservationWIthClientById(Long id) {
         return reservationJdbcRepository.findReservationWithClientById(id);
     }

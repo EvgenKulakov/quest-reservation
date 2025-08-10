@@ -3,17 +3,17 @@ package ru.questsfera.questreservation.controller;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.questsfera.questreservation.config.Profile;
 import ru.questsfera.questreservation.model.entity.Account;
 import ru.questsfera.questreservation.model.entity.Quest;
 import ru.questsfera.questreservation.security.AccountUserDetails;
+import ru.questsfera.questreservation.security.DomainPermissionEvaluator;
 import ru.questsfera.questreservation.security.PasswordGenerator;
+import ru.questsfera.questreservation.security.SecurityConfig;
 import ru.questsfera.questreservation.service.account.AccountService;
 import ru.questsfera.questreservation.service.quest.QuestService;
 
@@ -31,9 +31,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles(Profile.WITHOUT_DB)
+@WebMvcTest(AccountController.class)
+@Import({SecurityConfig.class, DomainPermissionEvaluator.class})
 class AccountControllerTest {
 
     @Autowired

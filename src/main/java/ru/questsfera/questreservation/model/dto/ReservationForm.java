@@ -19,6 +19,7 @@ public class ReservationForm {
     private static final String ERROR_EMAIL = "*Проверьте правильное написание Email";
 
     private Long id;
+    private Integer questId;
     private Status status;
 
     @NotBlank(message = "*Обязательное поле", groups = ValidType.SaveReserve.class)
@@ -46,6 +47,7 @@ public class ReservationForm {
     public static ReservationForm fromReservationWithClient(ReservationWithClient reservationWIthClient) {
         ReservationForm reservationForm = new ReservationForm();
         reservationForm.setId(reservationWIthClient.getId());
+        reservationForm.setQuestId(reservationWIthClient.getQuestId());
         reservationForm.setStatus(reservationWIthClient.getStatus());
         reservationForm.setFirstName(reservationWIthClient.getClient().getFirstName());
         reservationForm.setLastName(reservationWIthClient.getClient().getLastName());
