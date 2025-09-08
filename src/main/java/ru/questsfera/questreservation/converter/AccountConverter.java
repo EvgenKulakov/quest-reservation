@@ -1,4 +1,4 @@
-package ru.questsfera.questreservation.mapper;
+package ru.questsfera.questreservation.converter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
@@ -14,6 +14,7 @@ public class AccountConverter implements Converter<String, Account> {
 
     @Override
     public Account convert(String source) {
+        if (source.isBlank()) return null;
         Integer id = Integer.parseInt(source);
         return accountService.findAccountById(id);
     }

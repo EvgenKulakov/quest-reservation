@@ -1,5 +1,6 @@
 package ru.questsfera.questreservation.validator;
 
+import org.springframework.stereotype.Component;
 import ru.questsfera.questreservation.model.dto.SlotList;
 import ru.questsfera.questreservation.model.dto.SlotListTypeBuild;
 import ru.questsfera.questreservation.model.dto.TimePrice;
@@ -7,6 +8,7 @@ import ru.questsfera.questreservation.model.dto.TimePrice;
 import java.util.Collections;
 import java.util.List;
 
+@Component
 public class SlotListValidator {
 
     private static boolean hasNull;
@@ -14,7 +16,7 @@ public class SlotListValidator {
     private final static String errorHasNull = "*Все поля должны быть заполнены";
     private final static String errorHasDuplicate = "*Все слоты должны быть на разное время";
 
-    public static String checkByType(SlotList slotList, SlotListTypeBuild typeBuild) {
+    public String checkByType(SlotList slotList, SlotListTypeBuild typeBuild) {
         hasNull = false;
         hasDuplicate = false;
 
@@ -25,18 +27,18 @@ public class SlotListValidator {
         };
     }
 
-    public static String checkEqualDays(SlotList slotList) {
+    private String checkEqualDays(SlotList slotList) {
         checkOneDay(slotList.getMonday());
         return switchErrorText();
     }
 
-    public static String checkWeekdaysWeekends(SlotList slotList) {
+    private String checkWeekdaysWeekends(SlotList slotList) {
         checkOneDay(slotList.getMonday());
         checkOneDay(slotList.getSaturday());
         return switchErrorText();
     }
 
-    public static String checkDifferentDays(SlotList slotList) {
+    private String checkDifferentDays(SlotList slotList) {
         checkOneDay(slotList.getMonday());
         checkOneDay(slotList.getTuesday());
         checkOneDay(slotList.getWednesday());
@@ -47,12 +49,12 @@ public class SlotListValidator {
         return switchErrorText();
     }
 
-    public static void checkOneDay(List<TimePrice> oneDay) {
+    private void checkOneDay(List<TimePrice> oneDay) {
         boolean thisHasNull = hasNull(oneDay);
         if (!thisHasNull) hasDuplicate(oneDay);
     }
 
-    private static boolean hasNull(List<TimePrice> oneDay) {
+    private boolean hasNull(List<TimePrice> oneDay) {
         for (TimePrice timePrice : oneDay) {
             if (timePrice.getTime() == null || timePrice.getPrice() == null) {
                 hasNull = true;
@@ -62,7 +64,7 @@ public class SlotListValidator {
         return false;
     }
 
-    private static void hasDuplicate(List<TimePrice> oneDay) {
+    private void hasDuplicate(List<TimePrice> oneDay) {
         Collections.sort(oneDay);
         for (int i = 1; i < oneDay.size(); i++) {
             if (oneDay.get(i).equals(oneDay.get(i - 1))) {
@@ -72,7 +74,7 @@ public class SlotListValidator {
         }
     }
 
-    private static String switchErrorText() {
+    private String switchErrorText() {
         if (hasNull) return errorHasNull;
         if (hasDuplicate) return errorHasDuplicate;
         return "";

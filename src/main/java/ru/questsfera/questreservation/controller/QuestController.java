@@ -35,6 +35,7 @@ public class QuestController {
     private final ReservationService reservationService;
     private final SlotListJsonMapper slotListJsonMapper;
     private final SlotListFactory slotListFactory;
+    private final SlotListValidator slotListValidator;
 
     @GetMapping("/")
     public String showQuestList(Authentication authentication, Model model) {
@@ -45,7 +46,7 @@ public class QuestController {
     }
 
     @PostMapping("/add-form")
-    public String addQuest(Authentication authentication, Model model) {
+    public String addForm(Authentication authentication, Model model) {
         AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
 
         List<Account> allAccounts = accountService.findAllAccountsInCompanyByOwnAccountId(principal.getId());
@@ -72,18 +73,18 @@ public class QuestController {
         return "quests/add-quest-form";
     }
 
-    @PostMapping("/save-quest")
+    @PostMapping("/save-new-quest")
     @PreAuthorize("hasPermission(#questForm.accounts, 'LIST_ACCOUNTS', 'OWNER')")
-    public String saveQuest(@Valid @ModelAttribute("questForm") QuestForm questForm,
-                            BindingResult binding,
-                            Authentication authentication,
-                            Model model) {
+    public String saveNewQuest(@Valid @ModelAttribute("questForm") QuestForm questForm,
+                               BindingResult binding,
+                               Authentication authentication,
+                               Model model) {
 
         AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
         Account myAccount = accountService.findAccountById(principal.getId());
 
         boolean existQuestName = questService.existQuestNameByCompany(questForm.getQuestName(), myAccount.getCompanyId());
-        String globalErrorMessage = SlotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuild());
+        String globalErrorMessage = slotListValidator.checkByType(questForm.getSlotList(), questForm.getTypeBuild());
 
         if (binding.hasErrors() || questForm.getMinPersons() > questForm.getMaxPersons()
                 || existQuestName || !globalErrorMessage.isEmpty()) {

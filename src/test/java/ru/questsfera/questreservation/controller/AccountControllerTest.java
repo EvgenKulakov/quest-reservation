@@ -38,14 +38,9 @@ class AccountControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @MockitoBean
-    AccountService accountService;
-
-    @MockitoBean
-    QuestService questService;
-
-    @MockitoBean
-    PasswordGenerator passwordGenerator;
+    @MockitoBean AccountService accountService;
+    @MockitoBean QuestService questService;
+    @MockitoBean PasswordGenerator passwordGenerator;
 
     @Test
     void showAccountsList_success() throws Exception {

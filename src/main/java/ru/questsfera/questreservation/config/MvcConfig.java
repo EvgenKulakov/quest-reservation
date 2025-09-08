@@ -6,7 +6,8 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import ru.questsfera.questreservation.mapper.AccountConverter;
+import ru.questsfera.questreservation.converter.AccountConverter;
+import ru.questsfera.questreservation.converter.QuestConverter;
 
 import java.time.format.DateTimeFormatter;
 
@@ -15,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 public class MvcConfig implements WebMvcConfigurer {
 
     private final AccountConverter accountConverter;
+    private final QuestConverter questConverter;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -27,5 +29,6 @@ public class MvcConfig implements WebMvcConfigurer {
         registrar.setDateFormatter(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         registrar.registerFormatters(registry);
         registry.addConverter(accountConverter);
+        registry.addConverter(questConverter);
     }
 }

@@ -21,6 +21,11 @@ public class QuestService {
     private final AccountService accountService;
 
     @Transactional(readOnly = true)
+    public Quest findById(Integer id) {
+        return questRepository.findById(id).orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
     public List<Quest> getQuestsByCompany(Integer companyId) {
         return questRepository.findAllByCompanyIdOrderByQuestName(companyId);
     }
