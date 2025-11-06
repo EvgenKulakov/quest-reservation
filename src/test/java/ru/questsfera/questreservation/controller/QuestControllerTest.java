@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(QuestController.class)
-@Import(value = {SecurityConfig.class, DomainPermissionEvaluator.class})
+@Import({SecurityConfig.class, DomainPermissionEvaluator.class})
 class QuestControllerTest {
 
     @Autowired
